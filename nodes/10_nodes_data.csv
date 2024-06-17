@@ -1,0 +1,221 @@
+node,group,color,size
+3 cars,2,#d357db,6
+3 normal cars condition,3,#db5f57,1
+4 cars,2,#d357db,6
+9 particles,3,#db5f57,1
+accelerate,2,#d357db,3
+accelerating probabilistic inference,4,#6f57db,1
+accuracy,2,#d357db,6
+accurate,2,#d357db,4
+action,2,#d357db,23
+action prediction,2,#d357db,5
+action prediction accuracy,2,#d357db,6
+actions,2,#d357db,3
+adjusts,2,#d357db,4
+agent,2,#d357db,18
+agent i,2,#d357db,4
+agent j,2,#d357db,21
+agents,2,#d357db,21
+agents' behavior,2,#d357db,4
+ai systems,2,#d357db,4
+alice,2,#d357db,9
+amortized inference,2,#d357db,16
+"approximate the posterior belief bt i,ℓ",2,#d357db,2
+autonomous agents,2,#d357db,4
+averaged action prediction accuracy,3,#db5f57,2
+bayesian models,6,#5770db,1
+bayesian theory of mind,4,#6f57db,2
+belief,2,#d357db,17
+belief bt,2,#d357db,2
+beliefs,2,#d357db,3
+block,2,#d357db,17
+bluffing,2,#d357db,4
+bob,2,#d357db,11
+brake,2,#d357db,3
+branch,2,#d357db,3
+car,2,#d357db,7
+carlo,2,#d357db,3
+cars,2,#d357db,13
+certainty,2,#d357db,3
+communication,2,#d357db,4
+comparison,2,#d357db,4
+complex domains,2,#d357db,3
+complex multi-agent interactions,2,#d357db,6
+computational complexity,2,#d357db,4
+conference on robot learning,8,#db5780,1
+confidence,2,#d357db,2
+construction environment,2,#d357db,2
+conventional methods,2,#d357db,2
+cooperative inverse reinforcement learning (cirl),2,#d357db,9
+crashing,2,#d357db,2
+cross-entropy loss,4,#6f57db,1
+darpa machine common sense program,9,#db57b2,1
+data generation,10,#dbc257,1
+data-driven proposals,4,#6f57db,2
+domain,2,#d357db,2
+driver,2,#d357db,18
+driving domain,11,#5fdb57,1
+efficiency of nested reasoning,3,#db5f57,1
+ego agent,2,#d357db,21
+ei,2,#d357db,4
+ei performance,4,#6f57db,2
+end-to-end methods,2,#d357db,3
+end-to-end model,2,#d357db,8
+environment,2,#d357db,8
+episode,2,#d357db,1
+episodes,2,#d357db,13
+evaluation,2,#d357db,4
+exact inference,2,#d357db,14
+experiment,2,#d357db,3
+experimental results,2,#d357db,4
+experiments,2,#d357db,2
+figure 8c,2,#d357db,6
+generalizability,2,#d357db,6
+generalization evaluation results,3,#db5f57,2
+generalization testing sets,2,#d357db,20
+generative model,2,#d357db,8
+generative models,4,#6f57db,2
+gmytrasiewicz and doshi (2005),2,#d357db,9
+goal,2,#d357db,27
+goal inference,2,#d357db,4
+green,2,#d357db,2
+green infers red’s goal and belief,3,#db5f57,1
+green's action,2,#d357db,2
+han and gmytrasiewicz,2,#d357db,2
+high-order social inference,2,#d357db,5
+honking,2,#d357db,3
+human-robot cooperation,2,#d357db,7
+humans,2,#d357db,4
+hypotheses,2,#d357db,13
+i) 4 cars,2,#d357db,3
+i-pomdp,2,#d357db,20
+i-pomdp formulation,4,#6f57db,1
+i-pomdp model,2,#d357db,4
+ii) 3 cars with inattentive driver,2,#d357db,3
+importance sampling,2,#d357db,16
+importance sampling at every step,2,#d357db,2
+importance sampling at every time step,2,#d357db,2
+importance weight,2,#d357db,5
+inattentive driver,2,#d357db,6
+inference,2,#d357db,21
+information,2,#d357db,4
+interactive partially observable markov decision making process (i-pomdp),2,#d357db,4
+interactive partially observable markov decision process,4,#6f57db,2
+interactive partially observable markov decision process (i-pomdp),2,#d357db,9
+interactive pomdps,12,#91db57,1
+interactive state,2,#d357db,4
+kl-divergence,2,#d357db,3
+lack of robust nested reasoning,3,#db5f57,2
+level,2,#d357db,9
+level-1 agent policy,2,#d357db,4
+level-1 goal inference,4,#6f57db,2
+level-2 goal inference,4,#6f57db,2
+level-2 reasoning,2,#d357db,2
+level-ℓ,2,#d357db,4
+lockheed martin,14,#57a2db,1
+lower level inference,2,#d357db,2
+machine theory of mind,15,#57d3db,1
+meta-learning,2,#d357db,2
+method,2,#d357db,58
+"method (ours) against ei, tomnet, and ours-nn",2,#d357db,4
+method's prediction,2,#d357db,2
+methods,2,#d357db,13
+mind,2,#d357db,4
+model,2,#d357db,16
+model inference,3,#db5f57,2
+model-based methods,2,#d357db,3
+model-based reasoning,4,#6f57db,2
+models trained with 3 cars controlled by normal drivers,3,#db5f57,2
+multi-agent interaction,2,#d357db,2
+multi-agent interaction domains,2,#d357db,4
+multi-agent interactions,2,#d357db,14
+multi-agent nested reasoning,2,#d357db,3
+multi-agent system,2,#d357db,3
+multi-agent systems,2,#d357db,4
+nested goal and belief inference,2,#d357db,9
+nested multi-agent reasoning,2,#d357db,14
+nested reasoning,2,#d357db,34
+nested reasoning between multi-agents,2,#d357db,7
+network,2,#d357db,12
+neural amortized inference,4,#6f57db,10
+neural amortized inference approach,3,#db5f57,2
+neural networks,2,#d357db,8
+neurally-guided procedural models,2,#d357db,1
+observation,2,#d357db,3
+observations,2,#d357db,4
+observer,2,#d357db,1
+online action pre,13,#57db80,1
+our method,3,#db5f57,15
+ours,2,#d357db,10
+ours-nn,2,#d357db,5
+particle,2,#d357db,5
+particle sampling,2,#d357db,4
+particles,2,#d357db,10
+planner,2,#d357db,4
+planning,2,#d357db,11
+pomdp,2,#d357db,4
+posterior,2,#d357db,4
+prior,2,#d357db,4
+progress of an episode,3,#db5f57,2
+proposal distribution,4,#6f57db,2
+real-world social reasoning,2,#d357db,2
+reasoning,2,#d357db,17
+recognition distribution,2,#d357db,14
+recognition model,2,#d357db,18
+recognition network,4,#6f57db,3
+recognition networks,2,#d357db,8
+recogniton model,2,#d357db,2
+recursive inference,2,#d357db,3
+recursive mdps,16,#db9057,1
+recursive nature,2,#d357db,1
+red,2,#d357db,2
+rotate left,2,#d357db,3
+rotate right,2,#d357db,3
+s0,2,#d357db,3
+s1,2,#d357db,3
+s2,2,#d357db,3
+samples,2,#d357db,4
+sampling procedure,2,#d357db,2
+sequential monte carlo,2,#d357db,2
+set,2,#d357db,4
+social inference,2,#d357db,14
+social interactions,16,#db9057,1
+state inference,2,#d357db,4
+states,2,#d357db,4
+step,2,#d357db,1
+steps,2,#d357db,4
+teaching,2,#d357db,4
+testing episodes,2,#d357db,5
+theory of mind reasoning,2,#d357db,3
+theory of minds,7,#c3db57,1
+tomnet,2,#d357db,16
+tomnet’s accuracy,2,#d357db,13
+traffic,2,#d357db,3
+training,2,#d357db,3
+training set,2,#d357db,1
+training sets,2,#d357db,20
+two-player game,1,#57dbb2,1
+ullman,5,#a157db,1
+uncertainty estimation,2,#d357db,4
+uncertainty in inference,2,#d357db,11
+uncertainty in its inference,3,#db5f57,1
+understanding,2,#d357db,4
+uniform distribution,4,#6f57db,10
+user needs to infer,2,#d357db,7
+weighted samples,2,#d357db,2
+world state,2,#d357db,2
+yellow and teal blocks,2,#d357db,4
+probabilistic programs,2,#d357db,1
+social goal inference,6,#5770db,1
+pmlr,8,#db5780,1
+onr muri n00014-13-1-0333,9,#db57b2,1
+training data,10,#dbc257,1
+drivers,11,#5fdb57,1
+exact solutions,12,#91db57,1
+grant,14,#57a2db,1
+international conference on machine learning,15,#57d3db,1
+figure 10,13,#57db80,1
+factorization,2,#d357db,1
+behavior in groups,7,#c3db57,1
+2d grid worlds,1,#57dbb2,1
+baker,5,#a157db,1
