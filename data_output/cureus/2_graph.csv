@@ -1,0 +1,321 @@
+node_1|node_2|edge|chunk_id
+intuitive reasoning network (irene)|neural model|IRENE is a neural model for intuitive psychological reasoning about agents’ goals, preferences, and actions.|20798c58a9b94c11b981f2638d54af69
+intuitive reasoning network (irene)|graph neural network|IRENE combines a graph neural network for learning agent and world state representations.|20798c58a9b94c11b981f2638d54af69
+intuitive reasoning network (irene)|transformer|IRENE combines a transformer to encode the task context.|20798c58a9b94c11b981f2638d54af69
+irene|baby intuitions benchmark|IRENE achieves new state-of-the-art performance on three out of five tasks on the Baby Intuitions Benchmark.|20798c58a9b94c11b981f2638d54af69
+irene|agents|IRENE is able to bind preferences to specific agents and to better distinguish between rational and irrational agents.|20798c58a9b94c11b981f2638d54af69
+irene|blocking obstacles|IRENE is able to better understand the role of blocking obstacles.|20798c58a9b94c11b981f2638d54af69
+developmental cognitive science|common-sense reasoning|Studies in developmental cognitive science have demonstrated common-sense reasoning abilities.|20798c58a9b94c11b981f2638d54af69
+infants|developmental disorders|Young infants have abilities that can be linked to developmental disorders such as autism.|e1e81cd1eaa448b4a0a2cf9d28282952
+ai agents|humans|AI agents need to possess similar capabilities to be understood by humans and understand them.|e1e81cd1eaa448b4a0a2cf9d28282952
+ai agents|robotics|AI agents are important for applications such as robotics.|e1e81cd1eaa448b4a0a2cf9d28282952
+ai agents|human-machine collaboration|AI agents are important for human-machine collaboration.|e1e81cd1eaa448b4a0a2cf9d28282952
+research|machine common-sense reasoning|Previous research in machine common-sense reasoning has focused on language processing and visual scene understanding.|e1e81cd1eaa448b4a0a2cf9d28282952
+benchmarks|ai systems|New benchmarks have been introduced to assess the general ability of AI systems to reason about unexpected events or situations.|e1e81cd1eaa448b4a0a2cf9d28282952
+riochet et al.|expected events or situations|Riochet et al. and expected events or situations are related as they are mentioned together in the context.|4d0889b0ea3f453391eabf33d908578c
+riochet et al.|intuitive physics|Riochet et al. and intuitive physics are related as they are mentioned together in the context.|4d0889b0ea3f453391eabf33d908578c
+gandhi et al.|expected events or situations|Gandhi et al. and expected events or situations are related as they are mentioned together in the context.|4d0889b0ea3f453391eabf33d908578c
+gandhi et al.|intuitive psychology|Gandhi et al. and intuitive psychology are related as they are mentioned together in the context.|4d0889b0ea3f453391eabf33d908578c
+dasgupta et al.|intuitive physics|Dasgupta et al. and intuitive physics are related as they are mentioned together in the context.|4d0889b0ea3f453391eabf33d908578c
+shu et al.|intuitive psychology|Shu et al. and intuitive psychology are related as they are mentioned together in the context.|4d0889b0ea3f453391eabf33d908578c
+piloto et al.|intuitive physics|Piloto et al. and intuitive physics are related as they are mentioned together in the context.|4d0889b0ea3f453391eabf33d908578c
+weihs et al.|intuitive physics|Weihs et al. and intuitive physics are related as they are mentioned together in the context.|4d0889b0ea3f453391eabf33d908578c
+piloto et al.|intuitive psychology|Piloto et al. and intuitive psychology are related as they are mentioned together in the context.|4d0889b0ea3f453391eabf33d908578c
+gandhi et al.|common-sense reasoning|Gandhi et al. and common-sense reasoning are related as they are mentioned together in the context.|4d0889b0ea3f453391eabf33d908578c
+shu et al.|common-sense reasoning|Shu et al. and common-sense reasoning are related as they are mentioned together in the context.|4d0889b0ea3f453391eabf33d908578c
+bail-largeon 1987|violation of expectation paradigm|Bail-largeon 1987 and violation of expectation paradigm are related as they are mentioned together in the context.|4d0889b0ea3f453391eabf33d908578c
+voe paradigm|test trials|The VoE paradigm is focused on pairing test trials that may not differ much in traditional error metrics but differ in terms of human reasoning.|de456b44b85940e2895a5f2ddd8679f4
+voe paradigm|ai capabilities|VoE allows probing AI capabilities by comparing scenarios that humans can differentiate based on those capabilities.|de456b44b85940e2895a5f2ddd8679f4
+gandhi et al.|baby intuitions benchmark (bib)|Gandhi et al. have recently introduced the Baby Intuitions Benchmark (BIB) – a set of tasks that require an observer model to reason about agents’ goals, preferences, and actions by observing their behavior in a grid-world environment.|de456b44b85940e2895a5f2ddd8679f4
+baby intuitions benchmark (bib)|observer model|The BIB poses two key challenges, requiring an observer model to reason about agents’ goals, preferences, and actions by observing their behavior in a grid-world environment.|de456b44b85940e2895a5f2ddd8679f4
+training and evaluation tasks|test trials|Training and evaluation tasks differ in their number and setting, and test trials in the training set present only expected outcomes, requiring observer models to generalize to unseen situations by combining different pieces of knowledge gained during training.|de456b44b85940e2895a5f2ddd8679f4
+baby intuitions benchmark (bib)|models’ ability to predict future actions|The benchmark not only challenges models’ ability to predict future actions but also to use them to quantify the expectedness of novel situations.|de456b44b85940e2895a5f2ddd8679f4
+baby intuitions benchmark (bib)|meta-learning problem|The BIB can be seen as posing a meta-learning problem in which an observer model “learns to learn” about other agents’ behavior.|de456b44b85940e2895a5f2ddd8679f4
+initial models|machine theory of mind network|Initial models are based on the machine theory of mind network.|de456b44b85940e2895a5f2ddd8679f4
+most recent model (hein and diepold 2022, vt)|video|The most recent model (Hein and Diepold 2022, VT) is based on a video.|de456b44b85940e2895a5f2ddd8679f4
+theory of mind network|model|The theory of mind network is mentioned in relation to the most recent model based on a video transformer.|daa14109762d46db9ce22efeada37c18
+model|video transformer|The most recent model is based on a video transformer as mentioned in the context.|daa14109762d46db9ce22efeada37c18
+video transformer|vt|The video transformer is referred to as VT in the context.|daa14109762d46db9ce22efeada37c18
+vt|agents’ preferences|VT is rather successful in modelling agents’ preferences as mentioned in the context.|daa14109762d46db9ce22efeada37c18
+vt|agents|VT fails in binding preferences to specific agents as mentioned in the context.|daa14109762d46db9ce22efeada37c18
+vt|rational agents|VT struggles with understanding the role of rational agents in contrast to irrational ones as mentioned in the context.|daa14109762d46db9ce22efeada37c18
+intuitive reasoning network (irene)|neural network|IRENE is introduced as a novel neural network for core intuitive psychology.|daa14109762d46db9ce22efeada37c18
+intuitive reasoning network (irene)|graph neural network (gnn)|IRENE uses a graph neural network (GNN) to obtain rich state embeddings as mentioned in the context.|daa14109762d46db9ce22efeada37c18
+graph neural network (gnn)|video frames|GNN processes graphs extracted from video frames to obtain rich state embeddings as mentioned in the context.|daa14109762d46db9ce22efeada37c18
+graph neural network (gnn)|transformer|GNN is used in conjunction with a transformer to encode familiarisation trials in a context vector as mentioned in the context.|daa14109762d46db9ce22efeada37c18
+irene|reasoning tasks|IRENE achieves new state-of-the-art performance on three out of five reasoning tasks defined on the BIB as mentioned in the context.|daa14109762d46db9ce22efeada37c18
+model|existing models|The model performs particularly well on tasks that existing models struggle with as mentioned in the context.|daa14109762d46db9ce22efeada37c18
+existing models|reasoning tasks|Existing models struggle with binding preferences to specific agents, differentiating between rational and irrational agents, and understanding how to deal with obstacles as mentioned in the context.|daa14109762d46db9ce22efeada37c18
+irene|infants’ responses|IRENE's predictions are in line with infants’ responses collected on a subset of the BIB as mentioned in the context.|daa14109762d46db9ce22efeada37c18
+training tasks|generalisation|The choice of training tasks is investigated on generalisation as mentioned in the context.|daa14109762d46db9ce22efeada37c18
+irene|novel model|IRENE is a novel model for intuitive psychology|c9d7c0e029bd4a5ebe04356e6888f3c1
+irene|gnn|IRENE combines a GNN and a transformer to learn rich state and context representations|c9d7c0e029bd4a5ebe04356e6888f3c1
+irene|transformer|IRENE combines a GNN and a transformer to learn rich state and context representations|c9d7c0e029bd4a5ebe04356e6888f3c1
+irene|state and context representations|IRENE achieves new state-of-the-art performance on three out of five BIB reasoning tasks by learning rich state and context representations|c9d7c0e029bd4a5ebe04356e6888f3c1
+irene|performance|IRENE achieves new state-of-the-art performance on three out of five BIB reasoning tasks|c9d7c0e029bd4a5ebe04356e6888f3c1
+irene|training tasks|IRENE can achieve new state-of-the-art reasoning performance only when trained on all training tasks|c9d7c0e029bd4a5ebe04356e6888f3c1
+irene|knowledge gained during training|IRENE shows its ability to combine knowledge gained during training to solve unseen evaluation tasks|c9d7c0e029bd4a5ebe04356e6888f3c1
+irene|unseen evaluation tasks|IRENE shows its ability to combine knowledge gained during training to solve unseen evaluation tasks|c9d7c0e029bd4a5ebe04356e6888f3c1
+training tasks|performance|The influence of the chosen training tasks on performance is analyzed|c9d7c0e029bd4a5ebe04356e6888f3c1
+irene|reasoning performance|IRENE can achieve new state-of-the-art reasoning performance only when trained on all training tasks|c9d7c0e029bd4a5ebe04356e6888f3c1
+irene|common-sense reasoning benchmarks|IRENE achieves new state-of-the-art performance on three out of five BIB reasoning tasks, which are common-sense reasoning benchmarks|c9d7c0e029bd4a5ebe04356e6888f3c1
+intelligent|collaborative agents|These are the key concepts mentioned in the given context.|772026c11c8d48e086e9022c8433516b
+research|evaluating language processing|Research has focused on evaluating language processing, indicating a relationship between the two concepts.|772026c11c8d48e086e9022c8433516b
+research|visual scene understanding|Research has also focused on visual scene understanding, indicating a relationship between the two concepts.|772026c11c8d48e086e9022c8433516b
+benchmarks|general ability of ai systems to reason about unexpected events or situations|Benchmarks aim to evaluate the general ability of AI systems to reason about unexpected events or situations, indicating a relationship between the two concepts.|772026c11c8d48e086e9022c8433516b
+benchmarks|intuitive physics|Benchmarks focus on intuitive physics, targeting physical concepts such as continuity, solidity, object persistence, and gravity.|772026c11c8d48e086e9022c8433516b
+benchmarks|models’ ability to reason about other agents|Benchmarks also test models’ ability to reason about other agents, indicating a relationship between the two concepts.|772026c11c8d48e086e9022c8433516b
+bib|infants expect other agents to have goals, preferences and engage in instrumental actions|The BIB is based on the findings that infants expect other agents to have goals, preferences and engage in instrumental actions, indicating a relationship between the two concepts.|772026c11c8d48e086e9022c8433516b
+bib|agent tests|Like the BIB, AGENT tests whether models can predict that agents have object-based goals and act efficiently.|772026c11c8d48e086e9022c8433516b
+bib|agent|Both BIB and AGENT are models used to test whether agents have object-based goals and act efficiently. AGENT does not evaluate whether models can reason about multiple agents, inaccessible goals, instrumental actions, or distinguish between rational and irrational agents, while BIB provides a single canonical split to maximize the evaluation of models’ generalisability.|10b9ca3dd3cf47d2bd07394cd116b68a
+agent|bib|AGENT evaluates models based on Bayesian theory and physics simulation (BIPaCK) and is also evaluated on the BIB. In contrast, Zhi et al. have evaluated a Bayesian Theory of Mind model with hierarchical priors over agents’ preference and efficiency (HBToM) on the BIB.|10b9ca3dd3cf47d2bd07394cd116b68a
+bib|bipack|BIPaCK, introduced by Shu et al., combines Bayesian inverse planning and physics simulation and is evaluated on AGENT.|10b9ca3dd3cf47d2bd07394cd116b68a
+bipack|agent|BIPaCK is evaluated on AGENT.|10b9ca3dd3cf47d2bd07394cd116b68a
+bayesian theory of mind|hbtom|Zhi et al. have evaluated a Bayesian Theory of Mind model with hierarchical priors over agents’ preference and efficiency (HBToM) on the BIB.|10b9ca3dd3cf47d2bd07394cd116b68a
+hbtom|bib|HBToM computes a plausibility score by training a set of logistic regression classifiers on a synthetic dataset similar to the BIB evaluation set|3d8ab8373b474d65bc73005fdb96c377
+gandhi et al.|expectedness|Gandhi et al. define expectedness in terms of the mean square error between the model prediction and the ground-truth|3d8ab8373b474d65bc73005fdb96c377
+hbtom|logistic regression classifiers|HBToM computes a plausibility score by training a set of logistic regression classifiers on a synthetic dataset|3d8ab8373b474d65bc73005fdb96c377
+gandhi et al.|bib|On the BIB, Gandhi et al. have proposed a model based on the Theory of Mind neural network introduced by (Rabinowitz et al. 2018)|3d8ab8373b474d65bc73005fdb96c377
+hein et al.|vt|Hein et al. have proposed a method (VT) based on a video transformer (Neimark et al. 2021)|3d8ab8373b474d65bc73005fdb96c377
+vt|video frames|VT encodes frames using a CNN and performs cross- and self-attention over frames|3d8ab8373b474d65bc73005fdb96c377
+gnn|state-action pairs|A novel method that uses a GNN (Gori, Monfardini,state-action pairs τi = {(sij, aij)}j=1,...,T , with sij being video frames and T the trial length|3d8ab8373b474d65bc73005fdb96c377
+voe paradigm|test trial|According to the VoE paradigm, a test trial can be consistent with the familiarisation examples (expected outcome) or inconsistent (unexpected outcome)|3d8ab8373b474d65bc73005fdb96c377
+voe paradigm|observer|According to the VoE paradigm, if the observer is more surprised by the unexpected outcome, this means that what they believed or predicted would happen is not in line with what actually occurred.|2c8820e89edf4177aa67613fa4ffa2b8
+expected outcome|observer model|Expectedness is defined as the observer model’s prediction error: a model is successful if the prediction error on the unexpected outcome is higher than the error on the expected outcome.|2c8820e89edf4177aa67613fa4ffa2b8
+prediction error|mse|In practice, the prediction error is quantified by the mean squared error (MSE) with respect to a ground truth (e.g. next frame or action).|2c8820e89edf4177aa67613fa4ffa2b8
+evaluation set|tasks|The evaluation set presents the tasks mentioned above.|2c8820e89edf4177aa67613fa4ffa2b8
+familiarisation|test trials|Familiarisation and test trials follow different distributions: expected and unexpected trials are perceptually and conceptually different from familiarisation trials, respectively.|2c8820e89edf4177aa67613fa4ffa2b8
+preference task|expected trials|In expected trials, the preferred object is located differently than in familiarisation trials but the agent still moves towards it.|2c8820e89edf4177aa67613fa4ffa2b8
+preference task|unexpected trials|In the unexpected trials, the agent moves towards the non-preferred object whose location is the same as familiarisation.|2c8820e89edf4177aa67613fa4ffa2b8
+training set|tasks|The training set presents four tasks: Single-Object, No-Navigation Preference, Single-Object Multiple-Agent and Agent-Blocked Instrumental Action.|2c8820e89edf4177aa67613fa4ffa2b8
+navigation preference|single-object multiple-agent|Navigation Preference is related to Single-Object Multiple-Agent as the training tasks mentioned in the context involve combining and generalising knowledge acquired from different tasks, including navigation and instrumental actions.|87462972f7124465baef16faf4970bd0
+single-object multiple-agent|agent-blocked instrumental action|Single-Object Multiple-Agent is related to Agent-Blocked Instrumental Action as models need to combine knowledge of navigation and instrumental actions to solve tasks, as mentioned in the context.|87462972f7124465baef16faf4970bd0
+agent-blocked instrumental action|instrumental blocking barrier|Agent-Blocked Instrumental Action is related to Instrumental Blocking Barrier as models need to put together knowledge of navigation and instrumental actions to solve tasks, specifically in the case of the Instrumental Blocking Barrier task.|87462972f7124465baef16faf4970bd0
+agent-blocked instrumental action|training trials|Agent-Blocked Instrumental Action is related to training trials as the model's knowledge is confined during training, as mentioned in the context.|87462972f7124465baef16faf4970bd0
+instrumental blocking barrier|evaluation trials|Instrumental Blocking Barrier is related to evaluation trials as the context mentions how the object is confined in evaluation trials, unlike in training trials.|87462972f7124465baef16faf4970bd0
+graph generation|json file|Graph Generation is related to json file as each video in the context is paired with a json file containing information about the grid-world layout, which is used to build graphs.|87462972f7124465baef16faf4970bd0
+graph generation|frame|Graph Generation is related to frame as graphs are built from sampled frames in the context, forming nodes and edges based on the entities present in each frame.|87462972f7124465baef16faf4970bd0
+features|type|The features include type as one of its components|5b8f1c8378164d7ca9cdd5009fe37959
+features|position|The features include position as one of its components|5b8f1c8378164d7ca9cdd5009fe37959
+features|colour|The features include colour as one of its components|5b8f1c8378164d7ca9cdd5009fe37959
+features|shape|The features include shape as one of its components|5b8f1c8378164d7ca9cdd5009fe37959
+type|one-hot vectors|Type is represented as one-hot vectors|5b8f1c8378164d7ca9cdd5009fe37959
+position|normalised between [-1, 1]|Position is normalised between [-1, 1]|5b8f1c8378164d7ca9cdd5009fe37959
+colour|normalised between [0, 1]|Colour is normalised between [0, 1]|5b8f1c8378164d7ca9cdd5009fe37959
+training and evaluation on the baby intuitions benchmark|gandhi et al. 2021|The training and evaluation is based on the Baby Intuitions Benchmark by Gandhi et al. 2021|5b8f1c8378164d7ca9cdd5009fe37959
+model|weights|The model's weights are updated using backpropagation on the error|5b8f1c8378164d7ca9cdd5009fe37959
+model|ground truth|The model's weights are updated based on the ground truth of the test trial|5b8f1c8378164d7ca9cdd5009fe37959
+evaluation|violation of expectation paradigm|Evaluation employs a violation of expectation paradigm|5b8f1c8378164d7ca9cdd5009fe37959
+graph|frames|Graphs are built from frames|5b8f1c8378164d7ca9cdd5009fe37959
+transformer|context embeddings|The transformer is used to generate context embeddings|5b8f1c8378164d7ca9cdd5009fe37959
+agent|gnn|A GNN is used on AGENT|5b8f1c8378164d7ca9cdd5009fe37959
+agent|states|A GNN is used to encode states on AGENT|5b8f1c8378164d7ca9cdd5009fe37959
+graphs|frames|Graphs are built from frames|5b8f1c8378164d7ca9cdd5009fe37959
+graphs|transformer|Graphs are used as input to the transformer|5b8f1c8378164d7ca9cdd5009fe37959
+graphs|message passing|Graphs perform message passing|5b8f1c8378164d7ca9cdd5009fe37959
+edges|spatial relations|Edges represent different spatial relations|5b8f1c8378164d7ca9cdd5009fe37959
+baby intuitions benchmark|2d videos|The BIB consists of 2D videos|5b8f1c8378164d7ca9cdd5009fe37959
+agent|objects|An agent interacts with different objects|5b8f1c8378164d7ca9cdd5009fe37959
+agent|grid-world environment|An agent moves and interacts in a grid-world environment|5b8f1c8378164d7ca9cdd5009fe37959
+grid-world environment|agent|The agent interacts with different objects in the grid-world environment, representing the key entities in the environment.|cb946a3b84ca467eb013bfce23c1b12d
+grid-world environment|objects|The objects in the grid-world environment are represented as geometric shapes of different colors, indicating they are part of the environment.|cb946a3b84ca467eb013bfce23c1b12d
+agent|objects|Both the agent and objects are represented in the same context, implying a relationship between them while interacting in the grid-world environment.|cb946a3b84ca467eb013bfce23c1b12d
+tasks|common-sense reasoning tasks|The benchmark proposes five common-sense reasoning tasks derived from research on infant intuitive psychology, indicating that these tasks are part of the common-sense reasoning domain.|cb946a3b84ca467eb013bfce23c1b12d
+tasks|tasks|The Efficient Action and Instrumental Action tasks each have three sub-tasks, showing a hierarchical relationship within the tasks mentioned.|cb946a3b84ca467eb013bfce23c1b12d
+efficient action|sub-tasks|Efficient Action task presents three sub-tasks: Efficiency Path Control, Efficiency Time Control, Efficiency Irrational Agent, showing a specific relationship between the task and its sub-tasks.|cb946a3b84ca467eb013bfce23c1b12d
+instrumental action|sub-tasks|Instrumental Action task presents three sub-tasks: Instrumental No Barrier, Instrumental Blocking Barrier, Instrumental Inconsequential Barrier, showing a specific relationship between the task and its sub-tasks.|cb946a3b84ca467eb013bfce23c1b12d
+bib|trials|An episode in the BIB includes nine trials, indicating that trials are part of the BIB framework.|cb946a3b84ca467eb013bfce23c1b12d
+trials|trajectories|Each trial in the BIB framework consists of trajectories, showing a sequential relationship between trials and trajectories.|cb946a3b84ca467eb013bfce23c1b12d
+irene|architecture|The architecture of IRENE, as shown in Figure 2, includes inputs representing entities in a video frame, indicating the components of the architecture.|cb946a3b84ca467eb013bfce23c1b12d
+context encoder|state encoder|The context encoder includes a state encoder with a feature fusion module, indicating a relationship between the two components.|cb946a3b84ca467eb013bfce23c1b12d
+state encoder|feature fusion module|The state encoder includes a feature fusion module that combines node features, showing a specific relationship within the state encoder component.|cb946a3b84ca467eb013bfce23c1b12d
+encoded states|actions|The encoded states are concatenated to the corresponding actions, showing a relationship between the encoded states and actions for processing in IRENE.|cb946a3b84ca467eb013bfce23c1b12d
+encoded states|ctx token|The encoded states are concatenated to a special learnable CTX token, indicating a connection between the encoded states and the token in the context of IRENE.|cb946a3b84ca467eb013bfce23c1b12d
+transformer context encoder|context embedding|The transformer context encoder produces a context embedding as the mean of the CXT embedding vectors, showing the output relationship between the components in the context encoder.|cb946a3b84ca467eb013bfce23c1b12d
+encoder|context embedding|The encoder produces a context embedding as the mean of the CXT embedding vectors of each familiarisation trial.|4cea91ac26154b438c40ad033f18fbe0
+context embedding|test state|In the prediction net, the encoded test state is concatenated to the context and input into a MLP policy that outputs a prediction for the agent’s next action.|4cea91ac26154b438c40ad033f18fbe0
+edges|relationships|As different edges represent different relations, ϕ is a Relational GNN which uses different weights for each edge type.|4cea91ac26154b438c40ad033f18fbe0
+graph-sage layers|lstm aggregation|In particular, we use Graph-SAGE layers with LSTM aggregation.|4cea91ac26154b438c40ad033f18fbe0
+state encoder|embedding vector|In the context encoder, the state encoder outputs an embedding vector hij for each frame graph Gij, obtained by applying average pooling to the nodes.|4cea91ac26154b438c40ad033f18fbe0
+encoded states|actions|The encoded states {hij} are concatenated to the corresponding actions {aij} and projected to the transformer input dimension by a linear layer fproj.|4cea91ac26154b438c40ad033f18fbe0
+ctx token|embedding vector|A learnable CTX token is concatenated to each embedding vector, followed by positional embedding and layer normalisation.|4cea91ac26154b438c40ad033f18fbe0
+transformer encoder|trial representations|The result is input into a transformer encoder and the output CTX' are taken as trial representations.|4cea91ac26154b438c40ad033f18fbe0
+context encoder|context embedding|The context encoder outputs a single context embedding obtained by computing the mean of the eight familiarisation trial representations.|4cea91ac26154b438c40ad033f18fbe0
+edges eij|spatial relationships|Edges eij ∈ Eij represent spatial relationships and are defined following (Jiang et al. 2021).|4cea91ac26154b438c40ad033f18fbe0
+local directional relations|adjacent and aligned|The context mentions that local directional relations identify the relative position of two adjacent entities, while adjacent and aligned relations do not require adjacency. These are different types of directional relations.|5ff89870166c499ca4bdea7443638010
+local directional relations|remote directional relations|The context mentions that local directional relations identify the relative position of two adjacent entities, while remote directional relations do not require adjacency. These are different types of directional relations.|5ff89870166c499ca4bdea7443638010
+remote directional relations|adjacent and aligned|The context mentions that remote directional relations do not require adjacency, while adjacent and aligned relations do. These are different types of directional relations.|5ff89870166c499ca4bdea7443638010
+context encoder|agent's past trajectories|The context encoder parses the agent's past trajectories into a context vector, indicating a relationship between the two.|5ff89870166c499ca4bdea7443638010
+context encoder|prediction net|The context mentions that the context encoder parses the agent's past trajectories into a context vector, and a prediction net predicts the future behavior of the agent based on the context and the current state. This indicates a relationship between the two.|5ff89870166c499ca4bdea7443638010
+feature fusion module|node features|The feature fusion module combines the node features (type, position, color, shape), indicating a relationship between the two.|5ff89870166c499ca4bdea7443638010
+node features|type, position, color, shape|The feature fusion module combines the node features, which include type, position, color, and shape, into a single input feature.|5ff89870166c499ca4bdea7443638010
+gnn|node embeddings|The GNN performs message passing to update the node embeddings, indicating a relationship between the two.|5ff89870166c499ca4bdea7443638010
+gnn|message passing|GNN performs message passing to update the node embeddings|0e35fcc34caa4ccd8fa4ebf7fe695999
+node embeddings|state embedding|node embeddings are updated to produce a state embedding|0e35fcc34caa4ccd8fa4ebf7fe695999
+test frame graph|state encoder|A test frame graph is encoded by the state encoder|0e35fcc34caa4ccd8fa4ebf7fe695999
+state embedding|context embedding|state embedding is concatenated to the context embedding|0e35fcc34caa4ccd8fa4ebf7fe695999
+context embedding|mlp policy|context embedding is input into an MLP policy|0e35fcc34caa4ccd8fa4ebf7fe695999
+mlp|rnn|Feature fusion module encodes the node features using linear layers of hidden dimension 96|0e35fcc34caa4ccd8fa4ebf7fe695999
+irene|feature fusion module|The feature fusion module is used by IRENE for encoding the node features|17759e0c2db74c36a0cd93f6f905dbaf
+irene|state encoder|IRENE uses two GraphSAGE layers for each relation in the state encoder|17759e0c2db74c36a0cd93f6f905dbaf
+state encoder|graphsage layers|The state encoder consists of two GraphSAGE layers for each relation|17759e0c2db74c36a0cd93f6f905dbaf
+state encoder|hidden dimension 96|The state encoder has a hidden dimension of 96|17759e0c2db74c36a0cd93f6f905dbaf
+transformer encoder|stack of six layers|The transformer encoder consists of a stack of six layers|17759e0c2db74c36a0cd93f6f905dbaf
+transformer encoder|attention heads|The transformer encoder has four attention heads|17759e0c2db74c36a0cd93f6f905dbaf
+prediction net|gnn|The prediction net uses the same GNN as the feature fusion module used in the context encoder|17759e0c2db74c36a0cd93f6f905dbaf
+prediction net|feature fusion module|The prediction net uses the same feature fusion module as the context encoder|17759e0c2db74c36a0cd93f6f905dbaf
+mlp policy|hidden dimensions 256, 128 and 256|The MLP policy has hidden dimensions of 256, 128, and 256|17759e0c2db74c36a0cd93f6f905dbaf
+mlp policy|output dimension two|The output dimension of the MLP policy corresponds to the (x, y) coordinates of the agent|17759e0c2db74c36a0cd93f6f905dbaf
+gandhi et al.|bc-mlp|Gandhi et al. proposed the BC-MLP model|17759e0c2db74c36a0cd93f6f905dbaf
+gandhi et al.|bc-rnn|Gandhi et al. proposed the BC-RNN model|17759e0c2db74c36a0cd93f6f905dbaf
+gandhi et al.|video-rnn|Gandhi et al. proposed the Video-RNN model|17759e0c2db74c36a0cd93f6f905dbaf
+vt model|hein et al.|Hein et al. proposed the VT model|17759e0c2db74c36a0cd93f6f905dbaf
+voe accuracy scores|evaluation tasks|VoE accuracy scores on all evaluation tasks are compared|17759e0c2db74c36a0cd93f6f905dbaf
+results|errors|The errors for all evaluations are reported|17759e0c2db74c36a0cd93f6f905dbaf
+mean prediction error|results|The mean prediction error results are reported in the Appendix|17759e0c2db74c36a0cd93f6f905dbaf
+model|mean prediction error|The model was evaluated using the mean prediction error|28015c79a8364f039987e5889d1fef9a
+model|results|The model achieves state-of-the-art results on three out of five tasks|28015c79a8364f039987e5889d1fef9a
+model|irene|IRENE achieves state-of-the-art results on five out of nine tasks|28015c79a8364f039987e5889d1fef9a
+irene|t-tests|t-tests were conducted to compare IRENE’s performance with the baselines|28015c79a8364f039987e5889d1fef9a
+irene|results|All results were significant with only two exceptions|28015c79a8364f039987e5889d1fef9a
+irene|bib task|IRENE's performance was compared with BIB Task|28015c79a8364f039987e5889d1fef9a
+irene|table 2|Table 2 shows VoE accuracy for ablated versions of IRENE|28015c79a8364f039987e5889d1fef9a
+lstm|transformer|LSTM makes use of an LSTM context encoder instead of the transformer|28015c79a8364f039987e5889d1fef9a
+gcn|graphsage|GCN substitutes GraphSAGE with GCN layers|28015c79a8364f039987e5889d1fef9a
+local|relational graphs|Local takes as input relational graphs with only local directional relations|28015c79a8364f039987e5889d1fef9a
+remote|input|Remote takes as input relational graphs|28015c79a8364f039987e5889d1fef9a
+local|relational graphs|Local takes as input relational graphs with only local directional relations|aebe3292ec584df397a00d2175ac5224
+remote|relational graphs|Remote takes as input relational graphs with only remote directional relations|aebe3292ec584df397a00d2175ac5224
+irene|multi-agent|IRENE dramatically outperforms the other models in the Multi-Agent task|aebe3292ec584df397a00d2175ac5224
+irene|instrumental blocking barrier|IRENE improves by 30 % on the previous best score in the Instrumental Blocking Barrier sub-task|aebe3292ec584df397a00d2175ac5224
+irene|efficiency irrational agent|IRENE outperforms BC-MLP by 16 % in the Efficiency Irrational Agent task|aebe3292ec584df397a00d2175ac5224
+irene|video-rnn|IRENE improves over the previous best score (Video-RNN) by 48.9 % in the Multi-Agent task|aebe3292ec584df397a00d2175ac5224
+irene|vt|IRENE improves by 30 % on the previous best score (VT) in the Instrumental Blocking Barrier sub-task|aebe3292ec584df397a00d2175ac5224
+irene|bc-mlp|IRENE outperforms BC-MLP by 16 % in the Efficiency Irrational Agent task|aebe3292ec584df397a00d2175ac5224
+irene|path control|Similar to the baseline methods, our model performs well on the Path Control sub-task|aebe3292ec584df397a00d2175ac5224
+irene|time control|Remarkably, the score on the Time Control sub-task is perfect|aebe3292ec584df397a00d2175ac5224
+irene|efficient action|This results in an improvement in the Efficient Action task of 6.6 % with respect to the previous best model (BC-MLP)|aebe3292ec584df397a00d2175ac5224
+irene|preference|Our model struggles the most in the Preference (48.5) task|aebe3292ec584df397a00d2175ac5224
+irene|instrumental action|Our model struggles the most in the Instrumental Action tasks (average 71.5)|aebe3292ec584df397a00d2175ac5224
+irene|ablation studies|To investigate how different components of our method contribute to these performance improvements, we performed a series of ablation studies summarised in Table 2|aebe3292ec584df397a00d2175ac5224
+irene|graph relations|We trained IRENE on graphs whose edges represent only local or remote directional relations|aebe3292ec584df397a00d2175ac5224
+irene|graphs|IRENE is trained on graphs|071112cd95e94bb7bf3ff045a0ce6730
+edges|local directional relations|edges represent only local directional relations|071112cd95e94bb7bf3ff045a0ce6730
+local directional relations|performance|using only local directional relations, the performance on the Multi-Agent and Efficiency Irrational Agent tasks improved|071112cd95e94bb7bf3ff045a0ce6730
+local directional relations|performance|performance on other tasks became worse, especially in the Time and Path Control sub-tasks|071112cd95e94bb7bf3ff045a0ce6730
+local relations|nodes|using only local relations alone leaves many nodes isolated|071112cd95e94bb7bf3ff045a0ce6730
+remote relations|performance|using only remote relations, performance is comparable to the original model except for Multi-Agent, which is at chance level|071112cd95e94bb7bf3ff045a0ce6730
+remote relations|final scores|remote relations contribute more to the final scores than local ones|071112cd95e94bb7bf3ff045a0ce6730
+state encoder|graphsage layers|We replaced the GraphSAGE layers with GCN layers in the state encoder|071112cd95e94bb7bf3ff045a0ce6730
+resulting model|worse scores|The resulting model achieved considerably worse scores in the Multi-Agent, Inaccessible Goal, Instrumental No Barrier and Blocking Barrier (sub-)tasks|071112cd95e94bb7bf3ff045a0ce6730
+graphsage|obstacles|GraphSAGE is more effective for modelling obstacles|071112cd95e94bb7bf3ff045a0ce6730
+graphsage|obstacles|GraphSAGE is more effective for modelling obstacles|fbec54537d804e03bcdfcb443afc5133
+graphsage|blocking barriers|GraphSAGE is key for our model to better understand the role of blocking barriers|fbec54537d804e03bcdfcb443afc5133
+graphsage|preferences|GraphSAGE is key for our model to bind preferences to specific agents|fbec54537d804e03bcdfcb443afc5133
+transformer encoder|lstm|transformer encoder was replaced with an LSTM|fbec54537d804e03bcdfcb443afc5133
+lstm|performance|Performance remained mostly unchanged except for specific tasks|fbec54537d804e03bcdfcb443afc5133
+graphsage|transformer|good performance on the Multi-Agent task can be obtained only by including both GraphSAGE and a transformer|fbec54537d804e03bcdfcb443afc5133
+bib|improving performance|Prior work on the BIB has focused on improving performance|fbec54537d804e03bcdfcb443afc5133
+training tasks|evaluation performance|influence of training tasks on evaluation performance|fbec54537d804e03bcdfcb443afc5133
+training tasks|evaluation performance|The influence of training tasks on evaluation performance is investigated.|4993531dd89d4794b0aea4d5521d04cb
+irene|training tasks|IRENE is trained on the four individual tasks and all of their possible combinations.|4993531dd89d4794b0aea4d5521d04cb
+training tasks|performance scores|Training only on a subset of tasks generally leads to a decrease in performance.|4993531dd89d4794b0aea4d5521d04cb
+irene|knowledge|IRENE is effective in extracting and combining knowledge gained from different training tasks.|4993531dd89d4794b0aea4d5521d04cb
+inaccessible goal task|instrumental action task|The score on the Inaccessible Goal task is worse (77.7) while the one on the Instrumental Action task is better (80.4)|0e26006c1e9347c7913cb91edfeb4c1a
+inaccessible goal task|no barrier|In which blocking barriers are absent or irrelevant: No Barrier (84.8)|0e26006c1e9347c7913cb91edfeb4c1a
+inaccessible goal task|inconsequential barrier|In which blocking barriers are absent or irrelevant: Inconsequential Barrier (92.7)|0e26006c1e9347c7913cb91edfeb4c1a
+s|no barrier|Training on S improved scores both on the No Barrier sub-task|0e26006c1e9347c7913cb91edfeb4c1a
+s|inconsequential barrier|Training on S improved scores on the Inconsequential Barrier sub-tasks|0e26006c1e9347c7913cb91edfeb4c1a
+m|multi-agent task|When training on M, performance on the Multi-Agent task is considerably worse|0e26006c1e9347c7913cb91edfeb4c1a
+p|preference task|Training on P does not lead to improvements in the Preference task|0e26006c1e9347c7913cb91edfeb4c1a
+irene|p|When IRENE is trained on P and M but not on I (i.e. MPS, MP), performance on Multi-Agent is good|0e26006c1e9347c7913cb91edfeb4c1a
+irene|multi-agent|When IRENE is trained on P and M but not on I (i.e. MPS, MP), performance on Multi-Agent is good|0e26006c1e9347c7913cb91edfeb4c1a
+multi-agent|preference task|Performance on the Preference task remains unchanged, it degrades notably for Multi-Agent|0e26006c1e9347c7913cb91edfeb4c1a
+multi-agent|inaccessible goal|It degrades notably for Multi-Agent, Inaccessible Goal, and Efficient Action in most cases|0e26006c1e9347c7913cb91edfeb4c1a
+s|instrumental action|The score on the Instrumental Action task increased for selected combinations of training tasks (MPS, PS, MS, S), especially in MS and S|0e26006c1e9347c7913cb91edfeb4c1a
+infants' looking times|stojni´c et al. (2023)|Comparison between the z-scored means of infants’ looking times as collected by Stojni´c et al. (2023)|9ac178ed664841289367c95efc787a71
+our model’s expectations|infants|our model’s expectations generally align with those of the infants, specifically for the Inaccessible Goal, Efficient Action, Inefficient Action, and Instrumental Action tasks|9ac178ed664841289367c95efc787a71
+irene|the state of the art|IRENE outperforms the state of the art for three out of five reasoning tasks on the challenging Baby Intuitions Benchmark|9ac178ed664841289367c95efc787a71
+irene|existing models (gandhi et al. 2021; hein and diepold 2022)|IRENE relies less on heuristics, such as directly moving towards the goal object compared to existing models|9ac178ed664841289367c95efc787a71
+irene|heuristics|IRENE relies less on heuristics, such as directly moving towards the goal object.|840e3f8dde594de98106eb4e9209a07a
+models|instrumental action tasks|models that did not learn the role of barriers during training apply a simple heuristic – i.e. directly moving towards the goal object – that works on the Instrumental No Barrier and Inconsequential Barrier sub-tasks but not on the more challenging Blocking Barrier sub-task.|840e3f8dde594de98106eb4e9209a07a
+irene|complex tasks|IRENE has proven to be effective in handling complex tasks that cannot be tackled by heuristics alone.|840e3f8dde594de98106eb4e9209a07a
+models|reward hacking|resonates with the well known problem of reward hacking in deep reinforcement learning (Amodei et al. 2016).|840e3f8dde594de98106eb4e9209a07a
+irene|path control and time control sub-tasks|IRENE also obtains near-perfect or perfect scores on the Path Control and Time Control sub-tasks, demonstrating that it can effectively find the shortest path to an object goal.|840e3f8dde594de98106eb4e9209a07a
+irene|efficient action task|The improved score on the Efficient Action task suggests that IRENE can also better model rational agents’ behaviour.|840e3f8dde594de98106eb4e9209a07a
+irene|rational agents|IRENE can better model rational agents’ behaviour|735549bdc64b4041a7f31c1efb7619ed
+rational agents|efficient|Rational agents move efficiently towards their goal|735549bdc64b4041a7f31c1efb7619ed
+rational agents|irrational agents|Rational agents are distinguished from irrational agents|735549bdc64b4041a7f31c1efb7619ed
+irene|irrational agent|IRENE z-scored mean is the closest to the infants’|735549bdc64b4041a7f31c1efb7619ed
+graphsage|agent and world state encoding|GraphSAGE performs well thanks to inductivity: learning an aggregator allows the model to effectively generate embeddings for nodes|735549bdc64b4041a7f31c1efb7619ed
+transformer|lstm limitations|The non-sequential nature of the transformer together with its self-attention mechanism allow it to overcome LSTM limitations|735549bdc64b4041a7f31c1efb7619ed
+irene|training tasks|IRENE performs best when trained on all training tasks|735549bdc64b4041a7f31c1efb7619ed
+gandhi et al. (2021)|training tasks|Gandhi et al. (2021) have argued that models have to combine knowledge from different training tasks|735549bdc64b4041a7f31c1efb7619ed
+irene|blocking barriers|IRENE does not perform better on all tasks due to a lack of knowledge of blocking barriers|59816d13753347e0a5f7c98a9344679a
+irene|complementary basic concepts|To fully solve the BIB tasks, it may also be necessary to learn complementary basic concepts, such as from intuitive physics|59816d13753347e0a5f7c98a9344679a
+intuitive psychology|lack of accessible and well-maintained benchmarks|Advances in intuitive psychology are currently slowed down by the lack of accessible and well-maintained benchmarks|59816d13753347e0a5f7c98a9344679a
+agent|lack of accessible and well-maintained benchmarks|We would have liked to evaluate our model on AGENT – that covers an interesting environment and complementary set of challenging reasoning tasks – but AGENT does not provide any benchmark or model code|59816d13753347e0a5f7c98a9344679a
+general neural common-sense reasoners|designing and creating new benchmarks|There is an urgent need for the community to design and create new benchmarks to foster the development of “general neural common-sense reasoners”|59816d13753347e0a5f7c98a9344679a
+irene|neural network|IRENE is a novel neural network for reasoning about agents’ goals, preferences, and actions|657d451bc96a43f79a5d6022139297c4
+irene|agents’ goals|IRENE is for reasoning about agents’ goals, preferences, and actions|657d451bc96a43f79a5d6022139297c4
+irene|preferences|IRENE is for reasoning about agents’ goals, preferences, and actions|657d451bc96a43f79a5d6022139297c4
+irene|actions|IRENE is for reasoning about agents’ goals, preferences, and actions|657d451bc96a43f79a5d6022139297c4
+irene|baby intuitions benchmark|IRENE sets new state-of-the-art on three out of five tasks on the Baby Intuitions Benchmark|657d451bc96a43f79a5d6022139297c4
+irene|knowledge|IRENE demonstrated the effectiveness of combining knowledge gained during training for unseen evaluation tasks|657d451bc96a43f79a5d6022139297c4
+m. bortoletto|a. bulling|M. Bortoletto and A. Bulling were funded by the European Research Council (ERC) under the European Union’s Horizon 2020 research and innovation programme under grant agreement No 801708|657d451bc96a43f79a5d6022139297c4
+l. shi|deutsche forschungsgemeinschaft|L. Shi was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Germany’s Excellence Strategy – EXC 2075 – 390740016|657d451bc96a43f79a5d6022139297c4
+denisov|hsiu-yu yang|Both are mentioned in the same sentence, indicating a potential relationship|8d9b2229f32e47ca9b64b91a90f62d44
+denisov|ekta sood|Both are mentioned in the same sentence, indicating a potential relationship|8d9b2229f32e47ca9b64b91a90f62d44
+denisov|manuel mager|Both are mentioned in the same sentence, indicating a potential relationship|8d9b2229f32e47ca9b64b91a90f62d44
+hsiu-yu yang|ekta sood|Both are mentioned in the same sentence, indicating a potential relationship|8d9b2229f32e47ca9b64b91a90f62d44
+hsiu-yu yang|manuel mager|Both are mentioned in the same sentence, indicating a potential relationship|8d9b2229f32e47ca9b64b91a90f62d44
+ekta sood|manuel mager|Both are mentioned in the same sentence, indicating a potential relationship|8d9b2229f32e47ca9b64b91a90f62d44
+ann-sophia|denisov|Ann-Sophia is mentioned in the same context as Denisov, indicating a potential relationship|8d9b2229f32e47ca9b64b91a90f62d44
+m¨uller|constantin ruhdorfer|Both are mentioned in the same sentence, indicating a potential relationship|8d9b2229f32e47ca9b64b91a90f62d44
+behaviour|mindblindness|The concept of 'Behaviour' is discussed in the context of the book 'Mindblindness: An Essay on Autism and Theory of Mind' by Baron-Cohen, S.|4be2205b1adc45f78f038d52b55dbdf5
+simulation|physical scene understanding|The concept of 'Simulation' is related to 'Physical scene understanding' as discussed in the paper 'Simulation as an engine of physical scene understanding' by Battaglia, P. W.; Hamrick, J. B.; and Tenenbaum, J. B.|4be2205b1adc45f78f038d52b55dbdf5
+abductive commonsense reasoning|learning representations|The concept of 'Abductive Commonsense Reasoning' is discussed in the context of the paper 'Abductive Commonsense Reasoning' presented at the 8th International Conference on Learning Representations, ICLR 2020.|4be2205b1adc45f78f038d52b55dbdf5
+piqa|physical commonsense in natural language|The concept of 'PIQA' is related to 'Reasoning about Physical Commonsense in Natural Language' as discussed in the paper 'PIQA: Reasoning about Physical Commonsense in Natural Language' by Bisk, Y.; Zellers, R.; Bras, R. L.; Gao, J.; and Choi, Y.|4be2205b1adc45f78f038d52b55dbdf5
+teachers’ extent of the use of particular task types in mathematics|mathematics education research group of australasia|The concept of 'Teachers’ Extent of the Use of Particular Task Types in Mathematics' is discussed in the context of the paper 'Teachers’ Extent of the Use of Particular Task Types in Mathematics and Choices behind That Use' by Clarke, D.; and Roche, A.|4be2205b1adc45f78f038d52b55dbdf5
+fast and accurate deep network learning|exponential linear units|The concept of 'Fast and Accurate Deep Network Learning' is related to 'Exponential Linear Units' as discussed in the paper 'Fast and Accurate Deep Network Learning by Exponential Linear Units (ELUs)' by Clevert, D.-A. ; Unterthiner, T.; and Hochreiter, S.|4be2205b1adc45f78f038d52b55dbdf5
+deep network learning|exponential linear units (elus)|ELUs is a technique used in deep network learning for more accurate results.|392e44dde13a4d9f8a15d1d44f8b70ea
+human-robot collaboration|commonsense reasoning|Commonsense reasoning is essential for effective human-robot collaboration in smart manufacturing contexts.|392e44dde13a4d9f8a15d1d44f8b70ea
+modeling violation-of-expectation|physical reasoning|Modeling violation-of-expectation is important in understanding physical reasoning across different event categories.|392e44dde13a4d9f8a15d1d44f8b70ea
+cognitron|self-organizing multi-layered neural network|Cognitron is a type of self-organizing multi-layered neural network, as described in the Biological Cybernetics journal.|392e44dde13a4d9f8a15d1d44f8b70ea
+baby intuitions benchmark (bib)|discerning the goals, preferences, and actions of others|BIB is a benchmark for discerning the goals, preferences, and actions of others, as discussed in the Advances in Neural Information Processing Systems.|392e44dde13a4d9f8a15d1d44f8b70ea
+intentional stance|12 months of age|Taking the intentional stance is observed in infants at 12 months of age, according to the Cognition journal.|392e44dde13a4d9f8a15d1d44f8b70ea
+learning in graph domains|model for learning|The new model for learning in graph domains was presented at the IEEE International Joint Conference on Neural Networks.|392e44dde13a4d9f8a15d1d44f8b70ea
+inductive representation learning|large graphs|Inductive representation learning is applied to large graphs, as discussed in the Advances in Neural Information Processing Systems.|392e44dde13a4d9f8a15d1d44f8b70ea
+comparing intuitions|agents’ goals, preferences and actions in human infants|The comparison of intuitions about agents' goals, preferences, and actions in human infants is a topic of interest in the given context.|392e44dde13a4d9f8a15d1d44f8b70ea
+hein, a.|diepold, k.|Authors of the paper 'Comparing Intuitions about Agents’ Goals, Preferences and Actions in Human Infants and Video Transformers'|f083f375579944f58454a879c7ea6e4d
+hendrycks, d.|gimpel, k.|Authors of the paper 'Gaussian Error Linear Units (GELUs)'|f083f375579944f58454a879c7ea6e4d
+huang, l.|le bras, r.|Authors of the paper 'Cosmos QA: Machine Reading Comprehension with Contextual Commonsense Reasoning'|f083f375579944f58454a879c7ea6e4d
+bhagavatula, c.|choi, y.|Authors of the paper 'Cosmos QA: Machine Reading Comprehension with Contextual Commonsense Reasoning'|f083f375579944f58454a879c7ea6e4d
+jiang, z.|minervini, p.|Authors of the paper 'Grid-to-Graph: Flexible Spatial Relational Inductive Biases for Reinforcement Learning'|f083f375579944f58454a879c7ea6e4d
+jiang, m.|rockt¨aschel, t.|Authors of the paper 'Grid-to-Graph: Flexible Spatial Relational Inductive Biases for Reinforcement Learning'|f083f375579944f58454a879c7ea6e4d
+mccarthy, j.||Author of the paper 'Artificial Intelligence, Logic and Formalizing Common Sense'|f083f375579944f58454a879c7ea6e4d
+mota, t.|sridharan, m.|Authors of the paper 'Commonsense Reasoning and Knowledge Acquisition to Guide Deep Learning on Robots'|f083f375579944f58454a879c7ea6e4d
+vaswani, a.|shazeer, n.|Authors of the paper 'Attention Is All You Need'|f083f375579944f58454a879c7ea6e4d
+parmar, n.|uszkoreit, j.|Authors of the paper 'Attention Is All You Need'|f083f375579944f58454a879c7ea6e4d
+jones, l.|gomez, a. n.|Authors of the paper 'Attention Is All You Need'|f083f375579944f58454a879c7ea6e4d
+kaiser, ł.|polosukhin, i.|Authors of the paper 'Attention Is All You Need'|f083f375579944f58454a879c7ea6e4d
+attention is all you need|advances in neural information processing systems, 30|The first concept is the title of a paper published in the Advances in Neural Information Processing Systems, 30.|2e4d3951a4884395a354f2d1747cbe25
+benchmarking progress to infant-level physical reasoning in ai|transactions on machine learning research|The first concept is the title of a paper published in the Transactions on Machine Learning Research.|2e4d3951a4884395a354f2d1747cbe25
+clevrer: collision events for video representation and reasoning|international conference on learning representations|The first concept is the title of a paper presented at the International Conference on Learning Representations.|2e4d3951a4884395a354f2d1747cbe25
+hellaswag: can a machine really finish your sentence?|proceedings of the 57th annual meeting of the association for computational linguistics|The first concept is the title of a paper presented in the Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics.|2e4d3951a4884395a354f2d1747cbe25
+solving the baby intuitions benchmark with a hierarchically bayesian theory of mind|robotics: science and systems workshop on social intelligence in humans and robots|The first concept is the title of a paper presented at the Robotics: Science and Systems Workshop on Social Intelligence in Humans and Robots.|2e4d3951a4884395a354f2d1747cbe25
+rectified linear units improve restricted boltzmann machines|international conference on machine learning|The first concept is the title of a paper presented at the International Conference on Machine Learning.|2e4d3951a4884395a354f2d1747cbe25
+intuitions about support in 4.5-month-old infants|cognition, 47(2): 121–148|The first concept is the title of a paper published in Cognition, volume 47, issue 2, pages 121–148.|2e4d3951a4884395a354f2d1747cbe25
+video transformer network|proceedings of the|The first concept is the title of a paper presented in the Proceedings of the conference/workshop.|2e4d3951a4884395a354f2d1747cbe25
+video transformer network|ieee/cvf international conference on computer vision|Presented at|c0b80dd2f5e44ceeae98b45ab138ca77
+probing physics knowledge using tools from developmental psychology|arxiv preprint arxiv:1804.01128|Published in|c0b80dd2f5e44ceeae98b45ab138ca77
+intuitive physics learning in a deep-learning model inspired by developmental psychology|nature human behaviour|Published in|c0b80dd2f5e44ceeae98b45ab138ca77
+machine theory of mind|international conference on machine learning|Presented at|c0b80dd2f5e44ceeae98b45ab138ca77
+intphys: a framework and benchmark for visual intuitive physics reasoning|ieee transactions on pattern analysis and machine intelligence|Published in|c0b80dd2f5e44ceeae98b45ab138ca77
+winogrande: an adversarial winograd schema challenge at scale|communications of the acm|Published in|c0b80dd2f5e44ceeae98b45ab138ca77
+social iqa: commonsense reasoning about social interactions|proceedings of the 2019 conference on empirical methods in natural language processing and the 9th international joint conference on natural language pro|Presented at|c0b80dd2f5e44ceeae98b45ab138ca77
+natural language processing|international joint conference on natural language processing|The International Joint Conference on Natural Language Processing is related to the field of Natural Language Processing|ca1477347c6e4bc4829ec9db748ceacc
+graph convolutional networks|relational data|Graph Convolutional Networks are used for modeling Relational Data|ca1477347c6e4bc4829ec9db748ceacc
+agent|core psychological reasoning|AGENT is a Benchmark for Core Psychological Reasoning|ca1477347c6e4bc4829ec9db748ceacc
+intuitive physics|coarse probabilistic object representations|Modeling Expectation Violation in Intuitive Physics involves Coarse Probabilistic Object Representations|ca1477347c6e4bc4829ec9db748ceacc
+commonsense psychology|human infants and machines|Commonsense psychology is studied in the context of human infants and machines|ca1477347c6e4bc4829ec9db748ceacc
