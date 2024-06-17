@@ -1,0 +1,221 @@
+node,group
+2d grid worlds,1
+two-player game,1
+3 cars,2
+4 cars,2
+accelerate,2
+accuracy,2
+accurate,2
+action,2
+action prediction,2
+action prediction accuracy,2
+actions,2
+adjusts,2
+agent,2
+agent i,2
+agent j,2
+agents,2
+agents' behavior,2
+ai systems,2
+alice,2
+amortized inference,2
+"approximate the posterior belief bt i,ℓ",2
+autonomous agents,2
+belief,2
+belief bt,2
+beliefs,2
+block,2
+bluffing,2
+bob,2
+brake,2
+branch,2
+car,2
+carlo,2
+cars,2
+certainty,2
+communication,2
+comparison,2
+complex domains,2
+complex multi-agent interactions,2
+computational complexity,2
+confidence,2
+construction environment,2
+conventional methods,2
+cooperative inverse reinforcement learning (cirl),2
+crashing,2
+domain,2
+driver,2
+ego agent,2
+ei,2
+end-to-end methods,2
+end-to-end model,2
+environment,2
+episode,2
+episodes,2
+evaluation,2
+exact inference,2
+experiment,2
+experimental results,2
+experiments,2
+factorization,2
+figure 8c,2
+generalizability,2
+generalization testing sets,2
+generative model,2
+gmytrasiewicz and doshi (2005),2
+goal,2
+goal inference,2
+green,2
+green's action,2
+han and gmytrasiewicz,2
+high-order social inference,2
+honking,2
+human-robot cooperation,2
+humans,2
+hypotheses,2
+i) 4 cars,2
+i-pomdp,2
+i-pomdp model,2
+ii) 3 cars with inattentive driver,2
+importance sampling,2
+importance sampling at every step,2
+importance sampling at every time step,2
+importance weight,2
+inattentive driver,2
+inference,2
+information,2
+interactive partially observable markov decision making process (i-pomdp),2
+interactive partially observable markov decision process (i-pomdp),2
+interactive state,2
+kl-divergence,2
+level,2
+level-1 agent policy,2
+level-2 reasoning,2
+level-ℓ,2
+lower level inference,2
+meta-learning,2
+method,2
+"method (ours) against ei, tomnet, and ours-nn",2
+method's prediction,2
+methods,2
+mind,2
+model,2
+model-based methods,2
+multi-agent interaction,2
+multi-agent interaction domains,2
+multi-agent interactions,2
+multi-agent nested reasoning,2
+multi-agent system,2
+multi-agent systems,2
+nested goal and belief inference,2
+nested multi-agent reasoning,2
+nested reasoning,2
+nested reasoning between multi-agents,2
+network,2
+neural networks,2
+neurally-guided procedural models,2
+observation,2
+observations,2
+observer,2
+ours,2
+ours-nn,2
+particle,2
+particle sampling,2
+particles,2
+planner,2
+planning,2
+pomdp,2
+posterior,2
+prior,2
+probabilistic programs,2
+real-world social reasoning,2
+reasoning,2
+recognition distribution,2
+recognition model,2
+recognition networks,2
+recogniton model,2
+recursive inference,2
+recursive nature,2
+red,2
+rotate left,2
+rotate right,2
+s0,2
+s1,2
+s2,2
+samples,2
+sampling procedure,2
+sequential monte carlo,2
+set,2
+social inference,2
+state inference,2
+states,2
+step,2
+steps,2
+teaching,2
+testing episodes,2
+theory of mind reasoning,2
+tomnet,2
+tomnet’s accuracy,2
+traffic,2
+training,2
+training set,2
+training sets,2
+uncertainty estimation,2
+uncertainty in inference,2
+understanding,2
+user needs to infer,2
+weighted samples,2
+world state,2
+yellow and teal blocks,2
+3 normal cars condition,3
+9 particles,3
+averaged action prediction accuracy,3
+efficiency of nested reasoning,3
+generalization evaluation results,3
+green infers red’s goal and belief,3
+lack of robust nested reasoning,3
+model inference,3
+models trained with 3 cars controlled by normal drivers,3
+neural amortized inference approach,3
+our method,3
+progress of an episode,3
+uncertainty in its inference,3
+accelerating probabilistic inference,4
+bayesian theory of mind,4
+cross-entropy loss,4
+data-driven proposals,4
+ei performance,4
+generative models,4
+i-pomdp formulation,4
+interactive partially observable markov decision process,4
+level-1 goal inference,4
+level-2 goal inference,4
+model-based reasoning,4
+neural amortized inference,4
+proposal distribution,4
+recognition network,4
+uniform distribution,4
+baker,5
+ullman,5
+bayesian models,6
+social goal inference,6
+behavior in groups,7
+theory of minds,7
+conference on robot learning,8
+pmlr,8
+darpa machine common sense program,9
+onr muri n00014-13-1-0333,9
+data generation,10
+training data,10
+drivers,11
+driving domain,11
+exact solutions,12
+interactive pomdps,12
+figure 10,13
+online action pre,13
+grant,14
+lockheed martin,14
+international conference on machine learning,15
+machine theory of mind,15
+recursive mdps,16
+social interactions,16
