@@ -1,0 +1,814 @@
+AbstractSpiking neural networks (SNNs) exploit neural spikes to pro-
+vide solutions for low-power intelligent applications on neu-
+romorphic hardware. Although SNNs have high computa-
+tional efficiency due to spiking communication, they still lack
+resistance to adversarial attacks and noise perturbations. In
+the brain, neuronal responses generally possess stochastic-
+ity induced by ion channels and synapses, while the role
+of stochasticity in computing tasks is poorly understood.
+Inspired by this, we elaborate a stochastic gating spiking
+neural model for layer-by-layer spike communication, in-
+troducing stochasticity to SNNs. Through theoretical anal-
+ysis, our gating model can be viewed as a regularizer that
+prevents error amplification under attacks. Meanwhile, our
+work can explain the robustness of Poisson coding. Exper-
+imental results prove that our method can be used alone
+or with existing robust enhancement algorithms to improve
+SNN robustness and reduce SNN energy consumption. We
+hope our work will shed new light on the role of stochas-
+ticity in the computation of SNNs. Our code is available at
+https://github.com/DingJianhao/StoG-meets-SNN/.IntroductionAs a representative of low-energy neural network systems,
+spiking neural networks (SNN) are being studied by re-
+searchers from the perspective of deep learning (Maass
+1997; Zenke et al. 2021; Xu et al. 2022; Shen et al. 2023).
+While traditional artificial neural networks (ANN) use float-
+point values to simulate the rate coding of biological neu-
+rons, SNNs take a different approach by directly commu-
+nicating through spike sequences, offering a simplified rep-
+resentation of the intricate dynamics of the biological sys-
+tem (Gerstner et al. 2014). This simplification presents a
+remarkable advantage for SNNs, enabling them to carry
+out computations on neuromorphic hardware with high ef-
+ficiency (DeBole et al. 2019; Pei et al. 2019). Behind the ad-
+vantage is the impact that the simplified SNN gradually ap-
+proaches ANN in terms of computing capability, and does
+not exhibit the huge advantage of high robustness shown
+by the biological nervous system. Nonetheless, researchers
+continue to explore and refine SNNs, aiming to bridge the*Corresponding authorCopyright © 2024, Association for the Advancement of Artificial
+Intelligence (www.aaai.org). All rights reserved.Figure 1: Diagram of spiking neurons with stochastic gating
+in neuronal synapses and ion channels.gap between the computational capabilities of SNNs and the
+robustness observed in biological neural systems.Typical application scenarios for SNNs include robotic
+control (Bing et al. 2018) and autonomous driving (Ya-
+mazaki et al. 2022), where reliable perception is safety-
+critical. Malicious attacks can make neural networks give
+wrong predictions (Goodfellow, Shlens, and Szegedy 2015;
+Szegedy et al. 2014). These attacks are usually constructed
+from derivatives that are automatically differentiated. While
+SNNs possess the potential for improved robustness com-
+pared to their traditional counterparts (Sharmin et al. 2020),
+they are not immune to attacks due to their training with
+surrogate functions (Wu et al. 2018). Recent research has
+shown that SNNs can still be susceptible to adversarial at-
+tacks, emphasizing the need to understand and enhance their
+robustness against such threats (Liang et al. 2023; Sharmin
+et al. 2019). Consequently, the quest for understanding and
+improving the robustness of SNNs has become a critical and
+pressing issue in the field (Liang et al. 2022). In order to un-
+leash the potential invulnerability of SNN from adversarial
+attacks and ensure their reliability and safety in real-world
+applications, researchers are actively exploring innovative
+techniques and strategies. At present, leading studies mainly
+consider how to use the wisdom of generalization on toxic
+samples for defense (Kundu, Pedram, and Beerel 2021), andstay at the discussion of simplified neurons, which is still far
+from the nature of human perception.Stochasticity is pervasive in biological coding. At present,
+using stochasticity to improve the robustness of SNN has be-
+come a feasible solution. Sharmin et al. stated that Poisson
+coding sampling data from a Bernoulli distribution could
+help SNN improve robustness (Sharmin et al. 2020). This
+method has been applied to text classification (Lv, Xu, and
+Zheng 2023) and sparked a discussion about the robustness
+of the encoding methods (Kim et al. 2022). At the same time,
+Li et al. believed that SNNs with inherent noise are more ro-
+bust to input noise than ANNs (Li et al. 2020). The robust-
+ness verification of the above works is mainly carried out
+experimentally, lacking a theoretical explanation. For bio-
+logical systems, the role of noise is more complex. Faisal et
+al. reviewed the function of noise at the cellular level. How
+much these noises contribute beneficially to neuronal pro-
+cessing is the fundamental problem of neural coding (Faisal,
+Selen, and Wolpert 2008). Thus, how to introduce meaning-
+ful stochasticity to provide robustness for deep SNNs be-
+comes our primary motivation. In synapses, the transmis-
+sion of neurotransmitters and the opening and closing of ion
+channels are both stochastic, which provoke noise to signals
+and are believed to improve temporal representation (White,
+Rubinstein, and Kay 2000). Inspired by this, we propose a
+stochastic gating model to improve robustness. Our main
+contributions are summarized as follows:
+• We propose a stochastic gating model for spike transmis-
+sion between layers in SNNs. This model functions sim-
+ilarly to synapses by filtering spikes, while also introduc-
+ing stochasticity to the network.• We theoretically demonstrate that our gating model is
+equivalent to a regularizer through the Taylor expansion
+of adversarial loss, allowing us to regulate the robustness
+of SNNs by controlling the probability of gate opening.
+• Theoretical findings indicate that our model can be
+equivalent to reducing the Lipschitz constant of SNN,
+thereby preventing error amplification. Besides, the gat-
+ing model can be equivalent to Poisson coding, helping
+to explain why Poisson coding can promote robustness.
+• Experimental results validate that our method can effec-
+tively improve the robustness of SNN, and can be used
+in conjunction with adversarial training and weight reg-
+ularization techniques. Moreover, our approach also of-
+fers the additional benefit of reducing energy consump-
+tion during SNN inference.Related WorkintrainingemergedalgorithmsSupervised
+recent
+years (Sengupta et al. 2019; Zhou et al. 2021; Duan
+et al. 2022) influence SNN-specific attack methods (Kundu,
+Pedram, and Beerel 2021; Liang et al. 2023). Early training
+development is ANN-to-SNN conversion, which uses the
+characteristics that ANN activation can simulate the firing
+rate of SNN (Ding et al. 2021; Bu et al. 2022a,b; Hu
+et al. 2023; Hao et al. 2023). Sharmin et at. conducted
+conversion-based attacks by generating an ANN with
+weights identical to an SNN and producing perturbationwith ReLU activation. Another popular progress in SNN
+learning is backpropagation through time (BPTT) due to
+its high scalability and performance (Neftci, Mostafa, and
+Zenke 2019; Wu et al. 2018, 2021). BPTT overcomes the
+non-differentiable spike activation problem using surrogate
+functions. Liang et al. successfully constructed effective
+attacks with BPTT (Liang et al. 2023). BPTT-based attacks
+have proved to be more powerful than conversion-based
+ones (Sharmin et al. 2019). Note that the training and attacks
+for possible adversarial training of SNN in this paper are all
+based on BPTT.As for SNN robustness, some works start from the com-
+putational components in SNN. El-Allami et al. proposed
+to improve robustness by searching for neuron leaky pa-
+rameters and inference time-steps (El-Allami et al. 2021).
+Kundu et al. constructed a robust weight-tuning strategy by
+training with noisy data (Kundu, Pedram, and Beerel 2021).
+Ding et al. performed Lipschitz analysis on SNN and gave
+a regularized training strategy (Ding et al. 2022). They also
+introduced a gradient approximation called BPTR that can
+also threaten SNN. Liang et al. analyzed the certified ro-
+bustness of SNN and gave the corresponding training meth-
+ods (Liang et al. 2022). These algorithms are improvements
+based on simplified LIF neurons and do not take full ad-
+vantage of biologically-inspired SNNs. Other works orig-
+inate from an explicit and ubiquitous feature of the ner-
+vous system: stochasticity. Dapello et al. explained that the
+CNN model based on V1 stochasticity could resist per-
+turbations (Dapello et al. 2020). In SNN, Poisson coding
+encodes data using Bernoulli sampling. Sharmin et al. ar-
+gued that this coding could bring perturbation immunity to
+SNNs (Sharmin et al. 2020). Kim et al. discussed the ro-
+bust superiority of Poisson coding over direct coding (Kim
+et al. 2022). The current understanding of Poisson coding is
+mainly experimental, lacking theoretical guidance. Besides,
+we have little knowledge of the performance of SNNs under
+adversarial attacks when stochasticity is imposed on the en-
+tire network. Therefore, this work tries to introduce stochas-
+ticity to SNNs and study the effect.PreliminariesSpiking Neural Networks
+Neurons in SNN simplify the biological ones into three
+key procedures: synaptic integration, first-order dynamics,
+and neuronal firing. The most commonly used model in
+the field of deep SNN is the leaky integrate-and-fire (LIF)
+model (Deng et al. 2021; Kim and Panda 2021). The overall
+modeling of the dynamics of neurons in layer l is presented
+in Eqs. 1, 2, 3 (l = 1, 2, 3,··· , L).ml = W lsl−1 (t)ul (t) = λul (t − 1) ⊙(cid:0)1 − sl (t − 1)(cid:1) + ml
+sl (t) = H(cid:0)ul (t) − Vth(cid:1) .(1)
+(2)
+(3)The injected electrical signal ml is the summation of spike
+signals sl−1 from the preceding layer l−1 scaled by weights
+W l. ⊙ performs the element-wise product. The membrane
+potential ul(t) receives the injected signal and decays by theleaky factor of λ, which takes value in (0, 1]. The spike sig-
+nal is produced by comparing the membrane potential with
+Vth, which is accomplished by a Heaviside function H(·).
+After the spikes are produced for some neurons, the mem-
+brane potential of these neurons is set to 0.Adversarial Attacks for SNN with Differential
+Surrogates
+With the help of surrogate functions, backpropagation is en-
+abled in the network. The backpropagation of the gradient
+is derived by unfolding the dynamics of LIF neurons and
+applying surrogate functions to the non-differentiable Heav-
+iside function. Please refer to supplementary materials for
+detailed gradient formulations. Various surrogate functions
+have been demonstrated to be effective in previous litera-
+ture (Neftci, Mostafa, and Zenke 2019; Zheng et al. 2021).
+In this paper, we adopt the rectangular function suggested
+by (Zheng et al. 2021).The gradient-based adversarial attack scheme will look
+for a feasible attack perturbation δ in a lp-constrained neigh-
+borhood B(x, ϵ) centered on the raw data x, which can be
+expressed in Eq. 4.δ = arg max
+δ∈B(x,ϵ)L (x + δ, y) ,(4)where L is the task loss, y is the target
+label. The
+maximization problem is typically performed via several
+iterations with the support of gradient w.r.t. x, which
+have evoked many works such as Projected Gradient De-
+scent (PGD) (Madry et al. 2018), Fast Gradient Sign
+Method (FGSM) (Goodfellow, Shlens, and Szegedy 2015),
+Momentum-based Iterative Method (MIM) (Dong et al.
+2018) and so on. For SNN, researchers noted that the com-
+bination of gradient-based attacks and surrogate functions
+had posed a significant security problem to SNN (Ding et al.
+2022; Bu et al. 2023). To perform an attack on images, one
+should first encode images into sequences ς (x) = s0 where
+ς : RC×H×W → RT×C×H×W .T is the number of time-
+steps. C, H, W are the number of channel, height, and width,
+respectively. The most common coding method is to repli-
+cate x in the temporal dimension (Kim et al. 2022), such
+that the gradient w.r.t x can be worked out from the gradi-
+ent w.r.t s0 as suggested in Eq. 5. Note that we simplify the
+notation ∇xL (x, y) to ∇xL (x) in the following:∂L
+∂x= ∇xL (x, y) =1
+T∂L
+∂s0 (t).(5)XtLocal Linearization of Robust Training
+With the condition that the perturbation δ is in the neighbor-
+hood B(x, ϵ), unified modeling to the effect of perturbation
+is to measure L (x + δ) − L (x), which is the difference
+of the loss value before and after perturbation. Theoretical
+justifications typically process this difference with local lin-
+earity techniques (Qin et al. 2019), which can be expressed
+in Eq. 6:|L (x + δ) − L (x)| ⩽ |δ ⊙ ∇xL (x)|1 + g (δ, x) ,(6)where g (δ, x) is a residual item, |·|1 is l1 norm for vector. In
+this case, one can consider the adversarial training methods
+as minimizing the vanilla loss with a regularizer related to a
+certain attack method, which is shown in Eq. 7.minL (x + δ)
+→ minL (x) + λ|δ ⊙ ∇xL (x)|1 + µg (δ, x) ,(7)
+(8)where λ and µ are parameters. This motivates research on
+exploiting regularization methods to enhance the robust-
+ness (Kurakin, Goodfellow, and Bengio 2017; Ross and
+Doshi-Velez 2018; Roth, Kilcher, and Hofmann 2020).The situation for SNNs is slightly different from that
+for ANNs. The perturbed ˜x = x + δ is encoded to
+spike trains on which the perturbation is considered. Sup-
+pose that the input can produce spike response for layer
+l at time-step t through forward-propagation f1:l,t(·), then
+sl (t) = f1:l,t (x), ˜sl (t) = f1:l,t (˜x). The spike re-
+sponse for all
+time-steps can be represented as sl =concat(cid:0)sl (1) , sl (2) ,··· , sl (T )(cid:1) ∈ {0, 1}T×Nl where Nlis the number of neurons in layer l. Thus, when we consider
+the absolute difference of task loss w.r.t. perturbed and clean
+spike trains for layer l (∆Ll:L), similar to Eq. 6, we have:(cid:16)(cid:12)(cid:12)(cid:12)Ll:L
+(cid:0)sl(cid:1)(cid:12)(cid:12)(cid:12)
+˜sl(cid:17) − Ll:L
+(cid:12)(cid:12)(cid:12)1
+(cid:12)(cid:12)(cid:12)ξl (t) ⊙ ∇sLl:L
+(cid:0)sl(cid:1) (t)∆Ll:L =⩽ TXt=1(cid:16)ξl, sl(cid:17)(9),(10)+ gl:Lt=1(cid:16)(cid:12)(cid:12)(cid:12)1=PTξl, sl(cid:17)(cid:12)(cid:12)(cid:12)ξl (t) ⊙ ∇sLl:Lwhere the perturbation for sl follows ξl (t) = ˜sl (t)− sl (t),
+Ll:L is the loss function from layer l to the last layer, gl:L is
+the residual. As there are only items of 0 and 1 in sl(t) and
+˜sl(t), items in ξl(t) can only take values in {−1, 0, 1}. We
+denote dl:L
+as
+the item of first-order Taylor expansion of the adversarial
+loss. We emphasize the essence of this item when the loss
+function follows the local Lipschitz property such that the
+residual item can be bounded by the first-order item mul-
+tiplied by some positive value. In this case we can rewrite
+Eq. 9 as:(cid:0)sl(cid:1) (t)∆Ll:L ⩽ M dl:L(cid:16)
+ξl, sl(cid:17)
+ξl, sl(cid:17)
+(cid:0)sl(cid:1) (t) can be expressed as
+(cid:0)ul+1(cid:1) (t) according to Eqs. 1, 2. There-where M is a constant. By looking at dl:L
+,
+we can gain some insights into improving the robust-
+ness of SNNs. First, ∇sLl:L
+W l+1T∇uLl:L
+fore, by constraining the norm of W l+1, the robustness can
+be improved (Ding et al. 2022). However, the difficulty in
+doing so lies in how to design an effective regularization to
+be applied to the weights. Another straightforward and pos-
+sible solution is to reduce the strength of the perturbation
+ξl(t) by some means, which motivates this work. The ner-
+vous system has many mechanisms to regulate the informa-
+tive coding during signal transmission. The advantage of this
+solution is that the proposed model can be applied to SNN
+wherever spiking neurons or neural coding are used.(cid:16)(11),Methods: Stochastic Gating for Robust SNN
+In this section, we will introduce the proposed stochastic
+gating model (StoG) for SNN and give relevant theoreti-
+cal analysis and insights. Based on our theoretical analysis,
+a corresponding training strategy with StoG models is pro-
+posed.
+Regulating Spike Trains with Stochastic Gating
+The dynamics of LIF show that the spiking output from
+the lower layer is directly integrated into the upper layer
+input signal through weights (Eq. 1). However, in the ner-
+vous system, the stochastic release of neurotransmitters and
+the existence of voltage-gated ion channels composes a non-
+deterministic signal channel. Neuronal signal transportation
+relies on releases of synaptic vesicles and results in noisy
+ionic currents (Faisal, Selen, and Wolpert 2008; White, Ru-
+binstein, and Kay 2000). A series of complex models re-
+garding the calcium, potassium, and sodium channel gating
+have been proposed (Bicknell and Goodhill 2016; Lema and
+Auerbach 2006; Peracchia 2004). We view the nondetermin-
+istic signal channel as a gating process that can be modeled
+as a continuous-time Markov process and happens before
+spatial summation. To simplify the model, only two states
+of the channel are considered: open or closed state. Suppose
+κo;i,l and κc;i,l are values indicating the transition probabil-
+ity of opening and closing, then the distribution of open and
+closed states is given by:(cid:20) κc;i,l/ (κc;i,l + κo;i,l)¯P (i, l) ==¯Pc (i, l)κo;i,l/ (κc;i,l + κo;i,l),
+(12)
+where ¯Po (i, l) and ¯Pc (i, l) is the converged stationary prob-
+ability of open and closed states. The derivation of Eq. 12
+refers to the supplementary materials. When modeling a
+two-state gating model, we perform a Monte Carlo simula-
+tion on the stationary distribution. In the model, a param-
+eter is assigned for each neuron, indicating the probabil-
+ity of gate opening. We denote this probability as ¯P l
+o =(cid:9) where Nl is the number of neu-(cid:8) ¯Po (i, l)|i = 1, 2,··· , Nl(cid:20) ¯Po (i, l)(cid:21)(cid:21)rons. With ¯P l
+Bernoulli distribution for each discrete time-step:o, we can sample the gating vector from aGl (t) ∼ Bernoulli.(13)(cid:17)(cid:16) ¯P loThe items in G take values in 0 and 1. And the neuronalcharge in Eq. 1 can be altered to Eq. 14:Gl (t) ⊙ sl−1 (t).(14)ml = W l(cid:16)(cid:17)Capability of Linearly Resisting Perturbations
+Recall that by linearization techniques, we can obtain the
+relationship of loss, perturbation, and gradients. After ap-
+plying the perturbation, the spike signals are modulated by
+the proposed model, causing the actual perturbation to be
+indirectly modulated as well, expressed as:sl (t)ξl (t)gating−−−−→ s′l (t) = sl (t) ⊙ Gl+1 (t) ,
+′l (t) = ξl (t) ⊙ Gl+1 (t) .
+gating−−−−→ ξ(15)(16),=t=1dl:L(18)(17)(cid:16)(cid:16). And dl:Lwhere s′ replaces s in the original loss function.ξl, sl; Gl+1(cid:17)
+(cid:16)
+ξl, sl; Gl+1(cid:17)To simplify the discussion, we only analyze the changes in
+the adversarial loss when a gating model is added to the
+layer l and suppose the loss function follows the local Lips-
+chitz property. Then, the first-order expansion item dl:L and
+∆Ll:L can be rewritten as:ξl, sl(cid:17) gating−−−−→ dl:L
+ξl, sl; Gl+1(cid:17)
+(cid:16)
+(cid:12)(cid:12)(cid:12)1
+(cid:12)(cid:12)(cid:12)ξl (t) ⊙ Gl+1 (t) ⊙ ∇s′Ll:L
+TX
+(cid:0)s′l(cid:1) (t)
+ξl, sl; Gl+1(cid:17)
+(cid:16)From Eq. 11, we can know that ∆Ll:L is affected by the
+is
+constraint of dl:L
+controlled by Gl+1 (Eq. 17). Theorem 1 gives the relation-
+and Gl+1 such that by adjusting
+ship of dl:L
+¯P l+1
+Theorem 1. For neurons in layer l, suppose that sl is
+time-step t (t = 1, 2, 3,··· , T ,
+the spike response at
+l = 1, 2, 3,··· , L), ξl(t) is the vector of perturbations
+at time-step t, Gl+1 ∼ Bernoulli
+is the gat-
+ing vector. ¯P l+1
+which items take values at [0, 1]. dl:L(cid:17)
+(cid:16) ¯P l+1
+(cid:16)
+ξl, sl; Gl+1(cid:17)
+(cid:12)(cid:12)(cid:12)1
+(cid:12)(cid:12)(cid:12)ξl (t) ⊙ Gl+1 (t) ⊙ ∇s′Ll:L
+(cid:0)s′l(cid:1) (t)
+(cid:16)
+ξl, sl; Gl+1(cid:17)(cid:17) ⩽ ΩT
+(cid:16)
+NlX
+qPNlis the probability of gate opening in
+=, ∆Ll:L can be constrained.. Then, it sat-PTisfies that:G∼B( ¯Po)i=1 ∇s′Ll:L (s′l) (t)2.where Ω = max
+s′,t¯P l+1(19)dl:Lt=1i=1E,ooooThrough Theorem 1, we can realize that adding a gating
+model to SNN and adjusting the parameter ¯P l+1
+, we can
+expect to achieve linear constraints for adversarial loss, for-
+mally expressed as:o(cid:16)(cid:16)ξl, sl; Gl+1(cid:17)(cid:17)EG∼B( ¯Po)(∆Ll:L) ⩽ M EG∼B( ¯Po)dl:LooE(cid:16) ¯P l+1(cid:17) → 0, we haveWhen reducing the value of sum
+, the robustness of
+the model is expected to improve. A special case is when
+(∆Ll:L) → 0. In this
+sum
+case, no matter what perturbation is applied, the value of the
+adversarial loss will not be modified. Note that sum
+should not be too small, as this will also make the probabil-
+ity of input data passing gating low, making the signal diffi-
+cult to be transmitted. Therefore, to improve the robustness
+of SNNs, in addition to adding stochastic gating before the(cid:16) ¯P l+1G∼B( ¯Po)(cid:17)o⩽ M ΩTNlX
+(cid:16) ¯P l+1¯P l+1i=1o.(cid:17)(20)(21)synaptic transmission, an adaptive mechanism for acquiring
+gate opening probabilities is also required, which will be de-
+tailed in a joint training scheme.
+Impact on Local Lipschitz Property of Neurons
+We have considered the impact of stochastic gating from a
+global perspective through the difference between perturbed
+and clean loss. Another perspective is to consider the lo-
+cal properties of the forwarding process. Researchers have
+deduced the Lipschitz property of neural networks to illus-
+trate the problem of error amplification in the forward pro-
+cess (Cisse et al. 2017; Ding et al. 2022; Lin, Gan, and Han
+2019). Here, we can also analyze the influence of channel
+gating on the forward process. First, we select the metric of
+the two spike sequences as D(sl, ˜sl) = ∥sl − ˜sl∥2
+2, where
+∥ · ∥2
+2 in D is calculated on the spatiotemporal dimensions.
+Theorem 2 shows that in a feed-forward SNN, neurons with
+StoG models can alleviate the error amplification in layer-
+by-layer forwarding communication.
+Theorem 2. For neurons in layer l, suppose that sl and
+˜sl is the clean and perturbed spike response at time-step
+t (t = 1, 2, 3,··· , T , l = 1, 2, 3,··· , L). The metric of
+the two spike sequences is defined as D(sl, ˜sl) = ∥sl −
+˜sl∥2
+2. Nl is the number of neurons in layer l. Gl+1 ∼
+is
+Bernoulli
+the probability of gate opening in which items take values at
+[0, 1]. Vth is the threshold of neurons. Then, it satisfies that:is the gating vector for layer l. ¯P l+1oo(cid:16) ¯P l+1
+(cid:17)
+hD(sL, ˜sL)
+i
+hD(sl, ˜sl)⩽EEG∼B( ¯Po)G∼B( ¯Po) T ρj+1V 2
+thi · L−1Yj=lNjXi=1¯P j+1o(22) + C,(23)where ρl is a Lipschitz constant induced by weights for layer
+l, and C is a constant.From Theorem 2, we can find that as the signal propa-
+gates layer by layer, the influence of the perturbation is not
+only controlled by the weights but also affected by ¯P l
+o, and
+the two effects with no interference to each other. In other
+words, stochastic gating can be simultaneously applied to
+SNN with weight Lipschitz constraints.
+Poisson Coding as a Special Form of Stochastic
+Gating
+From Eq. 15, s becomes s′ after the sampling of the
+Bernoulli distribution of open probability. Interestingly,
+Poisson coding commonly used in SNN is also sampled
+by Bernoulli distribution (Diehl et al. 2015; Sharmin et al.
+2020). Compared with Eq. 15, the process of Poisson cod-
+ing can be described as:
+Poisson coding : s′0 (t) = 1 ⊙ X, X ∼ Bernoulli (x) ,
+(24)
+where X is the encoding of the input image x. s′0 repre-
+sents the output of the final Poisson coding. Poisson codingis equivalent to using x as the probability of gate opening
+¯P 1
+o in the input layer. In this case, the original s0 is an input
+that is always 1.Prior to this work, Poisson coding was considered to be
+able to bring inherent robustness to SNNs (Kim et al. 2022;
+Sharmin et al. 2019, 2020), but it is only explained exper-
+imentally. Our work shows that the robustness of Poisson
+coding also has a theoretical basis from Theorems 1 and
+2 by constructing the equivalence between Poisson coding
+and StoG model. The adversarial loss can be affected by the
+mean value of input data x.Joint Training with Stochastic Gating
+Effectively training SNNs with StoG involves two issues,
+one is how to train the parameters in StoG, and the other
+is how to penalize the StoG parameters for the purpose of
+achieving robustness.For the first issue, we use the Gumbel-Max reparam-
+eterization trick presented in (Maddison, Mnih, and Teh
+2017), and set the temperature to 0.5. When forwarding each
+layer of StoG model, we sample U ∼ Uniform (0, 1) suchthat G = H(cid:0)log(cid:0) ¯P o/(cid:0)1 − ¯P o(cid:1)(cid:1) + log U − log (1 − U )(cid:1)where H is the Heaviside function. The gradient of ¯P o is
+induced by the corresponding binary concrete random vari-
+able. Note that ¯P o cannot be too small, thus, we do not allow
+¯P o to be less than 0.1 during training.n ¯P i
+(cid:1) + γRegPFor the second issue, we consider that the training loss
+function is given by three parts, the task loss followed by
+two regularizers, which are respectively responsible for pun-ishing the weight W = (cid:8)W i, i = 1, 2, 3,··· , L − 1(cid:9) and
+o
+o, i = 1, 2, 3,··· , L − 1
+(cid:1) + βRegW (W ) .StoG parameters ¯P o =
+overall loss can be expressed as:
+L = Ltask
+(25)
+where RegP is the penalty of ¯P o, and γ is its strength.
+RegW is the penalty for the weight, and β is its strength.
+In this work, we apply l2 penalty to ¯P o.
+Experiments(cid:0)x; W , ¯P o(cid:0) ¯P o. TheExperimental Setup
+To verify the effectiveness of our method, we conduct exper-
+iments on classification tasks on the CIFAR-10 and CIFAR-
+100 datasets (Krizhevsky, Hinton et al. 2009). The SNN ar-
+chitecture used is VGG-11 (Simonyan and Zisserman 2015)
+and Wide-ResNet-16-4 (Zagoruyko and Komodakis 2016)
+(WRN-16-4 for short). The SNN accepts directly encoded
+input, and the inference time-step is 8. The experiments are
+conducted on GPU devices of the NVIDIA RTX 3090 with
+PyTorch (v1.12.1).We adopted three training strategies to determine the ef-
+fectiveness of the method. The first is a vanilla training
+scheme (BPTT), directly using raw images for training. The
+second is an adversarial training strategy, which uses sam-
+ples from white-box (WB) FGSM attacks (ϵ = 2/255) for
+training (Goodfellow, Shlens, and Szegedy 2015) (abbrevi-
+ated as AT). The third is to add a Lipschitz penalty proposedVanillaBPTT Attack Clean
+93.05
+Vanilla+StoG 91.64
+91.13
+90.13
+90.39
+88.02RAT+StoGAT+StoGRATATVanillaClean
+73.38
+Vanilla+StoG 70.44
+67.29
+66.37
+67.41
+62.26RAT+StoGAT+StoGRATATFGSM-UT
+12.63/86.44
+16.22/82.32
+41.74/54.20
+45.75/49.29
+48.46/46.39
+55.98/36.28CIFAR-10, VGG-11
+PGD-l∞-UT
+0.04/99.96
+0.28/99.69
+23.37/74.36
+27.74/69.26
+28.08/68.94
+39.58/54.86
+CIFAR-100, VGG-11
+PGD-l∞-UT
+0.04/99.95
+0.49/99.31
+11.41/83.04
+14.42/78.15
+16.52/75.49
+23.15/62.99FGSM-UT
+5.30/92.82
+8.27/88.34
+20.58/69.42
+24.45/63.03
+29.23/56.65
+33.40/46.55FGSM-RT
+28.82/71.75
+33.38/66.40
+60.37/37.47
+65.54/30.78
+63.69/33.60
+70.63/23.98FGSM-RT
+11.96/88.16
+15.93/81.54
+35.20/54.38
+40.00/45.51
+47.51/36.14
+55.95/18.10PGD-l∞-RT
+12.89/86.87
+16.97/82.67
+54.54/41.78
+59.47/36.73
+62.24/33.08
+68.52/25.35PGD-l∞-RT
+3.59/95.67
+8.57/89.17
+40.68/43.48
+41.50/42.43
+51.59/28.54
+53.40/21.45Table 1: Performance under attacks. Items in the table follow the format of “robust accuracy/ASR”. “UT” and “RT” denote
+“Untargeted” and “Random Targeted” attacks, respectively.EOT-10-
+AutoPGD
+VanillaCIFAR-10
+VGG-11
+2.11/6.07
+Vanilla+StoG 11.58/18.70
+51.33/57.09
+62.14/65.99
+55.88/63.06
+60.21/65.15RAT+StoGAT+StoGRATATCIFAR-10
+WRN-16-4
+0.09/0.67
+3.35/4.79
+56.40/62.73
+62.71/67.34
+59.73/69.06
+59.61/66.29CIFAR-100VGG-11
+1.04/2.55
+9.20/11.10
+26.18/30.95
+38.33/40.77
+33.41/41.41
+39.13/46.03CIFAR-100
+WRN-16-4
+0.25/0.75
+6.19/7.69
+31.34/37.26
+36.60/40.75
+34.73/47.74
+34.60/41.87Table 2: Performance of EOT-AutoPGD attacks for different SNN architectures. Items in the table follow the format of “BPTT-
+based/BPTR-based robust accuracy”.in (Ding et al. 2022) to the weights under the adversarial
+training setting (abbreviated as RAT). For all three strate-
+gies, we test their robustness with and without the proposed
+model. To punish ¯P o, we set γ = 5 × 10−6 by default. We
+train our model with white-box FGSM adversarial examples
+on each mini-batch of images. The perturbation boundary is
+2/255 (Kundu, Pedram, and Beerel 2021). See our code for
+the rest of the training setups.Robustness verification employs a comprehensive ap-
+proach. The basic attack method is chosen between the
+fast gradient sign method (FGSM) (Goodfellow, Shlens,
+and Szegedy 2015) and project gradient descent (Madry
+et al. 2018), which are the most common in SNN ro-
+bustness verification. We implement l2 and l∞ versions of
+PGD attacks, respectively. We also extend our analyses with
+the AutoPGD attack, which can produce optimal perturba-
+tion (Croce and Hein 2020) and augment the gradients for at-
+tack with expectation-over-transformation (EOT). The EOT
+step is set to 10 by default, as recommenced in the litera-
+ture (Athalye et al. 2018).We consider several aspects of attacks: untargeted and tar-
+geted settings; black-box (BB) and white-box settings; and
+BPTT- and BPTR-based attack settings (suggested by Ding
+et al.). We use the BB strategy from literature (Kundu, Pe-
+dram, and Beerel 2021): The attacker does not know the de-fense model’s parameters. The attacker trains an SNN model
+with the same dataset and architecture as the defense model,
+using BPTT with a new random seed. The black-box attacks
+use BPTT-based attacks.We use attack classification accuracy (robust accuracy)
+and attack success rate (ASR) as metrics of robustness. The
+attack success rate here refers to the proportion of misclas-
+sifications in the originally correctly classified data. The
+smaller the ASR, the better the robustness.VanillaBPTT AttackUntargeted
+2.11/97.73
+EOT-1 Vanilla+StoG
+19.33/80.24
+EOT-10 Vanilla+StoG 11.56/88.54Targeted
+1.10/98.82
+22.36/77.11
+14.63/85.48Table 3: Performance of AutoPGD attacks with different
+EOT steps. Items in the table follow the format of “robust
+accuracy/ASR”.Performance
+Table 1 shows the robustness of CIFAR-10 and CIFAR-100
+under FGSM and PGD-l∞ attacks. For experimental fair-
+ness, the models shown in the table are trained and reasoned
+with the same random seeds. The intensity of the FGSM(a) Effect of intensity(b) Effect of PGD steps(a) l2, WB, VGG-11(b) l2, WB, WRN-16-4Figure 2: Performance against EOT-PGD attacks with in-
+creasing intensity and steps.attack is 8/255. For the PGD-l∞ attack, the overall inten-
+sity, step number, and step size are fixed to 8/255, 7, and
+0.01, respectively. The results show that for the three train-
+ing strategies, our proposed StoG can reduce the ASR and
+improve robust accuracy. The robustness performance of the
+proposed model is similar under untargeted and random-
+targeted attacks. This verifies that our method can work with
+and without adversarial training.(c) l∞, BB, VGG-11(d) l∞, BB, WRN-16-4Figure 3: Performance under EOT-PGD attacks with l2 and
+black-box settings.(a) Clean accuracy(b) Spike OperationFigure 4: Effect of stochastic gating models on WRN-16-4
+architectures.for vanilla+StoG SNN is higher than that of vanilla SNN by
+10.75%.Effect of Stochastic Gating
+The StoG model brings robustness by filtering spikes, thus
+potentially having low power consumption. We visualize
+the mean of ¯P o, clean and robust accuracy (attacked by
+FGSM(ϵ = 2/255)), and estimate of energy consumption
+for different γ settings ([0, 1× 10−5]). We estimate the SNN
+energy consumption by the number of Spike Operations
+(SOP) suggested in (Kundu et al. 2021). Compared to the
+improvement in robust accuracy, γ has little effect on clean
+accuracy. At the same time, a larger γ results in a smaller ¯P o
+and fewer SOP. We display results for WRN-16-4 in Fig. 4.
+For VGG-11, γ = 1 × 10−5 reduces the average opening
+probability to 0.52 and the SOP by 1.428×.Due to randomness in our proposed method, we further
+use EOT-AutoPGD attacks with 10 EOT steps, 10 PGD
+steps, and an intensity of 4/255. We report our results in
+Table 2, which records the robustness of different architec-
+tures under untargeted EOT-AutoPGD attacks. The reported
+accuracies are either from BPTT- or BPTR-based attacks.
+In the table, the robust accuracy of most of the SNNs that
+added the StoG model has increased. This implies that StoG
+modules have the potential to increase robustness for vari-
+ous SNN architectures. We also test the effect of EOT steps
+and list the results in Table 3. Compared with attacks with
+one EOT step, EOT-10-AutoPGD poses a stronger threat to
+vanilla+StoG models. However, the performances are still
+higher than in models without StoG modules.We observe that no clear gradient obfuscation is invoked
+by adding stochastic gating. In previous works (Kundu, Pe-
+dram, and Beerel 2021; Ding et al. 2022) showed no obvious
+obfuscation with BPTT- or BPTR-based attacks on SNNs.
+Here, we use randomly initialized PGD attacks with 10 EOT
+steps to check for gradient obfuscation. We apply perturba-
+tions to vanilla and vanilla+StoG VGG-11 models trained
+on CIFAR-10, respectively. We display the perturbation re-
+sults by increasing PGD intensity and steps in Fig. 2. Our re-
+sults show that model robustness decreases with more PGD
+steps and reaches an asymptote after 40 steps. Also, higher
+attack intensities can fail the SNN models for both BPTT-
+and BPTR-based attacks.Finally, we test how the accuracy changes when the mod-
+els encounter l2 and BB attacks. We use EOT-PGD as an at-
+tack model and change the attack intensity. The PGD step
+size α satisfies α = 2.5ϵ/K where K is the number of
+PGD steps. The results of BPTT- and BPTR-based attacks
+are shown in Fig. 3. For VGG and WRN architectures, they
+both show similar trends in robustness. For CIFAR-10 VGG-
+11 and ϵ = 8/255, the BB BPTR-based robust accuracyConclusions and DiscussionsConclusion: To improve SNN robustness, we propose a sim-
+ple yet effective method to simulate the stochastic gating
+process and filter the perturbed spike sequence. Theoretical
+analyses show that our method can be regarded as adding
+regularization to SNN training. At the same time, our theo-
+rems can be used to explain why Poisson coding can bring
+natural robustness to SNN. We hope that this method will be
+used in SNN applications with low energy budgets and high
+robustness.
+Limitation: The limitation of the designed method is that
+it sacrifices a little accuracy in order to enhance robust-
+ness. When there is low opening probabilities, it is conceiv-
+able that almost all signals are filtered out, which makes
+it difficult to improve the model’s performance. It is im-
+portant to find a method that is more adaptable, allowing
+for the joint optimization of accuracy, robustness, and per-
+formance. Also, the SNN-specific gradient attacks are not
+very well studied, which points out another future direction.
+Robustness-enhanced methods evaluated using large EOT
+steps should be investigated.
+Broader Impact: In neuroscience, the stochastic channel is
+commonly seen as a cause of neural noise. However, the dy-
+namics of neurons can counteract this noise. Our research
+indicates that channel gating, despite introducing noise to
+the signal, can actually enhance the resilience of complex
+cognitive processes like recognition and decision-making.
+By employing SNNs as research tools, we can contribute
+valuable insights to ongoing discussions in neuroscience re-
+garding robustness.Supplementary MaterialProofs
+Proof for Theorem 1 is given as follows.Proof. By observing the equation of dl:L, the l1 norm can
+be expressed as multiplying two vectors and taking their ab-
+solute value, and can be rewritten using Cauchy’s inequality.dl:L=(cid:16)
+ξl, sl, Gl+1(cid:17)
+(cid:12)(cid:12)(cid:12)ξl (t) ⊙ Gl+1 (t) ⊙ ∇s′Ll:L
+TX
+vuut NlX
+vuut NlX
+⩽ TX
+vuut NlX
+vuut NlX
+TXi (t)2 Gl+1
+ξl(cid:12)(cid:12)(cid:12) Gl+1(cid:12)(cid:12)(cid:12)ξli (t)(t)2(t)t=1t=1i=1i=1=iit=1i=1i=1(cid:0)s′l(cid:1) (t)(cid:12)(cid:12)(cid:12)1,∇s′Ll:L (s′l) (t)2,∇s′Ll:L (s′l) (t)2.In the above formula, Gl+1 (t)2 can replace Gl+1 (t) as the
+items in Gl+1 (t) can only take values at 0 or 1.
+replace ξl
+-1 or 1.i (t) can only take values ati (t)2 as the items in ξli (t)(cid:12)(cid:12)(cid:12)ξl(26)(cid:12)(cid:12)(cid:12) canqPNlTreat the second square root term in Eq. 26 on the right
+i=1 ∇s′Ll:L (s′l) (t)2. In this term,
+as a whole, that is,
+there are two variables. One is s′l, which is the output of
+layer l after gating, s′l ∈ {0, 1}T×Nl. The second is the
+time-step t, whose value is between 1 and T. Thus, we con-
+sider the term bounded, and this upper bound must be greater
+than 0. Here we denote the upper bound as Ω, which can be
+formulated as:In this case, we have(cid:16)dl:LConsidering thatquence multiplied by
+greater than the direct addition of the sequence. Then, Eq. 28
+can continue to be transformed into:i (t)ii=1t=1i=1i (t)i (t)(27)(cid:16)(t). (28)(cid:12)(cid:12)(cid:12)ξlΩ = max
+s′,t(cid:12)(cid:12)(cid:12) Gl+1∇s′Ll:L (s′l) (t)2.vuut NlX
+vuut NlX
+ξl, sl, Gl+1(cid:17) ⩽ Ω
+TX
+(cid:12)(cid:12)(cid:12) is binary. This means that any se-
+(cid:12)(cid:12)(cid:12)ξl
+(cid:12)(cid:12)(cid:12) and then summed will not be
+(cid:12)(cid:12)(cid:12)ξl
+vuut NlX
+ξl, sl, Gl+1(cid:17) ⩽ Ω
+TX
+vuut NlX
+ TX
+ξl, sl, Gl+1(cid:17)(cid:17) ⩽ Ω · E
+(cid:16)
+vuut NlX
+ < E
+
+  NlX
+vuut NlX
+ TX
+ξl, sl, Gl+1(cid:17)(cid:17) ⩽ Ω · E
+(cid:16)
+!
+  TX
+NlX .NlX!Gl+1Gl+1Gl+1Gl+1Gl+1(29)(30)(31)(t).(t)(t)(t)t=1i=1t=1i=1t=1i=1.i(t)ii=1ii=1Gl+1i(t)= ΩT¯P l+1o.(32)iidl:LE(cid:16)dl:LApparently,EThus,E(cid:16)dl:L⩽ Ω · ETake the expectation of the Bernoulli distribution on both
+sides of Eq. 29, it gives:t=1i=1i=1Proof for Theorem 2 is given as follows.
+Proof. Due to the addition of the StoG model, the spike in-
+put is modulated to:s′l (t) = sl (t) ⊙ Gl+1 (t) .(33)We assume that Gl+1 takes the same matrix when passing
+the noisy spike response as it did without noise. Accordingto the implication from previous work (Lin, Gan, and Han
+2019; Ding et al. 2022), the layer-by-layer error amplifica-
+tion of SNN can be characterized as:
+D(sl+1, ˜sl+1) ⩽ ρl+1
+V 2
+thD(sl ⊙ Gl+1, ˜sl ⊙ Gl+1) + Γ l+1.
+(34)
+In Eq. 34, ρl+1 is the Lipschitz constant for layer l + 1. Its
+value only relates to the weights in layer l + 1, and satisfies:ρl+1 ⩽ arg max
+s∈{−1,0,1}Nl/∥s∥2
+2 .(35)To obtain the relation between D(sl+1, ˜sl+1) and D(sl, ˜sl),
+we take a deeper look at D(sl⊙Gl+1, ˜sl⊙Gl+1). According
+to the inequality of norms, we have:(cid:13)(cid:13)(cid:13)W l+1s(cid:13)(cid:13)(cid:13)22(cid:13)(cid:13)(cid:13)(cid:16)sl − ˜sl(cid:17) ⊙ Gl+1(cid:13)(cid:13)(cid:13)2
+(cid:13)(cid:13)(cid:13)Gl+1(cid:13)(cid:13)(cid:13)22.2= D(sl, ˜sl)(cid:13)(cid:13)(cid:13)Gl+1(cid:13)(cid:13)(cid:13)22D(sl ⊙ Gl+1, ˜sl ⊙ Gl+1) =sl − ˜sl(cid:17)(cid:13)(cid:13)(cid:13)2
+⩽(cid:13)(cid:13)(cid:13)(cid:16)
+(cid:13)(cid:13)(cid:13)Gl+1(cid:13)(cid:13)(cid:13)222Since each item in the matrix Gl+1 can only take a value of
+0, 1,is actually calculating:Substituting Eq. 36 and Eq. 37 into Eq. 34, and taking ex-
+pectations on both sides of the formula, we get:!ii2==(t)t=1i=1t=1i=1(t).Gl+1Gl+1T ρl+1NlXNlXTX≤ ρl+1
+V 2
+th(cid:13)(cid:13)(cid:13)Gl+1(cid:13)(cid:13)(cid:13)2
+i
+EhD(sl+1, ˜sl+1)
+  TX
+EhD(sl, ˜sl)
+i E
+i NlX
+EhD(sl, ˜sl)
+i
+EhD(sl+1, ˜sl+1)
+i ≤ AlEhD(sl, ˜sl)
+PNl
+EhD(sl+2, ˜sl+2)
+i ⩽ Al+1EhD(sl+1, ˜sl+1)
+i
+= Al+1 · Al · EhD(sl, ˜sl)
+i ⩽ EhD(sl, ˜sl)
+EhD(sL, ˜sL)i · L−1Yo + Γ l+1.¯P l+1¯P l+1V 2
+thi=1i=1o+ Bl,i, Bl = Γ l+1. Thus,+ Al+1Bl + Bl+1.Aj + C.We can simplify the above formula to:where Al = T ρl+1
+V 2
+thBy analogy, we have:+ Γ l+1+ Bl+1(36)(37)(38)(39)(40)(41)where C is a constant related to Al+1,··· , AL−1, Bl,··· ,
+BL−1.j=l(42)(43)(44)
+(45)
+(46)(47)
+(48)(49)The derivation of Eq. 12 is given as follows.Ki,l is the transition probability matrix between open and
+closed states. P (t; i, l) is the vector of the probability of
+open and closed states for neuron i in layer l.P (t + ∆t; i, l) = Ki,lP (t; i, l) ,(cid:20)1 − κo;i,l∆tκo;i,l∆tKi,l =κc;i,l∆t
+1 − κc;i,l∆t(cid:21)The state transition matrix reveals the Markov chain’s ir-
+reducibility, allowing access to another state. The Renewal
+Theorem (Alsmeyer 1994) can be used to calculate station-
+ary probabilities:¯P (i, l) =(cid:2) ¯Po (i, l) , ¯Pc (i, l)(cid:3)T,¯P (i, l) = Ki,l ¯P (i, l) ,
+¯Po (i, l) + ¯Pc (i, l) = 1.Thus, we can obtain:¯Po (i, l) = κc;i,l/ (κc;i,l + κo;i,l) ,
+¯Pc (i, l) = κo;i,l/ (κc;i,l + κo;i,l) .Adversarial Attacks for SNN with Differential
+Surrogates
+The network’s backpropagation of gradient is achieved by
+unfolding LIF neuron dynamics and applying surrogate
+functions to the non-differentiable Heaviside function, as de-
+scribed in Eqs. 1, 2, and 3 in the main text.∂L
+∂W l
+ij
+∂L
+∂ul
+i (t)∂L
+∂ul
+i (t)
+∂L
+∂sl
+i (t)==sl−1j(t) ,h(cid:0)ul
+i (t)(cid:1) +∂L
+i (t + 1)∂ul∂uli (t + 1)
+∂uli (t).(50)where L is the task loss, W lnects neuron i in layer l and neuron j in layer l−1. h(cid:0)ul
+i (t)(cid:1)ij is the synaptic weight that con-is the surrogate gradient of the Heaviside function, which is
+used to substitute ∂sl
+i(t)
+i(t) to overcome the non-differentiable
+∂ul
+problem.AcknowledgmentsThis work was supported by the National Natural Science
+Foundation of China(62088102, 62176003).
