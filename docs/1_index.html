@@ -1,0 +1,1085 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script>function neighbourhoodHighlight(params) {
+  // console.log("in nieghbourhoodhighlight");
+  allNodes = nodes.get({ returnType: "Object" });
+  // originalNodes = JSON.parse(JSON.stringify(allNodes));
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    highlightActive = true;
+    var i, j;
+    var selectedNode = params.nodes[0];
+    var degrees = 2;
+
+    // mark all nodes as hard to read.
+    for (let nodeId in allNodes) {
+      // nodeColors[nodeId] = allNodes[nodeId].color;
+      allNodes[nodeId].color = "rgba(200,200,200,0.5)";
+      if (allNodes[nodeId].hiddenLabel === undefined) {
+        allNodes[nodeId].hiddenLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+    var connectedNodes = network.getConnectedNodes(selectedNode);
+    var allConnectedNodes = [];
+
+    // get the second degree nodes
+    for (i = 1; i < degrees; i++) {
+      for (j = 0; j < connectedNodes.length; j++) {
+        allConnectedNodes = allConnectedNodes.concat(
+          network.getConnectedNodes(connectedNodes[j])
+        );
+      }
+    }
+
+    // all second degree nodes get a different color and their label back
+    for (i = 0; i < allConnectedNodes.length; i++) {
+      // allNodes[allConnectedNodes[i]].color = "pink";
+      allNodes[allConnectedNodes[i]].color = "rgba(150,150,150,0.75)";
+      if (allNodes[allConnectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[allConnectedNodes[i]].label =
+          allNodes[allConnectedNodes[i]].hiddenLabel;
+        allNodes[allConnectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // all first degree nodes get their own color and their label back
+    for (i = 0; i < connectedNodes.length; i++) {
+      // allNodes[connectedNodes[i]].color = undefined;
+      allNodes[connectedNodes[i]].color = nodeColors[connectedNodes[i]];
+      if (allNodes[connectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[connectedNodes[i]].label =
+          allNodes[connectedNodes[i]].hiddenLabel;
+        allNodes[connectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // the main node gets its own color and its label back.
+    // allNodes[selectedNode].color = undefined;
+    allNodes[selectedNode].color = nodeColors[selectedNode];
+    if (allNodes[selectedNode].hiddenLabel !== undefined) {
+      allNodes[selectedNode].label = allNodes[selectedNode].hiddenLabel;
+      allNodes[selectedNode].hiddenLabel = undefined;
+    }
+  } else if (highlightActive === true) {
+    // console.log("highlightActive was true");
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      // allNodes[nodeId].color = "purple";
+      allNodes[nodeId].color = nodeColors[nodeId];
+      // delete allNodes[nodeId].color;
+      if (allNodes[nodeId].hiddenLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].hiddenLabel;
+        allNodes[nodeId].hiddenLabel = undefined;
+      }
+    }
+    highlightActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    // console.log("Nothing was selected");
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        // allNodes[nodeId].color = {};
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function filterHighlight(params) {
+  allNodes = nodes.get({ returnType: "Object" });
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    filterActive = true;
+    let selectedNodes = params.nodes;
+
+    // hiding all nodes and saving the label
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = true;
+      if (allNodes[nodeId].savedLabel === undefined) {
+        allNodes[nodeId].savedLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+
+    for (let i=0; i < selectedNodes.length; i++) {
+      allNodes[selectedNodes[i]].hidden = false;
+      if (allNodes[selectedNodes[i]].savedLabel !== undefined) {
+        allNodes[selectedNodes[i]].label = allNodes[selectedNodes[i]].savedLabel;
+        allNodes[selectedNodes[i]].savedLabel = undefined;
+      }
+    }
+
+  } else if (filterActive === true) {
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = false;
+      if (allNodes[nodeId].savedLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].savedLabel;
+        allNodes[nodeId].savedLabel = undefined;
+      }
+    }
+    filterActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function selectNode(nodes) {
+  network.selectNodes(nodes);
+  neighbourhoodHighlight({ nodes: nodes });
+  return nodes;
+}
+
+function selectNodes(nodes) {
+  network.selectNodes(nodes);
+  filterHighlight({nodes: nodes});
+  return nodes;
+}
+
+function highlightFilter(filter) {
+  let selectedNodes = []
+  let selectedProp = filter['property']
+  if (filter['item'] === 'node') {
+    let allNodes = nodes.get({ returnType: "Object" });
+    for (let nodeId in allNodes) {
+      if (allNodes[nodeId][selectedProp] && filter['value'].includes((allNodes[nodeId][selectedProp]).toString())) {
+        selectedNodes.push(nodeId)
+      }
+    }
+  }
+  else if (filter['item'] === 'edge'){
+    let allEdges = edges.get({returnType: 'object'});
+    // check if the selected property exists for selected edge and select the nodes connected to the edge
+    for (let edge in allEdges) {
+      if (allEdges[edge][selectedProp] && filter['value'].includes((allEdges[edge][selectedProp]).toString())) {
+        selectedNodes.push(allEdges[edge]['from'])
+        selectedNodes.push(allEdges[edge]['to'])
+      }
+    }
+  }
+  selectNodes(selectedNodes)
+}</script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+            
+            
+            
+            
+            
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.0.0-rc.4/css/tom-select.min.css" integrity="sha512-43fHB3GLgZfz8QXl1RPQ8O66oIgv3po9cJ5erMt1c4QISq9dYb195T3vr5ImnJPXuVroKcGBPXBFKETW8jrPNQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.0.0-rc.4/js/tom-select.complete.js" integrity="sha512-jeF9CfnvzDiw9G9xiksVjxR2lib44Gnovvkv+3CgCG6NXCD4gqlA5nDAVW5WjpA+i+/zKsUWV5xNEbW1X/HH0Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 900px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 900px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="4-measure sliding window">4-measure sliding window</option>
+                                
+                                    <option value="lyrics">lyrics</option>
+                                
+                                    <option value="pitch values">pitch values</option>
+                                
+                                    <option value="ability to generalize">ability to generalize</option>
+                                
+                                    <option value="internal representations">internal representations</option>
+                                
+                                    <option value="knowledge representation">knowledge representation</option>
+                                
+                                    <option value="nc">nc</option>
+                                
+                                    <option value="nhmm n">nhmm n</option>
+                                
+                                    <option value="ability to use perceptual abilities">ability to use perceptual abilities</option>
+                                
+                                    <option value="autonomous change">autonomous change</option>
+                                
+                                    <option value="autonomous evaluation">autonomous evaluation</option>
+                                
+                                    <option value="autonomy">autonomy</option>
+                                
+                                    <option value="choosing a relevant knowledge (sub)base">choosing a relevant knowledge (sub)base</option>
+                                
+                                    <option value="choosing an intention">choosing an intention</option>
+                                
+                                    <option value="creativity">creativity</option>
+                                
+                                    <option value="criteria for a system to be autonomous">criteria for a system to be autonomous</option>
+                                
+                                    <option value="injection of knowledge">injection of knowledge</option>
+                                
+                                    <option value="non-randomness">non-randomness</option>
+                                
+                                    <option value="pop*">pop*</option>
+                                
+                                    <option value="self-evaluation">self-evaluation</option>
+                                
+                                    <option value="self-improve the system">self-improve the system</option>
+                                
+                                    <option value="aesthetic">aesthetic</option>
+                                
+                                    <option value="aesthetic standards">aesthetic standards</option>
+                                
+                                    <option value="autonomous system">autonomous system</option>
+                                
+                                    <option value="beliefs">beliefs</option>
+                                
+                                    <option value="emotion">emotion</option>
+                                
+                                    <option value="empath">empath</option>
+                                
+                                    <option value="familiarity">familiarity</option>
+                                
+                                    <option value="intention">intention</option>
+                                
+                                    <option value="intentionality">intentionality</option>
+                                
+                                    <option value="machine learning models">machine learning models</option>
+                                
+                                    <option value="music">music</option>
+                                
+                                    <option value="music composition">music composition</option>
+                                
+                                    <option value="novelty">novelty</option>
+                                
+                                    <option value="opinions">opinions</option>
+                                
+                                    <option value="style">style</option>
+                                
+                                    <option value="text input">text input</option>
+                                
+                                    <option value="topic">topic</option>
+                                
+                                    <option value="tweet">tweet</option>
+                                
+                                    <option value="typicality">typicality</option>
+                                
+                                    <option value="weight">weight</option>
+                                
+                                    <option value="aesthetic a">aesthetic a</option>
+                                
+                                    <option value="lead sheet ¦Ã">lead sheet ¦Ã</option>
+                                
+                                    <option value="aesthetic measure">aesthetic measure</option>
+                                
+                                    <option value="artificial intelligence">artificial intelligence</option>
+                                
+                                    <option value="creative mind">creative mind</option>
+                                
+                                    <option value="system">system</option>
+                                
+                                    <option value="complexity">complexity</option>
+                                
+                                    <option value="emotion score">emotion score</option>
+                                
+                                    <option value="emotion vector">emotion vector</option>
+                                
+                                    <option value="entropy">entropy</option>
+                                
+                                    <option value="interest">interest</option>
+                                
+                                    <option value="order">order</option>
+                                
+                                    <option value="surprise">surprise</option>
+                                
+                                    <option value="twitter">twitter</option>
+                                
+                                    <option value="value">value</option>
+                                
+                                    <option value="aesthetics">aesthetics</option>
+                                
+                                    <option value="attitudes">attitudes</option>
+                                
+                                    <option value="attributional perspective">attributional perspective</option>
+                                
+                                    <option value="beauty and the critic¡¯s judgment">beauty and the critic¡¯s judgment</option>
+                                
+                                    <option value="cognitive computation">cognitive computation</option>
+                                
+                                    <option value="computational creativity">computational creativity</option>
+                                
+                                    <option value="creative computing">creative computing</option>
+                                
+                                    <option value="measurement">measurement</option>
+                                
+                                    <option value="meta-evaluation">meta-evaluation</option>
+                                
+                                    <option value="metacreative systems">metacreative systems</option>
+                                
+                                    <option value="probabilistic program induction">probabilistic program induction</option>
+                                
+                                    <option value="self-awareness">self-awareness</option>
+                                
+                                    <option value="skepticism">skepticism</option>
+                                
+                                    <option value="aesthetics in computational creative systems">aesthetics in computational creative systems</option>
+                                
+                                    <option value="explainability">explainability</option>
+                                
+                                    <option value="ai">ai</option>
+                                
+                                    <option value="computational system for music composition">computational system for music composition</option>
+                                
+                                    <option value="ai methods">ai methods</option>
+                                
+                                    <option value="algorithmic composition">algorithmic composition</option>
+                                
+                                    <option value="alignment">alignment</option>
+                                
+                                    <option value="binary constraints">binary constraints</option>
+                                
+                                    <option value="cognitive science society">cognitive science society</option>
+                                
+                                    <option value="scoring function">scoring function</option>
+                                
+                                    <option value="self-alignment algorithm">self-alignment algorithm</option>
+                                
+                                    <option value="song">song</option>
+                                
+                                    <option value="alignment algorithm">alignment algorithm</option>
+                                
+                                    <option value="mkb">mkb</option>
+                                
+                                    <option value="structural alignments">structural alignments</option>
+                                
+                                    <option value="msw">msw</option>
+                                
+                                    <option value="alignments">alignments</option>
+                                
+                                    <option value="all groups">all groups</option>
+                                
+                                    <option value="musicianship">musicianship</option>
+                                
+                                    <option value="annual meeting">annual meeting</option>
+                                
+                                    <option value="anticipation-rnn">anticipation-rnn</option>
+                                
+                                    <option value="unary constraints in sequence generation">unary constraints in sequence generation</option>
+                                
+                                    <option value="artifacts">artifacts</option>
+                                
+                                    <option value="average ratings">average ratings</option>
+                                
+                                    <option value="bias">bias</option>
+                                
+                                    <option value="generative system">generative system</option>
+                                
+                                    <option value="groups">groups</option>
+                                
+                                    <option value="intentions">intentions</option>
+                                
+                                    <option value="musicians">musicians</option>
+                                
+                                    <option value="originality">originality</option>
+                                
+                                    <option value="process">process</option>
+                                
+                                    <option value="respondent">respondent</option>
+                                
+                                    <option value="scores">scores</option>
+                                
+                                    <option value="songs">songs</option>
+                                
+                                    <option value="generation">generation</option>
+                                
+                                    <option value="artificial barriers in artificial intelligence">artificial barriers in artificial intelligence</option>
+                                
+                                    <option value="developing creativity">developing creativity</option>
+                                
+                                    <option value="generating lyrics">generating lyrics</option>
+                                
+                                    <option value="holistic cc">holistic cc</option>
+                                
+                                    <option value="markov constraints">markov constraints</option>
+                                
+                                    <option value="musical sequences">musical sequences</option>
+                                
+                                    <option value="promising direction">promising direction</option>
+                                
+                                    <option value="structural constraints">structural constraints</option>
+                                
+                                    <option value="artificial neural-network-focused implementations">artificial neural-network-focused implementations</option>
+                                
+                                    <option value="transformer and large language models">transformer and large language models</option>
+                                
+                                    <option value="assessment">assessment</option>
+                                
+                                    <option value="attribute">attribute</option>
+                                
+                                    <option value="elevated scores">elevated scores</option>
+                                
+                                    <option value="audio and sheet music">audio and sheet music</option>
+                                
+                                    <option value="audio recording">audio recording</option>
+                                
+                                    <option value="composition">composition</option>
+                                
+                                    <option value="description">description</option>
+                                
+                                    <option value="evaluation">evaluation</option>
+                                
+                                    <option value="participant">participant</option>
+                                
+                                    <option value="question">question</option>
+                                
+                                    <option value="autonomy and self-evaluation">autonomy and self-evaluation</option>
+                                
+                                    <option value="domain knowledge">domain knowledge</option>
+                                
+                                    <option value="observers">observers</option>
+                                
+                                    <option value="computational creative systems">computational creative systems</option>
+                                
+                                    <option value="knowledge">knowledge</option>
+                                
+                                    <option value="local alignments">local alignments</option>
+                                
+                                    <option value="msw-alignment">msw-alignment</option>
+                                
+                                    <option value="mumford and ventura">mumford and ventura</option>
+                                
+                                    <option value="nhmms">nhmms</option>
+                                
+                                    <option value="spectrum">spectrum</option>
+                                
+                                    <option value="weights">weights</option>
+                                
+                                    <option value="autonomy and generativity">autonomy and generativity</option>
+                                
+                                    <option value="foundation models">foundation models</option>
+                                
+                                    <option value="autonomy to make own decisions">autonomy to make own decisions</option>
+                                
+                                    <option value="respondents">respondents</option>
+                                
+                                    <option value="computational systems">computational systems</option>
+                                
+                                    <option value="computers">computers</option>
+                                
+                                    <option value="lyric abilities">lyric abilities</option>
+                                
+                                    <option value="novelty scores">novelty scores</option>
+                                
+                                    <option value="overall rating">overall rating</option>
+                                
+                                    <option value="participants">participants</option>
+                                
+                                    <option value="pop* compositions">pop* compositions</option>
+                                
+                                    <option value="question q1">question q1</option>
+                                
+                                    <option value="structure">structure</option>
+                                
+                                    <option value="survey participants">survey participants</option>
+                                
+                                    <option value="brutus, minstrel and mexica">brutus, minstrel and mexica</option>
+                                
+                                    <option value="storytelling models">storytelling models</option>
+                                
+                                    <option value="building">building</option>
+                                
+                                    <option value="cc system">cc system</option>
+                                
+                                    <option value="c2">c2</option>
+                                
+                                    <option value="candidate compositions">candidate compositions</option>
+                                
+                                    <option value="intention vector">intention vector</option>
+                                
+                                    <option value="characteristics">characteristics</option>
+                                
+                                    <option value="responses">responses</option>
+                                
+                                    <option value="systems">systems</option>
+                                
+                                    <option value="chord structure">chord structure</option>
+                                
+                                    <option value="chord, pitch, and rhythm models">chord, pitch, and rhythm models</option>
+                                
+                                    <option value="music scores (q3)">music scores (q3)</option>
+                                
+                                    <option value="chords">chords</option>
+                                
+                                    <option value="cognitive process for solving problems">cognitive process for solving problems</option>
+                                
+                                    <option value="computational creativity research and practice">computational creativity research and practice</option>
+                                
+                                    <option value="computational creativity theory">computational creativity theory</option>
+                                
+                                    <option value="distributed musical decision-making">distributed musical decision-making</option>
+                                
+                                    <option value="ensemble of musebots">ensemble of musebots</option>
+                                
+                                    <option value="face and idea descriptive models">face and idea descriptive models</option>
+                                
+                                    <option value="final frontier">final frontier</option>
+                                
+                                    <option value="flow">flow</option>
+                                
+                                    <option value="long-range dependency constraints">long-range dependency constraints</option>
+                                
+                                    <option value="perception of creativity">perception of creativity</option>
+                                
+                                    <option value="psychology of discovery and invention">psychology of discovery and invention</option>
+                                
+                                    <option value="stakeholder groups">stakeholder groups</option>
+                                
+                                    <option value="steerable music generation">steerable music generation</option>
+                                
+                                    <option value="compositions">compositions</option>
+                                
+                                    <option value="introduction">introduction</option>
+                                
+                                    <option value="key">key</option>
+                                
+                                    <option value="labels">labels</option>
+                                
+                                    <option value="length">length</option>
+                                
+                                    <option value="likert scale questions">likert scale questions</option>
+                                
+                                    <option value="likert scales">likert scales</option>
+                                
+                                    <option value="melody">melody</option>
+                                
+                                    <option value="modality">modality</option>
+                                
+                                    <option value="rating">rating</option>
+                                
+                                    <option value="significant variation">significant variation</option>
+                                
+                                    <option value="simplified version">simplified version</option>
+                                
+                                    <option value="star ratings">star ratings</option>
+                                
+                                    <option value="tempo">tempo</option>
+                                
+                                    <option value="external artifact">external artifact</option>
+                                
+                                    <option value="jordanous' specs framework">jordanous' specs framework</option>
+                                
+                                    <option value="survey">survey</option>
+                                
+                                    <option value="computational creativity evaluation based on what it is to be creative">computational creativity evaluation based on what it is to be creative</option>
+                                
+                                    <option value="computer program">computer program</option>
+                                
+                                    <option value="constrained hidden markov processes">constrained hidden markov processes</option>
+                                
+                                    <option value="constraints">constraints</option>
+                                
+                                    <option value="deep neural networks">deep neural networks</option>
+                                
+                                    <option value="dramatic changes and endings">dramatic changes and endings</option>
+                                
+                                    <option value="finite-length markov processes">finite-length markov processes</option>
+                                
+                                    <option value="game of go">game of go</option>
+                                
+                                    <option value="godel, escher, bach: an eternal golden braid">godel, escher, bach: an eternal golden braid</option>
+                                
+                                    <option value="mathematical theory of communication">mathematical theory of communication</option>
+                                
+                                    <option value="mobile computing and communications">mobile computing and communications</option>
+                                
+                                    <option value="musebots">musebots</option>
+                                
+                                    <option value="new york: vintage books">new york: vintage books</option>
+                                
+                                    <option value="non-anthropocentric, minimal model of intentional creative agency">non-anthropocentric, minimal model of intentional creative agency</option>
+                                
+                                    <option value="sequences">sequences</option>
+                                
+                                    <option value="topic signals in large-scale text">topic signals in large-scale text</option>
+                                
+                                    <option value="dan ventura">dan ventura</option>
+                                
+                                    <option value="operationalizing essential characteristics of creativity">operationalizing essential characteristics of creativity</option>
+                                
+                                    <option value="paul m. bodily">paul m. bodily</option>
+                                
+                                    <option value="computer">computer</option>
+                                
+                                    <option value="computer creativity">computer creativity</option>
+                                
+                                    <option value="conference on computational creativity">conference on computational creativity</option>
+                                
+                                    <option value="ventura, d.">ventura, d.</option>
+                                
+                                    <option value="wiggins, g. a.">wiggins, g. a.</option>
+                                
+                                    <option value="connotation">connotation</option>
+                                
+                                    <option value="markov model">markov model</option>
+                                
+                                    <option value="markov models">markov models</option>
+                                
+                                    <option value="random variables">random variables</option>
+                                
+                                    <option value="sequence length">sequence length</option>
+                                
+                                    <option value="vector of topics or emotions">vector of topics or emotions</option>
+                                
+                                    <option value="content, style, external impact, or type of generative act">content, style, external impact, or type of generative act</option>
+                                
+                                    <option value="creative attributes">creative attributes</option>
+                                
+                                    <option value="creative characteristics">creative characteristics</option>
+                                
+                                    <option value="interests">interests</option>
+                                
+                                    <option value="knowledge of music">knowledge of music</option>
+                                
+                                    <option value="machine">machine</option>
+                                
+                                    <option value="opinion, belief, or attitude about what makes music 'good'">opinion, belief, or attitude about what makes music 'good'</option>
+                                
+                                    <option value="output">output</option>
+                                
+                                    <option value="sheet music">sheet music</option>
+                                
+                                    <option value="system designers">system designers</option>
+                                
+                                    <option value="tweets">tweets</option>
+                                
+                                    <option value="determine its creativity">determine its creativity</option>
+                                
+                                    <option value="knowledge of the system¡¯s process">knowledge of the system¡¯s process</option>
+                                
+                                    <option value="direct modification">direct modification</option>
+                                
+                                    <option value="generative model">generative model</option>
+                                
+                                    <option value="domain-representative artifacts">domain-representative artifacts</option>
+                                
+                                    <option value="emotion score values">emotion score values</option>
+                                
+                                    <option value="empath vector">empath vector</option>
+                                
+                                    <option value="euclidean distance">euclidean distance</option>
+                                
+                                    <option value="generative process">generative process</option>
+                                
+                                    <option value="lyric knowledge base">lyric knowledge base</option>
+                                
+                                    <option value="lyrics from 369,606 songs">lyrics from 369,606 songs</option>
+                                
+                                    <option value="machine learning">machine learning</option>
+                                
+                                    <option value="novelty and typicality">novelty and typicality</option>
+                                
+                                    <option value="origi-fromsnating tweet">origi-fromsnating tweet</option>
+                                
+                                    <option value="principles governing the evaluation of artifacts within the domain">principles governing the evaluation of artifacts within the domain</option>
+                                
+                                    <option value="requirements for inclusion within the domain">requirements for inclusion within the domain</option>
+                                
+                                    <option value="similarity to existing items">similarity to existing items</option>
+                                
+                                    <option value="structure of artifacts within the domain">structure of artifacts within the domain</option>
+                                
+                                    <option value="subset of the lkb">subset of the lkb</option>
+                                
+                                    <option value="questions q2, q3, and q4">questions q2, q3, and q4</option>
+                                
+                                    <option value="enhance the perception of creativity">enhance the perception of creativity</option>
+                                
+                                    <option value="evaluate its own success">evaluate its own success</option>
+                                
+                                    <option value="objectives">objectives</option>
+                                
+                                    <option value="improvement">improvement</option>
+                                
+                                    <option value="system's creativity">system's creativity</option>
+                                
+                                    <option value="process of generation">process of generation</option>
+                                
+                                    <option value="stochastic creation">stochastic creation</option>
+                                
+                                    <option value="goals">goals</option>
+                                
+                                    <option value="holistic computational creativity">holistic computational creativity</option>
+                                
+                                    <option value="ideas">ideas</option>
+                                
+                                    <option value="knowledge representation in pop*">knowledge representation in pop*</option>
+                                
+                                    <option value="np">np</option>
+                                
+                                    <option value="structured model of problems">structured model of problems</option>
+                                
+                                    <option value="lkb">lkb</option>
+                                
+                                    <option value="lyric and sheet music databases">lyric and sheet music databases</option>
+                                
+                                    <option value="lyric model">lyric model</option>
+                                
+                                    <option value="music model">music model</option>
+                                
+                                    <option value="melodic pitch sequence">melodic pitch sequence</option>
+                                
+                                    <option value="sing-ability">sing-ability</option>
+                                
+                                    <option value="training sets">training sets</option>
+                                
+                                    <option value="unique word count">unique word count</option>
+                                
+                                    <option value="max">max</option>
+                                
+                                    <option value="motifs">motifs</option>
+                                
+                                    <option value="perceptual faculties">perceptual faculties</option>
+                                
+                                    <option value="pop music lead sheets">pop music lead sheets</option>
+                                
+                                    <option value="sectional form">sectional form</option>
+                                
+                                    <option value="training">training</option>
+                                
+                                    <option value="perception">perception</option>
+                                
+                                    <option value="preconceived notion">preconceived notion</option>
+                                
+                                    <option value="music composition system">music composition system</option>
+                                
+                                    <option value="musician">musician</option>
+                                
+                                    <option value="pm">pm</option>
+                                
+                                    <option value="pn">pn</option>
+                                
+                                    <option value="topics">topics</option>
+                                
+                                    <option value="reflection">reflection</option>
+                                
+                                    <option value="standards">standards</option>
+                                
+                                    <option value="subprocesses">subprocesses</option>
+                                
+                                    <option value="structure scores (q4)">structure scores (q4)</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"group": 1, "id": "4-measure sliding window", "label": "4-measure sliding window", "shape": "dot", "size": 2}, {"group": 1, "id": "lyrics", "label": "lyrics", "shape": "dot", "size": 21}, {"group": 1, "id": "pitch values", "label": "pitch values", "shape": "dot", "size": 2}, {"group": 1, "id": "ability to generalize", "label": "ability to generalize", "shape": "dot", "size": 4}, {"group": 1, "id": "internal representations", "label": "internal representations", "shape": "dot", "size": 11}, {"group": 1, "id": "knowledge representation", "label": "knowledge representation", "shape": "dot", "size": 25}, {"group": 1, "id": "nc", "label": "nc", "shape": "dot", "size": 11}, {"group": 1, "id": "nhmm n", "label": "nhmm n", "shape": "dot", "size": 11}, {"group": 1, "id": "ability to use perceptual abilities", "label": "ability to use perceptual abilities", "shape": "dot", "size": 12}, {"group": 1, "id": "autonomous change", "label": "autonomous change", "shape": "dot", "size": 5}, {"group": 1, "id": "autonomous evaluation", "label": "autonomous evaluation", "shape": "dot", "size": 5}, {"group": 1, "id": "autonomy", "label": "autonomy", "shape": "dot", "size": 22}, {"group": 1, "id": "choosing a relevant knowledge (sub)base", "label": "choosing a relevant knowledge (sub)base", "shape": "dot", "size": 5}, {"group": 1, "id": "choosing an intention", "label": "choosing an intention", "shape": "dot", "size": 5}, {"group": 1, "id": "creativity", "label": "creativity", "shape": "dot", "size": 72}, {"group": 1, "id": "criteria for a system to be autonomous", "label": "criteria for a system to be autonomous", "shape": "dot", "size": 12}, {"group": 1, "id": "injection of knowledge", "label": "injection of knowledge", "shape": "dot", "size": 12}, {"group": 1, "id": "non-randomness", "label": "non-randomness", "shape": "dot", "size": 5}, {"group": 1, "id": "pop*", "label": "pop*", "shape": "dot", "size": 100}, {"group": 1, "id": "self-evaluation", "label": "self-evaluation", "shape": "dot", "size": 16}, {"group": 1, "id": "self-improve the system", "label": "self-improve the system", "shape": "dot", "size": 5}, {"group": 1, "id": "aesthetic", "label": "aesthetic", "shape": "dot", "size": 22}, {"group": 1, "id": "aesthetic standards", "label": "aesthetic standards", "shape": "dot", "size": 13}, {"group": 1, "id": "autonomous system", "label": "autonomous system", "shape": "dot", "size": 10}, {"group": 1, "id": "beliefs", "label": "beliefs", "shape": "dot", "size": 1}, {"group": 1, "id": "emotion", "label": "emotion", "shape": "dot", "size": 3}, {"group": 1, "id": "empath", "label": "empath", "shape": "dot", "size": 5}, {"group": 1, "id": "familiarity", "label": "familiarity", "shape": "dot", "size": 4}, {"group": 1, "id": "intention", "label": "intention", "shape": "dot", "size": 31}, {"group": 1, "id": "intentionality", "label": "intentionality", "shape": "dot", "size": 8}, {"group": 1, "id": "machine learning models", "label": "machine learning models", "shape": "dot", "size": 10}, {"group": 1, "id": "music", "label": "music", "shape": "dot", "size": 7}, {"group": 1, "id": "music composition", "label": "music composition", "shape": "dot", "size": 11}, {"group": 1, "id": "novelty", "label": "novelty", "shape": "dot", "size": 13}, {"group": 1, "id": "opinions", "label": "opinions", "shape": "dot", "size": 5}, {"group": 1, "id": "style", "label": "style", "shape": "dot", "size": 3}, {"group": 1, "id": "text input", "label": "text input", "shape": "dot", "size": 9}, {"group": 1, "id": "topic", "label": "topic", "shape": "dot", "size": 9}, {"group": 1, "id": "tweet", "label": "tweet", "shape": "dot", "size": 16}, {"group": 1, "id": "typicality", "label": "typicality", "shape": "dot", "size": 2}, {"group": 1, "id": "weight", "label": "weight", "shape": "dot", "size": 3}, {"group": 1, "id": "aesthetic a", "label": "aesthetic a", "shape": "dot", "size": 2}, {"group": 1, "id": "lead sheet \u03b3", "label": "lead sheet \u03b3", "shape": "dot", "size": 4}, {"group": 1, "id": "aesthetic measure", "label": "aesthetic measure", "shape": "dot", "size": 3}, {"group": 1, "id": "artificial intelligence", "label": "artificial intelligence", "shape": "dot", "size": 13}, {"group": 1, "id": "creative mind", "label": "creative mind", "shape": "dot", "size": 3}, {"group": 1, "id": "system", "label": "system", "shape": "dot", "size": 49}, {"group": 1, "id": "complexity", "label": "complexity", "shape": "dot", "size": 3}, {"group": 1, "id": "emotion score", "label": "emotion score", "shape": "dot", "size": 3}, {"group": 1, "id": "emotion vector", "label": "emotion vector", "shape": "dot", "size": 3}, {"group": 1, "id": "entropy", "label": "entropy", "shape": "dot", "size": 3}, {"group": 1, "id": "interest", "label": "interest", "shape": "dot", "size": 3}, {"group": 1, "id": "order", "label": "order", "shape": "dot", "size": 3}, {"group": 1, "id": "surprise", "label": "surprise", "shape": "dot", "size": 3}, {"group": 1, "id": "twitter", "label": "twitter", "shape": "dot", "size": 3}, {"group": 1, "id": "value", "label": "value", "shape": "dot", "size": 3}, {"group": 2, "id": "aesthetics", "label": "aesthetics", "shape": "dot", "size": 13}, {"group": 2, "id": "attitudes", "label": "attitudes", "shape": "dot", "size": 3}, {"group": 2, "id": "attributional perspective", "label": "attributional perspective", "shape": "dot", "size": 3}, {"group": 2, "id": "beauty and the critic\u2019s judgment", "label": "beauty and the critic\u2019s judgment", "shape": "dot", "size": 2}, {"group": 2, "id": "cognitive computation", "label": "cognitive computation", "shape": "dot", "size": 2}, {"group": 2, "id": "computational creativity", "label": "computational creativity", "shape": "dot", "size": 52}, {"group": 2, "id": "creative computing", "label": "creative computing", "shape": "dot", "size": 18}, {"group": 2, "id": "measurement", "label": "measurement", "shape": "dot", "size": 3}, {"group": 2, "id": "meta-evaluation", "label": "meta-evaluation", "shape": "dot", "size": 2}, {"group": 2, "id": "metacreative systems", "label": "metacreative systems", "shape": "dot", "size": 3}, {"group": 2, "id": "probabilistic program induction", "label": "probabilistic program induction", "shape": "dot", "size": 2}, {"group": 2, "id": "self-awareness", "label": "self-awareness", "shape": "dot", "size": 3}, {"group": 2, "id": "skepticism", "label": "skepticism", "shape": "dot", "size": 4}, {"group": 1, "id": "aesthetics in computational creative systems", "label": "aesthetics in computational creative systems", "shape": "dot", "size": 3}, {"group": 1, "id": "explainability", "label": "explainability", "shape": "dot", "size": 3}, {"group": 2, "id": "ai", "label": "ai", "shape": "dot", "size": 3}, {"group": 1, "id": "computational system for music composition", "label": "computational system for music composition", "shape": "dot", "size": 5}, {"group": 2, "id": "ai methods", "label": "ai methods", "shape": "dot", "size": 3}, {"group": 2, "id": "algorithmic composition", "label": "algorithmic composition", "shape": "dot", "size": 3}, {"group": 1, "id": "alignment", "label": "alignment", "shape": "dot", "size": 7}, {"group": 1, "id": "binary constraints", "label": "binary constraints", "shape": "dot", "size": 6}, {"group": 3, "id": "cognitive science society", "label": "cognitive science society", "shape": "dot", "size": 16}, {"group": 1, "id": "scoring function", "label": "scoring function", "shape": "dot", "size": 17}, {"group": 1, "id": "self-alignment algorithm", "label": "self-alignment algorithm", "shape": "dot", "size": 15}, {"group": 1, "id": "song", "label": "song", "shape": "dot", "size": 35}, {"group": 1, "id": "alignment algorithm", "label": "alignment algorithm", "shape": "dot", "size": 5}, {"group": 1, "id": "mkb", "label": "mkb", "shape": "dot", "size": 15}, {"group": 1, "id": "structural alignments", "label": "structural alignments", "shape": "dot", "size": 12}, {"group": 1, "id": "msw", "label": "msw", "shape": "dot", "size": 5}, {"group": 1, "id": "alignments", "label": "alignments", "shape": "dot", "size": 5}, {"group": 1, "id": "all groups", "label": "all groups", "shape": "dot", "size": 2}, {"group": 1, "id": "musicianship", "label": "musicianship", "shape": "dot", "size": 2}, {"group": 3, "id": "annual meeting", "label": "annual meeting", "shape": "dot", "size": 1}, {"group": 2, "id": "anticipation-rnn", "label": "anticipation-rnn", "shape": "dot", "size": 2}, {"group": 2, "id": "unary constraints in sequence generation", "label": "unary constraints in sequence generation", "shape": "dot", "size": 2}, {"group": 1, "id": "artifacts", "label": "artifacts", "shape": "dot", "size": 17}, {"group": 1, "id": "average ratings", "label": "average ratings", "shape": "dot", "size": 18}, {"group": 1, "id": "bias", "label": "bias", "shape": "dot", "size": 18}, {"group": 1, "id": "generative system", "label": "generative system", "shape": "dot", "size": 12}, {"group": 1, "id": "groups", "label": "groups", "shape": "dot", "size": 10}, {"group": 1, "id": "intentions", "label": "intentions", "shape": "dot", "size": 12}, {"group": 1, "id": "musicians", "label": "musicians", "shape": "dot", "size": 7}, {"group": 1, "id": "originality", "label": "originality", "shape": "dot", "size": 7}, {"group": 1, "id": "process", "label": "process", "shape": "dot", "size": 15}, {"group": 1, "id": "respondent", "label": "respondent", "shape": "dot", "size": 6}, {"group": 1, "id": "scores", "label": "scores", "shape": "dot", "size": 19}, {"group": 1, "id": "songs", "label": "songs", "shape": "dot", "size": 45}, {"group": 1, "id": "generation", "label": "generation", "shape": "dot", "size": 13}, {"group": 2, "id": "artificial barriers in artificial intelligence", "label": "artificial barriers in artificial intelligence", "shape": "dot", "size": 2}, {"group": 2, "id": "developing creativity", "label": "developing creativity", "shape": "dot", "size": 2}, {"group": 1, "id": "generating lyrics", "label": "generating lyrics", "shape": "dot", "size": 3}, {"group": 1, "id": "holistic cc", "label": "holistic cc", "shape": "dot", "size": 3}, {"group": 1, "id": "markov constraints", "label": "markov constraints", "shape": "dot", "size": 3}, {"group": 1, "id": "musical sequences", "label": "musical sequences", "shape": "dot", "size": 3}, {"group": 1, "id": "promising direction", "label": "promising direction", "shape": "dot", "size": 3}, {"group": 1, "id": "structural constraints", "label": "structural constraints", "shape": "dot", "size": 3}, {"group": 2, "id": "artificial neural-network-focused implementations", "label": "artificial neural-network-focused implementations", "shape": "dot", "size": 2}, {"group": 2, "id": "transformer and large language models", "label": "transformer and large language models", "shape": "dot", "size": 2}, {"group": 1, "id": "assessment", "label": "assessment", "shape": "dot", "size": 1}, {"group": 1, "id": "attribute", "label": "attribute", "shape": "dot", "size": 2}, {"group": 1, "id": "elevated scores", "label": "elevated scores", "shape": "dot", "size": 2}, {"group": 1, "id": "audio and sheet music", "label": "audio and sheet music", "shape": "dot", "size": 1}, {"group": 1, "id": "audio recording", "label": "audio recording", "shape": "dot", "size": 6}, {"group": 1, "id": "composition", "label": "composition", "shape": "dot", "size": 28}, {"group": 1, "id": "description", "label": "description", "shape": "dot", "size": 24}, {"group": 1, "id": "evaluation", "label": "evaluation", "shape": "dot", "size": 32}, {"group": 1, "id": "participant", "label": "participant", "shape": "dot", "size": 29}, {"group": 1, "id": "question", "label": "question", "shape": "dot", "size": 32}, {"group": 1, "id": "autonomy and self-evaluation", "label": "autonomy and self-evaluation", "shape": "dot", "size": 4}, {"group": 1, "id": "domain knowledge", "label": "domain knowledge", "shape": "dot", "size": 26}, {"group": 1, "id": "observers", "label": "observers", "shape": "dot", "size": 4}, {"group": 1, "id": "computational creative systems", "label": "computational creative systems", "shape": "dot", "size": 5}, {"group": 1, "id": "knowledge", "label": "knowledge", "shape": "dot", "size": 5}, {"group": 1, "id": "local alignments", "label": "local alignments", "shape": "dot", "size": 5}, {"group": 1, "id": "msw-alignment", "label": "msw-alignment", "shape": "dot", "size": 5}, {"group": 1, "id": "mumford and ventura", "label": "mumford and ventura", "shape": "dot", "size": 5}, {"group": 1, "id": "nhmms", "label": "nhmms", "shape": "dot", "size": 12}, {"group": 1, "id": "spectrum", "label": "spectrum", "shape": "dot", "size": 5}, {"group": 1, "id": "weights", "label": "weights", "shape": "dot", "size": 5}, {"group": 2, "id": "autonomy and generativity", "label": "autonomy and generativity", "shape": "dot", "size": 2}, {"group": 2, "id": "foundation models", "label": "foundation models", "shape": "dot", "size": 2}, {"group": 1, "id": "autonomy to make own decisions", "label": "autonomy to make own decisions", "shape": "dot", "size": 3}, {"group": 1, "id": "respondents", "label": "respondents", "shape": "dot", "size": 17}, {"group": 1, "id": "computational systems", "label": "computational systems", "shape": "dot", "size": 3}, {"group": 1, "id": "computers", "label": "computers", "shape": "dot", "size": 6}, {"group": 1, "id": "lyric abilities", "label": "lyric abilities", "shape": "dot", "size": 3}, {"group": 1, "id": "novelty scores", "label": "novelty scores", "shape": "dot", "size": 3}, {"group": 1, "id": "overall rating", "label": "overall rating", "shape": "dot", "size": 2}, {"group": 1, "id": "participants", "label": "participants", "shape": "dot", "size": 2}, {"group": 1, "id": "pop* compositions", "label": "pop* compositions", "shape": "dot", "size": 3}, {"group": 1, "id": "question q1", "label": "question q1", "shape": "dot", "size": 2}, {"group": 1, "id": "structure", "label": "structure", "shape": "dot", "size": 10}, {"group": 1, "id": "survey participants", "label": "survey participants", "shape": "dot", "size": 3}, {"group": 2, "id": "brutus, minstrel and mexica", "label": "brutus, minstrel and mexica", "shape": "dot", "size": 3}, {"group": 2, "id": "storytelling models", "label": "storytelling models", "shape": "dot", "size": 3}, {"group": 2, "id": "building", "label": "building", "shape": "dot", "size": 3}, {"group": 2, "id": "cc system", "label": "cc system", "shape": "dot", "size": 3}, {"group": 1, "id": "c2", "label": "c2", "shape": "dot", "size": 4}, {"group": 1, "id": "candidate compositions", "label": "candidate compositions", "shape": "dot", "size": 2}, {"group": 1, "id": "intention vector", "label": "intention vector", "shape": "dot", "size": 2}, {"group": 1, "id": "characteristics", "label": "characteristics", "shape": "dot", "size": 9}, {"group": 1, "id": "responses", "label": "responses", "shape": "dot", "size": 8}, {"group": 1, "id": "systems", "label": "systems", "shape": "dot", "size": 8}, {"group": 1, "id": "chord structure", "label": "chord structure", "shape": "dot", "size": 1}, {"group": 1, "id": "chord, pitch, and rhythm models", "label": "chord, pitch, and rhythm models", "shape": "dot", "size": 2}, {"group": 1, "id": "music scores (q3)", "label": "music scores (q3)", "shape": "dot", "size": 2}, {"group": 1, "id": "chords", "label": "chords", "shape": "dot", "size": 6}, {"group": 1, "id": "cognitive process for solving problems", "label": "cognitive process for solving problems", "shape": "dot", "size": 4}, {"group": 3, "id": "computational creativity research and practice", "label": "computational creativity research and practice", "shape": "dot", "size": 2}, {"group": 3, "id": "computational creativity theory", "label": "computational creativity theory", "shape": "dot", "size": 2}, {"group": 3, "id": "distributed musical decision-making", "label": "distributed musical decision-making", "shape": "dot", "size": 2}, {"group": 3, "id": "ensemble of musebots", "label": "ensemble of musebots", "shape": "dot", "size": 2}, {"group": 3, "id": "face and idea descriptive models", "label": "face and idea descriptive models", "shape": "dot", "size": 2}, {"group": 3, "id": "final frontier", "label": "final frontier", "shape": "dot", "size": 2}, {"group": 3, "id": "flow", "label": "flow", "shape": "dot", "size": 2}, {"group": 3, "id": "long-range dependency constraints", "label": "long-range dependency constraints", "shape": "dot", "size": 2}, {"group": 3, "id": "perception of creativity", "label": "perception of creativity", "shape": "dot", "size": 2}, {"group": 3, "id": "psychology of discovery and invention", "label": "psychology of discovery and invention", "shape": "dot", "size": 2}, {"group": 3, "id": "stakeholder groups", "label": "stakeholder groups", "shape": "dot", "size": 2}, {"group": 3, "id": "steerable music generation", "label": "steerable music generation", "shape": "dot", "size": 2}, {"group": 1, "id": "compositions", "label": "compositions", "shape": "dot", "size": 12}, {"group": 1, "id": "introduction", "label": "introduction", "shape": "dot", "size": 6}, {"group": 1, "id": "key", "label": "key", "shape": "dot", "size": 6}, {"group": 1, "id": "labels", "label": "labels", "shape": "dot", "size": 7}, {"group": 1, "id": "length", "label": "length", "shape": "dot", "size": 6}, {"group": 1, "id": "likert scale questions", "label": "likert scale questions", "shape": "dot", "size": 6}, {"group": 1, "id": "likert scales", "label": "likert scales", "shape": "dot", "size": 6}, {"group": 1, "id": "melody", "label": "melody", "shape": "dot", "size": 6}, {"group": 1, "id": "modality", "label": "modality", "shape": "dot", "size": 6}, {"group": 1, "id": "rating", "label": "rating", "shape": "dot", "size": 6}, {"group": 1, "id": "significant variation", "label": "significant variation", "shape": "dot", "size": 6}, {"group": 1, "id": "simplified version", "label": "simplified version", "shape": "dot", "size": 7}, {"group": 1, "id": "star ratings", "label": "star ratings", "shape": "dot", "size": 6}, {"group": 1, "id": "tempo", "label": "tempo", "shape": "dot", "size": 6}, {"group": 1, "id": "external artifact", "label": "external artifact", "shape": "dot", "size": 6}, {"group": 1, "id": "jordanous\u0027 specs framework", "label": "jordanous\u0027 specs framework", "shape": "dot", "size": 5}, {"group": 1, "id": "survey", "label": "survey", "shape": "dot", "size": 10}, {"group": 2, "id": "computational creativity evaluation based on what it is to be creative", "label": "computational creativity evaluation based on what it is to be creative", "shape": "dot", "size": 1}, {"group": 2, "id": "computer program", "label": "computer program", "shape": "dot", "size": 3}, {"group": 2, "id": "constrained hidden markov processes", "label": "constrained hidden markov processes", "shape": "dot", "size": 2}, {"group": 1, "id": "constraints", "label": "constraints", "shape": "dot", "size": 10}, {"group": 2, "id": "deep neural networks", "label": "deep neural networks", "shape": "dot", "size": 3}, {"group": 2, "id": "dramatic changes and endings", "label": "dramatic changes and endings", "shape": "dot", "size": 2}, {"group": 2, "id": "finite-length markov processes", "label": "finite-length markov processes", "shape": "dot", "size": 3}, {"group": 2, "id": "game of go", "label": "game of go", "shape": "dot", "size": 3}, {"group": 2, "id": "godel, escher, bach: an eternal golden braid", "label": "godel, escher, bach: an eternal golden braid", "shape": "dot", "size": 2}, {"group": 2, "id": "mathematical theory of communication", "label": "mathematical theory of communication", "shape": "dot", "size": 3}, {"group": 2, "id": "mobile computing and communications", "label": "mobile computing and communications", "shape": "dot", "size": 3}, {"group": 2, "id": "musebots", "label": "musebots", "shape": "dot", "size": 2}, {"group": 2, "id": "new york: vintage books", "label": "new york: vintage books", "shape": "dot", "size": 2}, {"group": 2, "id": "non-anthropocentric, minimal model of intentional creative agency", "label": "non-anthropocentric, minimal model of intentional creative agency", "shape": "dot", "size": 1}, {"group": 2, "id": "sequences", "label": "sequences", "shape": "dot", "size": 2}, {"group": 2, "id": "topic signals in large-scale text", "label": "topic signals in large-scale text", "shape": "dot", "size": 2}, {"group": 1, "id": "dan ventura", "label": "dan ventura", "shape": "dot", "size": 3}, {"group": 1, "id": "operationalizing essential characteristics of creativity", "label": "operationalizing essential characteristics of creativity", "shape": "dot", "size": 2}, {"group": 1, "id": "paul m. bodily", "label": "paul m. bodily", "shape": "dot", "size": 3}, {"group": 1, "id": "computer", "label": "computer", "shape": "dot", "size": 1}, {"group": 1, "id": "computer creativity", "label": "computer creativity", "shape": "dot", "size": 1}, {"group": 4, "id": "conference on computational creativity", "label": "conference on computational creativity", "shape": "dot", "size": 2}, {"group": 4, "id": "ventura, d.", "label": "ventura, d.", "shape": "dot", "size": 1}, {"group": 4, "id": "wiggins, g. a.", "label": "wiggins, g. a.", "shape": "dot", "size": 1}, {"group": 1, "id": "connotation", "label": "connotation", "shape": "dot", "size": 2}, {"group": 1, "id": "markov model", "label": "markov model", "shape": "dot", "size": 7}, {"group": 1, "id": "markov models", "label": "markov models", "shape": "dot", "size": 10}, {"group": 1, "id": "random variables", "label": "random variables", "shape": "dot", "size": 4}, {"group": 1, "id": "sequence length", "label": "sequence length", "shape": "dot", "size": 4}, {"group": 1, "id": "vector of topics or emotions", "label": "vector of topics or emotions", "shape": "dot", "size": 5}, {"group": 1, "id": "content, style, external impact, or type of generative act", "label": "content, style, external impact, or type of generative act", "shape": "dot", "size": 2}, {"group": 1, "id": "creative attributes", "label": "creative attributes", "shape": "dot", "size": 1}, {"group": 1, "id": "creative characteristics", "label": "creative characteristics", "shape": "dot", "size": 1}, {"group": 1, "id": "interests", "label": "interests", "shape": "dot", "size": 4}, {"group": 1, "id": "knowledge of music", "label": "knowledge of music", "shape": "dot", "size": 3}, {"group": 1, "id": "machine", "label": "machine", "shape": "dot", "size": 3}, {"group": 1, "id": "opinion, belief, or attitude about what makes music \u0027good\u0027", "label": "opinion, belief, or attitude about what makes music \u0027good\u0027", "shape": "dot", "size": 3}, {"group": 1, "id": "output", "label": "output", "shape": "dot", "size": 4}, {"group": 1, "id": "sheet music", "label": "sheet music", "shape": "dot", "size": 4}, {"group": 1, "id": "system designers", "label": "system designers", "shape": "dot", "size": 4}, {"group": 1, "id": "tweets", "label": "tweets", "shape": "dot", "size": 8}, {"group": 1, "id": "determine its creativity", "label": "determine its creativity", "shape": "dot", "size": 3}, {"group": 1, "id": "knowledge of the system\u2019s process", "label": "knowledge of the system\u2019s process", "shape": "dot", "size": 3}, {"group": 1, "id": "direct modification", "label": "direct modification", "shape": "dot", "size": 2}, {"group": 1, "id": "generative model", "label": "generative model", "shape": "dot", "size": 6}, {"group": 1, "id": "domain-representative artifacts", "label": "domain-representative artifacts", "shape": "dot", "size": 2}, {"group": 1, "id": "emotion score values", "label": "emotion score values", "shape": "dot", "size": 3}, {"group": 1, "id": "empath vector", "label": "empath vector", "shape": "dot", "size": 2}, {"group": 1, "id": "euclidean distance", "label": "euclidean distance", "shape": "dot", "size": 6}, {"group": 1, "id": "generative process", "label": "generative process", "shape": "dot", "size": 4}, {"group": 1, "id": "lyric knowledge base", "label": "lyric knowledge base", "shape": "dot", "size": 19}, {"group": 1, "id": "lyrics from 369,606 songs", "label": "lyrics from 369,606 songs", "shape": "dot", "size": 2}, {"group": 1, "id": "machine learning", "label": "machine learning", "shape": "dot", "size": 2}, {"group": 1, "id": "novelty and typicality", "label": "novelty and typicality", "shape": "dot", "size": 2}, {"group": 1, "id": "origi-fromsnating tweet", "label": "origi-fromsnating tweet", "shape": "dot", "size": 3}, {"group": 1, "id": "principles governing the evaluation of artifacts within the domain", "label": "principles governing the evaluation of artifacts within the domain", "shape": "dot", "size": 2}, {"group": 1, "id": "requirements for inclusion within the domain", "label": "requirements for inclusion within the domain", "shape": "dot", "size": 2}, {"group": 1, "id": "similarity to existing items", "label": "similarity to existing items", "shape": "dot", "size": 2}, {"group": 1, "id": "structure of artifacts within the domain", "label": "structure of artifacts within the domain", "shape": "dot", "size": 2}, {"group": 1, "id": "subset of the lkb", "label": "subset of the lkb", "shape": "dot", "size": 3}, {"group": 1, "id": "questions q2, q3, and q4", "label": "questions q2, q3, and q4", "shape": "dot", "size": 2}, {"group": 1, "id": "enhance the perception of creativity", "label": "enhance the perception of creativity", "shape": "dot", "size": 2}, {"group": 1, "id": "evaluate its own success", "label": "evaluate its own success", "shape": "dot", "size": 3}, {"group": 1, "id": "objectives", "label": "objectives", "shape": "dot", "size": 5}, {"group": 1, "id": "improvement", "label": "improvement", "shape": "dot", "size": 3}, {"group": 1, "id": "system\u0027s creativity", "label": "system\u0027s creativity", "shape": "dot", "size": 2}, {"group": 1, "id": "process of generation", "label": "process of generation", "shape": "dot", "size": 2}, {"group": 1, "id": "stochastic creation", "label": "stochastic creation", "shape": "dot", "size": 2}, {"group": 1, "id": "goals", "label": "goals", "shape": "dot", "size": 1}, {"group": 1, "id": "holistic computational creativity", "label": "holistic computational creativity", "shape": "dot", "size": 1}, {"group": 1, "id": "ideas", "label": "ideas", "shape": "dot", "size": 2}, {"group": 1, "id": "knowledge representation in pop*", "label": "knowledge representation in pop*", "shape": "dot", "size": 4}, {"group": 1, "id": "np", "label": "np", "shape": "dot", "size": 4}, {"group": 1, "id": "structured model of problems", "label": "structured model of problems", "shape": "dot", "size": 4}, {"group": 1, "id": "lkb", "label": "lkb", "shape": "dot", "size": 4}, {"group": 1, "id": "lyric and sheet music databases", "label": "lyric and sheet music databases", "shape": "dot", "size": 1}, {"group": 1, "id": "lyric model", "label": "lyric model", "shape": "dot", "size": 2}, {"group": 1, "id": "music model", "label": "music model", "shape": "dot", "size": 2}, {"group": 1, "id": "melodic pitch sequence", "label": "melodic pitch sequence", "shape": "dot", "size": 2}, {"group": 1, "id": "sing-ability", "label": "sing-ability", "shape": "dot", "size": 2}, {"group": 1, "id": "training sets", "label": "training sets", "shape": "dot", "size": 2}, {"group": 1, "id": "unique word count", "label": "unique word count", "shape": "dot", "size": 1}, {"group": 1, "id": "max", "label": "max", "shape": "dot", "size": 2}, {"group": 1, "id": "motifs", "label": "motifs", "shape": "dot", "size": 4}, {"group": 1, "id": "perceptual faculties", "label": "perceptual faculties", "shape": "dot", "size": 4}, {"group": 1, "id": "pop music lead sheets", "label": "pop music lead sheets", "shape": "dot", "size": 4}, {"group": 1, "id": "sectional form", "label": "sectional form", "shape": "dot", "size": 4}, {"group": 1, "id": "training", "label": "training", "shape": "dot", "size": 4}, {"group": 1, "id": "perception", "label": "perception", "shape": "dot", "size": 1}, {"group": 1, "id": "preconceived notion", "label": "preconceived notion", "shape": "dot", "size": 1}, {"group": 1, "id": "music composition system", "label": "music composition system", "shape": "dot", "size": 1}, {"group": 1, "id": "musician", "label": "musician", "shape": "dot", "size": 2}, {"group": 1, "id": "pm", "label": "pm", "shape": "dot", "size": 2}, {"group": 1, "id": "pn", "label": "pn", "shape": "dot", "size": 2}, {"group": 1, "id": "topics", "label": "topics", "shape": "dot", "size": 2}, {"group": 1, "id": "reflection", "label": "reflection", "shape": "dot", "size": 1}, {"group": 1, "id": "standards", "label": "standards", "shape": "dot", "size": 1}, {"group": 1, "id": "subprocesses", "label": "subprocesses", "shape": "dot", "size": 1}, {"group": 1, "id": "structure scores (q4)", "label": "structure scores (q4)", "shape": "dot", "size": 1}]);
+                  edges = new vis.DataSet([{"from": "4-measure sliding window", "title": "contextual proximity", "to": "lyrics", "width": 0.5}, {"from": "4-measure sliding window", "title": "The average number of unique pitch values in a 4-measure sliding window is used to measure catchiness.", "to": "pitch values", "width": 1.0}, {"from": "ability to generalize", "title": "contextual proximity", "to": "internal representations", "width": 0.5}, {"from": "ability to generalize", "title": "The internal representation determines the ability to generalize within or across domains.,contextual proximity", "to": "knowledge representation", "width": 2.25}, {"from": "ability to generalize", "title": "contextual proximity", "to": "nc", "width": 0.5}, {"from": "ability to generalize", "title": "contextual proximity", "to": "nhmm n", "width": 0.75}, {"from": "ability to use perceptual abilities", "title": "contextual proximity", "to": "autonomous change", "width": 0.5}, {"from": "ability to use perceptual abilities", "title": "contextual proximity", "to": "autonomous evaluation", "width": 0.5}, {"from": "ability to use perceptual abilities", "title": "contextual proximity", "to": "autonomy", "width": 0.5}, {"from": "ability to use perceptual abilities", "title": "contextual proximity", "to": "choosing a relevant knowledge (sub)base", "width": 0.5}, {"from": "ability to use perceptual abilities", "title": "contextual proximity", "to": "choosing an intention", "width": 0.5}, {"from": "ability to use perceptual abilities", "title": "contextual proximity", "to": "creativity", "width": 1.0}, {"from": "ability to use perceptual abilities", "title": "contextual proximity", "to": "criteria for a system to be autonomous", "width": 2.0}, {"from": "ability to use perceptual abilities", "title": "Both mentioned as ways in which a system can exert autonomy,contextual proximity", "to": "injection of knowledge", "width": 2.0}, {"from": "ability to use perceptual abilities", "title": "contextual proximity", "to": "non-randomness", "width": 0.5}, {"from": "ability to use perceptual abilities", "title": "contextual proximity", "to": "pop*", "width": 2.0}, {"from": "ability to use perceptual abilities", "title": "contextual proximity", "to": "self-evaluation", "width": 0.5}, {"from": "ability to use perceptual abilities", "title": "contextual proximity", "to": "self-improve the system", "width": 0.5}, {"from": "aesthetic", "title": "contextual proximity", "to": "aesthetic standards", "width": 1.5}, {"from": "aesthetic", "title": "contextual proximity", "to": "autonomous system", "width": 0.5}, {"from": "aesthetic", "title": "contextual proximity", "to": "autonomy", "width": 1.0}, {"from": "aesthetic", "title": "contextual proximity", "to": "beliefs", "width": 1.0}, {"from": "aesthetic", "title": "Aesthetic considerations are also part of creativity, as it involves the appreciation of beauty and artistry in the creative process.,contextual proximity", "to": "creativity", "width": 3.25}, {"from": "aesthetic", "title": "contextual proximity", "to": "emotion", "width": 0.5}, {"from": "aesthetic", "title": "contextual proximity", "to": "empath", "width": 0.5}, {"from": "aesthetic", "title": "contextual proximity", "to": "familiarity", "width": 1.0}, {"from": "aesthetic", "title": "contextual proximity", "to": "intention", "width": 0.5}, {"from": "aesthetic", "title": "contextual proximity", "to": "intentionality", "width": 1.25}, {"from": "aesthetic", "title": "contextual proximity", "to": "machine learning models", "width": 0.5}, {"from": "aesthetic", "title": "contextual proximity", "to": "music", "width": 0.5}, {"from": "aesthetic", "title": "contextual proximity", "to": "music composition", "width": 0.5}, {"from": "aesthetic", "title": "contextual proximity", "to": "novelty", "width": 1.0}, {"from": "aesthetic", "title": "contextual proximity", "to": "opinions", "width": 0.5}, {"from": "aesthetic", "title": "contextual proximity", "to": "pop*", "width": 0.75}, {"from": "aesthetic", "title": "contextual proximity", "to": "style", "width": 0.5}, {"from": "aesthetic", "title": "contextual proximity", "to": "text input", "width": 1.5}, {"from": "aesthetic", "title": "contextual proximity", "to": "topic", "width": 1.0}, {"from": "aesthetic", "title": "contextual proximity", "to": "tweet", "width": 0.5}, {"from": "aesthetic", "title": "contextual proximity", "to": "typicality", "width": 1.0}, {"from": "aesthetic", "title": "contextual proximity", "to": "weight", "width": 0.5}, {"from": "aesthetic a", "title": "contextual proximity", "to": "intention", "width": 0.75}, {"from": "aesthetic a", "title": "modeled asP (\u03b3|A) = P (\u03bd|A) \u00b7 P (\u03c4 ) P (\u03b7|\u03bd, \u03c4 ) \u00b7 P (\u03d5|\u03bd, \u03c4, \u03b7) \u00b7 P (\u03c1|\u03bd, \u03c4 ) \u00b7 P (\u03bb|\u03bd, \u03c4, \u03c1),where \u03bd, \u03c4, \u03b7, \u03d5, \u03c1, and \u03bb represent intentions, structure, chords, pitch, rhythm, and lyrics, respectively.,contextual proximity", "to": "lead sheet \u03b3", "width": 1.5}, {"from": "aesthetic measure", "title": "contextual proximity", "to": "artificial intelligence", "width": 0.5}, {"from": "aesthetic measure", "title": "Aesthetic measure is discussed in relation to the creative mind.", "to": "creative mind", "width": 1.0}, {"from": "aesthetic measure", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "aesthetic standards", "title": "contextual proximity", "to": "complexity", "width": 1.5}, {"from": "aesthetic standards", "title": "contextual proximity", "to": "emotion score", "width": 1.5}, {"from": "aesthetic standards", "title": "contextual proximity", "to": "emotion vector", "width": 1.5}, {"from": "aesthetic standards", "title": "contextual proximity", "to": "entropy", "width": 1.5}, {"from": "aesthetic standards", "title": "contextual proximity", "to": "interest", "width": 1.5}, {"from": "aesthetic standards", "title": "contextual proximity", "to": "order", "width": 1.5}, {"from": "aesthetic standards", "title": "contextual proximity", "to": "pop*", "width": 4.5}, {"from": "aesthetic standards", "title": "contextual proximity", "to": "surprise", "width": 1.5}, {"from": "aesthetic standards", "title": "contextual proximity", "to": "system", "width": 1.5}, {"from": "aesthetic standards", "title": "contextual proximity", "to": "tweet", "width": 3.0}, {"from": "aesthetic standards", "title": "contextual proximity", "to": "twitter", "width": 1.5}, {"from": "aesthetic standards", "title": "contextual proximity", "to": "value", "width": 1.5}, {"from": "aesthetics", "title": "contextual proximity", "to": "attitudes", "width": 0.5}, {"from": "aesthetics", "title": "contextual proximity", "to": "attributional perspective", "width": 0.5}, {"from": "aesthetics", "title": "contextual proximity", "to": "beauty and the critic\u2019s judgment", "width": 0.5}, {"from": "aesthetics", "title": "contextual proximity", "to": "cognitive computation", "width": 0.5}, {"from": "aesthetics", "title": "contextual proximity", "to": "computational creativity", "width": 1.0}, {"from": "aesthetics", "title": "contextual proximity", "to": "creative computing", "width": 0.5}, {"from": "aesthetics", "title": "contextual proximity", "to": "creativity", "width": 0.5}, {"from": "aesthetics", "title": "contextual proximity", "to": "measurement", "width": 0.5}, {"from": "aesthetics", "title": "contextual proximity", "to": "meta-evaluation", "width": 0.5}, {"from": "aesthetics", "title": "contextual proximity", "to": "metacreative systems", "width": 0.5}, {"from": "aesthetics", "title": "contextual proximity", "to": "probabilistic program induction", "width": 0.5}, {"from": "aesthetics", "title": "contextual proximity", "to": "self-awareness", "width": 0.5}, {"from": "aesthetics", "title": "contextual proximity", "to": "skepticism", "width": 0.5}, {"from": "aesthetics in computational creative systems", "title": "contextual proximity", "to": "artificial intelligence", "width": 0.5}, {"from": "aesthetics in computational creative systems", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "aesthetics in computational creative systems", "title": "Explainability is considered an aesthetic for aesthetics in computational creative systems.", "to": "explainability", "width": 1.0}, {"from": "ai", "title": "Computational creativity is characterized as the \u0027final frontier\u0027 of AI,contextual proximity", "to": "computational creativity", "width": 1.5}, {"from": "ai", "title": "contextual proximity", "to": "computational system for music composition", "width": 0.5}, {"from": "ai", "title": "The context discusses how AI has been excelling in certain tasks but still faces challenges in areas requiring creativity, leading to the exploration of computational creativity as a frontier in AI.,contextual proximity", "to": "creativity", "width": 1.75}, {"from": "ai methods", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "ai methods", "title": "contextual proximity", "to": "creative computing", "width": 0.5}, {"from": "ai methods", "title": "The context discusses AI methods for algorithmic composition, indicating a relationship between the two concepts.", "to": "algorithmic composition", "width": 1.0}, {"from": "algorithmic composition", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "algorithmic composition", "title": "contextual proximity", "to": "creative computing", "width": 0.5}, {"from": "alignment", "title": "contextual proximity", "to": "autonomy", "width": 0.75}, {"from": "alignment", "title": "Each viewpoint-specific alignment defines a set of binary constraints C2 that is used to define NHMMs Nc, Np, Nr, Nl", "to": "binary constraints", "width": 1.0}, {"from": "alignment", "title": "Both are related to the Proceedings of the Annual Meeting of the Cognitive Science Society,contextual proximity", "to": "cognitive science society", "width": 1.5}, {"from": "alignment", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "alignment", "title": "contextual proximity", "to": "scoring function", "width": 0.5}, {"from": "alignment", "title": "contextual proximity", "to": "self-alignment algorithm", "width": 0.5}, {"from": "alignment", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "alignment algorithm", "title": "contextual proximity", "to": "mkb", "width": 0.75}, {"from": "alignment algorithm", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "alignment algorithm", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "alignment algorithm", "title": "contextual proximity", "to": "structural alignments", "width": 0.5}, {"from": "alignment algorithm", "title": "The multi-Smith-Waterman (mSW) self-alignment algorithm is used to align a song against itself for each viewpoint and find all unique local align.", "to": "msw", "width": 1.0}, {"from": "alignments", "title": "contextual proximity", "to": "autonomy", "width": 0.75}, {"from": "alignments", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "alignments", "title": "The scoring function used to calculate alignments considers different features for each viewpoint,contextual proximity", "to": "scoring function", "width": 1.5}, {"from": "alignments", "title": "contextual proximity", "to": "self-alignment algorithm", "width": 0.5}, {"from": "alignments", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "all groups", "title": "contextual proximity", "to": "pop*", "width": 0.75}, {"from": "all groups", "title": "Musicianship scored above average in all groups, including believers, skeptics, non-musicians, and unbelievers.", "to": "musicianship", "width": 1.0}, {"from": "annual meeting", "title": "Both are part of the event mentioned in the context,contextual proximity", "to": "cognitive science society", "width": 1.5}, {"from": "anticipation-rnn", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "anticipation-rnn", "title": "Anticipation-RNN enforces unary constraints in sequence generation as mentioned in the Neural Computing and Applications", "to": "unary constraints in sequence generation", "width": 1.0}, {"from": "artifacts", "title": "contextual proximity", "to": "average ratings", "width": 0.75}, {"from": "artifacts", "title": "contextual proximity", "to": "bias", "width": 0.5}, {"from": "artifacts", "title": "contextual proximity", "to": "creativity", "width": 1.25}, {"from": "artifacts", "title": "A generative system produces artifacts,contextual proximity", "to": "generative system", "width": 1.75}, {"from": "artifacts", "title": "contextual proximity", "to": "groups", "width": 0.5}, {"from": "artifacts", "title": "contextual proximity", "to": "intentions", "width": 0.5}, {"from": "artifacts", "title": "contextual proximity", "to": "knowledge representation", "width": 1.0}, {"from": "artifacts", "title": "contextual proximity", "to": "musicians", "width": 0.5}, {"from": "artifacts", "title": "contextual proximity", "to": "novelty", "width": 2.0}, {"from": "artifacts", "title": "contextual proximity", "to": "originality", "width": 0.5}, {"from": "artifacts", "title": "contextual proximity", "to": "pop*", "width": 1.75}, {"from": "artifacts", "title": "contextual proximity", "to": "process", "width": 0.5}, {"from": "artifacts", "title": "contextual proximity", "to": "respondent", "width": 0.5}, {"from": "artifacts", "title": "contextual proximity", "to": "scores", "width": 1.25}, {"from": "artifacts", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "artifacts", "title": "The system generates artifacts.,contextual proximity", "to": "system", "width": 2.0}, {"from": "artifacts", "title": "The system is capable of generating artifacts.", "to": "generation", "width": 1.0}, {"from": "artificial barriers in artificial intelligence", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "artificial barriers in artificial intelligence", "title": "Developing creativity addresses artificial barriers in artificial intelligence as discussed in the Minds and Machines journal", "to": "developing creativity", "width": 1.0}, {"from": "artificial intelligence", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "artificial intelligence", "title": "contextual proximity", "to": "creative mind", "width": 0.5}, {"from": "artificial intelligence", "title": "contextual proximity", "to": "creativity", "width": 0.5}, {"from": "artificial intelligence", "title": "contextual proximity", "to": "explainability", "width": 0.5}, {"from": "artificial intelligence", "title": "contextual proximity", "to": "generating lyrics", "width": 0.5}, {"from": "artificial intelligence", "title": "contextual proximity", "to": "holistic cc", "width": 0.5}, {"from": "artificial intelligence", "title": "contextual proximity", "to": "markov constraints", "width": 0.5}, {"from": "artificial intelligence", "title": "contextual proximity", "to": "musical sequences", "width": 0.5}, {"from": "artificial intelligence", "title": "contextual proximity", "to": "promising direction", "width": 0.5}, {"from": "artificial intelligence", "title": "contextual proximity", "to": "structural constraints", "width": 0.5}, {"from": "artificial intelligence", "title": "The system overall is perceived to be creative, indicating a direction for expanding artificial intelligence.,contextual proximity", "to": "system", "width": 2.0}, {"from": "artificial neural-network-focused implementations", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "artificial neural-network-focused implementations", "title": "Current artificial neural-network-focused implementations, including transformer and large language models, have demonstrated weakness in highly-structured or constrained generation", "to": "transformer and large language models", "width": 1.0}, {"from": "assessment", "title": "The system is externally evaluated for characteristics of creativity through artifact-based and process-based assessments.,contextual proximity", "to": "system", "width": 2.25}, {"from": "attitudes", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "attitudes", "title": "Both are mentioned in the same sentence as key concepts in the context", "to": "measurement", "width": 1.0}, {"from": "attribute", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "attribute", "title": "The context states that elevated scores for the attribute would be a good sign.", "to": "elevated scores", "width": 1.0}, {"from": "attributional perspective", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "attributional perspective", "title": "Both are mentioned in the same sentence as key concepts in the context", "to": "creativity", "width": 1.0}, {"from": "audio and sheet music", "title": "Compositions that pass the self-evaluation phase are rendered as audio and sheet music,contextual proximity", "to": "pop*", "width": 2.75}, {"from": "audio recording", "title": "For each composition, the system\u0027s generated description of the piece is presented along with an audio recording of the song,contextual proximity", "to": "composition", "width": 1.5}, {"from": "audio recording", "title": "contextual proximity", "to": "description", "width": 0.5}, {"from": "audio recording", "title": "contextual proximity", "to": "evaluation", "width": 0.5}, {"from": "audio recording", "title": "contextual proximity", "to": "participant", "width": 0.75}, {"from": "audio recording", "title": "contextual proximity", "to": "question", "width": 0.75}, {"from": "audio recording", "title": "contextual proximity", "to": "songs", "width": 2.25}, {"from": "autonomous change", "title": "contextual proximity", "to": "creativity", "width": 0.5}, {"from": "autonomous change", "title": "Second criteria for a system to be autonomous,contextual proximity", "to": "criteria for a system to be autonomous", "width": 2.0}, {"from": "autonomous change", "title": "contextual proximity", "to": "injection of knowledge", "width": 0.5}, {"from": "autonomous change", "title": "contextual proximity", "to": "pop*", "width": 1.0}, {"from": "autonomous evaluation", "title": "contextual proximity", "to": "creativity", "width": 0.5}, {"from": "autonomous evaluation", "title": "First criteria for a system to be autonomous,contextual proximity", "to": "criteria for a system to be autonomous", "width": 2.0}, {"from": "autonomous evaluation", "title": "contextual proximity", "to": "injection of knowledge", "width": 0.5}, {"from": "autonomous evaluation", "title": "contextual proximity", "to": "pop*", "width": 1.0}, {"from": "autonomous system", "title": "contextual proximity", "to": "autonomy and self-evaluation", "width": 0.5}, {"from": "autonomous system", "title": "contextual proximity", "to": "creativity", "width": 4.5}, {"from": "autonomous system", "title": "contextual proximity", "to": "domain knowledge", "width": 0.5}, {"from": "autonomous system", "title": "contextual proximity", "to": "generation", "width": 0.5}, {"from": "autonomous system", "title": "contextual proximity", "to": "intentionality", "width": 0.5}, {"from": "autonomous system", "title": "contextual proximity", "to": "knowledge representation", "width": 0.5}, {"from": "autonomous system", "title": "contextual proximity", "to": "machine learning models", "width": 1.0}, {"from": "autonomous system", "title": "The autonomous system for music composition is explicitly designed to be creative, showcasing the application of creativity in technology.,contextual proximity", "to": "music composition", "width": 2.0}, {"from": "autonomous system", "title": "contextual proximity", "to": "observers", "width": 0.5}, {"from": "autonomy", "title": "contextual proximity", "to": "binary constraints", "width": 0.75}, {"from": "autonomy", "title": "contextual proximity", "to": "computational creative systems", "width": 0.75}, {"from": "autonomy", "title": "contextual proximity", "to": "creativity", "width": 0.5}, {"from": "autonomy", "title": "contextual proximity", "to": "criteria for a system to be autonomous", "width": 1.0}, {"from": "autonomy", "title": "contextual proximity", "to": "injection of knowledge", "width": 0.5}, {"from": "autonomy", "title": "contextual proximity", "to": "knowledge", "width": 0.75}, {"from": "autonomy", "title": "contextual proximity", "to": "local alignments", "width": 0.75}, {"from": "autonomy", "title": "contextual proximity", "to": "mkb", "width": 0.75}, {"from": "autonomy", "title": "contextual proximity", "to": "msw-alignment", "width": 0.75}, {"from": "autonomy", "title": "Mumford and Ventura suggest that \u0027even creative humans could be argued to be following a complex set of chemical and psychological instructions\u0027,contextual proximity", "to": "mumford and ventura", "width": 2.25}, {"from": "autonomy", "title": "contextual proximity", "to": "nhmms", "width": 0.75}, {"from": "autonomy", "title": "Pop* implements autonomy,contextual proximity", "to": "pop*", "width": 4.25}, {"from": "autonomy", "title": "contextual proximity", "to": "scoring function", "width": 1.5}, {"from": "autonomy", "title": "contextual proximity", "to": "self-alignment algorithm", "width": 1.5}, {"from": "autonomy", "title": "Self-evaluation presupposes autonomy, showing a relationship between the two concepts.,contextual proximity", "to": "self-evaluation", "width": 3.0}, {"from": "autonomy", "title": "contextual proximity", "to": "song", "width": 1.5}, {"from": "autonomy", "title": "contextual proximity", "to": "spectrum", "width": 0.75}, {"from": "autonomy", "title": "contextual proximity", "to": "weights", "width": 0.75}, {"from": "autonomy and generativity", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "autonomy and generativity", "title": "State-of-the-art foundation models exhibit autonomy and generativity, which are necessary characteristics for computational creativity", "to": "foundation models", "width": 1.0}, {"from": "autonomy and self-evaluation", "title": "Autonomy and self-evaluation are important aspects of creativity, as they involve independence and self-assessment in the creative process.,contextual proximity", "to": "creativity", "width": 3.25}, {"from": "autonomy and self-evaluation", "title": "contextual proximity", "to": "machine learning models", "width": 0.5}, {"from": "autonomy and self-evaluation", "title": "contextual proximity", "to": "music composition", "width": 0.5}, {"from": "autonomy to make own decisions", "title": "contextual proximity", "to": "creativity", "width": 0.5}, {"from": "autonomy to make own decisions", "title": "Pop* is related to autonomy as it determines its decisions independently.,contextual proximity", "to": "pop*", "width": 2.25}, {"from": "autonomy to make own decisions", "title": "contextual proximity", "to": "respondents", "width": 0.5}, {"from": "average ratings", "title": "contextual proximity", "to": "bias", "width": 1.5}, {"from": "average ratings", "title": "contextual proximity", "to": "computational systems", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "computers", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "creativity", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "familiarity", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "generation", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "lyric abilities", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "novelty scores", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "overall rating", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "participants", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "pop*", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "pop* compositions", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "question q1", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "scores", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "structure", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "survey participants", "width": 0.75}, {"from": "average ratings", "title": "contextual proximity", "to": "system", "width": 0.75}, {"from": "beauty and the critic\u2019s judgment", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "computational systems", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "computers", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "creativity", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "familiarity", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "generation", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "lyric abilities", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "novelty scores", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "overall rating", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "participants", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "pop* compositions", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "question q1", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "scores", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "structure", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "survey participants", "width": 0.5}, {"from": "bias", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "binary constraints", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "binary constraints", "title": "contextual proximity", "to": "scoring function", "width": 0.5}, {"from": "binary constraints", "title": "contextual proximity", "to": "self-alignment algorithm", "width": 0.5}, {"from": "binary constraints", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "brutus, minstrel and mexica", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "brutus, minstrel and mexica", "title": "contextual proximity", "to": "creative computing", "width": 0.5}, {"from": "brutus, minstrel and mexica", "title": "The context mentions three computer-based models of storytelling: BRUTUS, MINSTREL, and MEXICA, indicating a relationship between the two concepts.", "to": "storytelling models", "width": 1.0}, {"from": "building", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "building", "title": "contextual proximity", "to": "creative computing", "width": 0.5}, {"from": "building", "title": "The context discusses How to Build a CC System, indicating a relationship between the two concepts.", "to": "cc system", "width": 1.0}, {"from": "c2", "title": "contextual proximity", "to": "internal representations", "width": 0.5}, {"from": "c2", "title": "contextual proximity", "to": "knowledge representation", "width": 1.25}, {"from": "c2", "title": "contextual proximity", "to": "nc", "width": 0.5}, {"from": "c2", "title": "The NHMM N allows the definition of a set C2 of binary constraints, which are essential to creating rhymes, motifs, and sectional form structure.,contextual proximity", "to": "nhmm n", "width": 1.75}, {"from": "candidate compositions", "title": "contextual proximity", "to": "lyrics", "width": 0.5}, {"from": "candidate compositions", "title": "The intention vector is used to compose candidate compositions.", "to": "intention vector", "width": 1.0}, {"from": "cc system", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "cc system", "title": "contextual proximity", "to": "creative computing", "width": 0.5}, {"from": "characteristics", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "characteristics", "title": "The concept of creativity is contestable, and multiple characteristics have been identified as necessary for computational creativity,contextual proximity", "to": "creativity", "width": 3.5}, {"from": "characteristics", "title": "contextual proximity", "to": "groups", "width": 0.5}, {"from": "characteristics", "title": "The results also suggest that, at least to some extent, Pop* possesses each of the characteristics necessary for creativity,contextual proximity", "to": "pop*", "width": 2.75}, {"from": "characteristics", "title": "contextual proximity", "to": "process", "width": 0.5}, {"from": "characteristics", "title": "contextual proximity", "to": "question", "width": 1.0}, {"from": "characteristics", "title": "contextual proximity", "to": "responses", "width": 1.0}, {"from": "characteristics", "title": "contextual proximity", "to": "scores", "width": 1.0}, {"from": "characteristics", "title": "CC has largely been defined by systems that exhibit one or a few creative characteristics.,contextual proximity", "to": "systems", "width": 2.25}, {"from": "choosing a relevant knowledge (sub)base", "title": "contextual proximity", "to": "creativity", "width": 0.5}, {"from": "choosing a relevant knowledge (sub)base", "title": "contextual proximity", "to": "criteria for a system to be autonomous", "width": 1.0}, {"from": "choosing a relevant knowledge (sub)base", "title": "contextual proximity", "to": "injection of knowledge", "width": 0.5}, {"from": "choosing a relevant knowledge (sub)base", "title": "One way in which Pop* implements autonomy,contextual proximity", "to": "pop*", "width": 2.0}, {"from": "choosing an intention", "title": "contextual proximity", "to": "creativity", "width": 0.5}, {"from": "choosing an intention", "title": "contextual proximity", "to": "criteria for a system to be autonomous", "width": 1.0}, {"from": "choosing an intention", "title": "contextual proximity", "to": "injection of knowledge", "width": 0.5}, {"from": "choosing an intention", "title": "One way in which Pop* implements autonomy,contextual proximity", "to": "pop*", "width": 2.0}, {"from": "chord structure", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "chord, pitch, and rhythm models", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "chord, pitch, and rhythm models", "title": "The context states that overall music scores (Q3) were among the highest for any of the questions, suggesting that the chord, pitch, and rhythm models are learning and applying knowledge effectively.", "to": "music scores (q3)", "width": 1.0}, {"from": "chords", "title": "contextual proximity", "to": "composition", "width": 0.5}, {"from": "chords", "title": "contextual proximity", "to": "description", "width": 0.5}, {"from": "chords", "title": "contextual proximity", "to": "evaluation", "width": 0.5}, {"from": "chords", "title": "contextual proximity", "to": "participant", "width": 0.75}, {"from": "chords", "title": "contextual proximity", "to": "question", "width": 0.75}, {"from": "chords", "title": "significant variation in chords,contextual proximity", "to": "songs", "width": 3.25}, {"from": "cognitive computation", "title": "Both are mentioned in the same sentence as key concepts in the context,contextual proximity", "to": "computational creativity", "width": 1.5}, {"from": "cognitive process for solving problems", "title": "contextual proximity", "to": "internal representations", "width": 0.5}, {"from": "cognitive process for solving problems", "title": "A knowledge representation defines the cognitive process for solving these problems.,contextual proximity", "to": "knowledge representation", "width": 2.25}, {"from": "cognitive process for solving problems", "title": "contextual proximity", "to": "nc", "width": 0.5}, {"from": "cognitive process for solving problems", "title": "contextual proximity", "to": "nhmm n", "width": 0.75}, {"from": "cognitive science society", "title": "contextual proximity", "to": "computational creativity", "width": 0.5}, {"from": "cognitive science society", "title": "contextual proximity", "to": "computational creativity research and practice", "width": 0.5}, {"from": "cognitive science society", "title": "contextual proximity", "to": "computational creativity theory", "width": 0.5}, {"from": "cognitive science society", "title": "contextual proximity", "to": "creativity", "width": 0.5}, {"from": "cognitive science society", "title": "contextual proximity", "to": "distributed musical decision-making", "width": 0.5}, {"from": "cognitive science society", "title": "contextual proximity", "to": "ensemble of musebots", "width": 0.5}, {"from": "cognitive science society", "title": "contextual proximity", "to": "face and idea descriptive models", "width": 0.5}, {"from": "cognitive science society", "title": "contextual proximity", "to": "final frontier", "width": 0.5}, {"from": "cognitive science society", "title": "contextual proximity", "to": "flow", "width": 0.5}, {"from": "cognitive science society", "title": "contextual proximity", "to": "long-range dependency constraints", "width": 0.5}, {"from": "cognitive science society", "title": "contextual proximity", "to": "perception of creativity", "width": 0.5}, {"from": "cognitive science society", "title": "contextual proximity", "to": "psychology of discovery and invention", "width": 0.5}, {"from": "cognitive science society", "title": "contextual proximity", "to": "stakeholder groups", "width": 0.5}, {"from": "cognitive science society", "title": "contextual proximity", "to": "steerable music generation", "width": 0.5}, {"from": "complexity", "title": "contextual proximity", "to": "pop*", "width": 0.75}, {"from": "complexity", "title": "contextual proximity", "to": "tweet", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "compositions", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "description", "width": 1.0}, {"from": "composition", "title": "contextual proximity", "to": "evaluation", "width": 1.25}, {"from": "composition", "title": "An intentional system is a deliberative system whose artifacts are the result of a directed process towards a particular objective,contextual proximity", "to": "intention", "width": 2.75}, {"from": "composition", "title": "contextual proximity", "to": "introduction", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "key", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "labels", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "lead sheet \u03b3", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "length", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "likert scale questions", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "likert scales", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "lyrics", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "melody", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "modality", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "participant", "width": 1.5}, {"from": "composition", "title": "contextual proximity", "to": "question", "width": 1.5}, {"from": "composition", "title": "contextual proximity", "to": "rating", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "self-evaluation", "width": 1.75}, {"from": "composition", "title": "contextual proximity", "to": "significant variation", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "simplified version", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "songs", "width": 4.5}, {"from": "composition", "title": "contextual proximity", "to": "star ratings", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "structure", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "composition", "title": "contextual proximity", "to": "tempo", "width": 0.5}, {"from": "composition", "title": "The scoring function is applied to compositions to evaluate them.", "to": "scoring function", "width": 1.0}, {"from": "compositions", "title": "contextual proximity", "to": "creativity", "width": 0.5}, {"from": "compositions", "title": "contextual proximity", "to": "description", "width": 0.5}, {"from": "compositions", "title": "contextual proximity", "to": "evaluation", "width": 1.0}, {"from": "compositions", "title": "contextual proximity", "to": "external artifact", "width": 0.5}, {"from": "compositions", "title": "contextual proximity", "to": "jordanous\u0027 specs framework", "width": 0.5}, {"from": "compositions", "title": "The participant evaluates the compositions,contextual proximity", "to": "participant", "width": 2.75}, {"from": "compositions", "title": "contextual proximity", "to": "process", "width": 0.5}, {"from": "compositions", "title": "contextual proximity", "to": "question", "width": 0.75}, {"from": "compositions", "title": "contextual proximity", "to": "songs", "width": 2.25}, {"from": "compositions", "title": "contextual proximity", "to": "survey", "width": 1.0}, {"from": "compositions", "title": "contextual proximity", "to": "system", "width": 1.75}, {"from": "computational creative systems", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "computational creative systems", "title": "contextual proximity", "to": "scoring function", "width": 0.5}, {"from": "computational creative systems", "title": "contextual proximity", "to": "self-alignment algorithm", "width": 0.5}, {"from": "computational creative systems", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "computational creativity evaluation based on what it is to be creative", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "computer program", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "constrained hidden markov processes", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "constraints", "width": 0.5}, {"from": "computational creativity", "title": "The context is from the Proceedings of the Sixth International Conference on Computational Creativity, indicating a relationship between the two concepts.,contextual proximity", "to": "creative computing", "width": 2.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "creativity", "width": 2.0}, {"from": "computational creativity", "title": "contextual proximity", "to": "deep neural networks", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "developing creativity", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "dramatic changes and endings", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "empath", "width": 0.5}, {"from": "computational creativity", "title": "The paper discusses Computational Creativity as the final frontier in the field of Artificial Intelligence", "to": "final frontier", "width": 1.0}, {"from": "computational creativity", "title": "contextual proximity", "to": "finite-length markov processes", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "foundation models", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "game of go", "width": 0.5}, {"from": "computational creativity", "title": "The context mentions Mere Generation in the context of Computational Creativity, indicating a relationship between the two concepts.,contextual proximity", "to": "generation", "width": 1.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "godel, escher, bach: an eternal golden braid", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "mathematical theory of communication", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "measurement", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "meta-evaluation", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "metacreative systems", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "mobile computing and communications", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "musebots", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "new york: vintage books", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "non-anthropocentric, minimal model of intentional creative agency", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "probabilistic program induction", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "self-awareness", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "sequences", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "skepticism", "width": 1.0}, {"from": "computational creativity", "title": "contextual proximity", "to": "storytelling models", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "computational creativity", "title": "Building systems that are computationally creative requires the explicit identification and operationalization of necessary characteristics of creativity,contextual proximity", "to": "systems", "width": 1.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "topic signals in large-scale text", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "transformer and large language models", "width": 0.5}, {"from": "computational creativity", "title": "contextual proximity", "to": "unary constraints in sequence generation", "width": 0.5}, {"from": "computational creativity research and practice", "title": "The paper discusses the stakeholder groups in Computational Creativity research and practice", "to": "stakeholder groups", "width": 1.0}, {"from": "computational creativity theory", "title": "The paper discusses the FACE and IDEA descriptive models as part of Computational Creativity theory", "to": "face and idea descriptive models", "width": 1.0}, {"from": "computational system for music composition", "title": "contextual proximity", "to": "creativity", "width": 1.0}, {"from": "computational system for music composition", "title": "contextual proximity", "to": "dan ventura", "width": 0.5}, {"from": "computational system for music composition", "title": "The context focuses on the operationalization of essential characteristics of creativity in a computational system designed for music composition.,contextual proximity", "to": "operationalizing essential characteristics of creativity", "width": 1.5}, {"from": "computational system for music composition", "title": "contextual proximity", "to": "paul m. bodily", "width": 0.5}, {"from": "computational systems", "title": "The notion of achieving creativity in computational systems is fundamental.", "to": "creativity", "width": 1.0}, {"from": "computer", "title": "what respondents thought was a computer being creative was actually a human being creative,contextual proximity", "to": "mumford and ventura", "width": 2.25}, {"from": "computer creativity", "title": "Belief about computer creativity,contextual proximity", "to": "pop*", "width": 1.75}, {"from": "computer program", "title": "contextual proximity", "to": "creative computing", "width": 0.5}, {"from": "computer program", "title": "The context mentions empirical criteria for attributing creativity to a computer program, indicating a relationship between the two concepts.", "to": "creativity", "width": 1.0}, {"from": "computers", "title": "contextual proximity", "to": "creativity", "width": 0.75}, {"from": "computers", "title": "contextual proximity", "to": "generation", "width": 0.5}, {"from": "computers", "title": "contextual proximity", "to": "pop*", "width": 1.5}, {"from": "computers", "title": "contextual proximity", "to": "respondents", "width": 0.5}, {"from": "conference on computational creativity", "title": "contextual proximity", "to": "ventura, d.", "width": 0.5}, {"from": "conference on computational creativity", "title": "contextual proximity", "to": "wiggins, g. a.", "width": 0.5}, {"from": "connotation", "title": "The context mentions bias for the question and how it might be expected toward lower scores.", "to": "question", "width": 1.0}, {"from": "connotation", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "constrained hidden markov processes", "title": "Sequences are imposed with structure using Constrained Hidden Markov Processes as mentioned in the Ph.D. thesis by Glines, P. W.", "to": "sequences", "width": 1.0}, {"from": "constraints", "title": "contextual proximity", "to": "creative computing", "width": 0.5}, {"from": "constraints", "title": "contextual proximity", "to": "intention", "width": 0.5}, {"from": "constraints", "title": "contextual proximity", "to": "markov model", "width": 1.0}, {"from": "constraints", "title": "contextual proximity", "to": "markov models", "width": 1.5}, {"from": "constraints", "title": "NHMM N = (n, M, C1) models the probability of a sequence of random variables X = X1, . . . , Xn, where C1 is a set of unary constraints as mentioned in the context,contextual proximity", "to": "nhmms", "width": 2.5}, {"from": "constraints", "title": "contextual proximity", "to": "random variables", "width": 0.5}, {"from": "constraints", "title": "contextual proximity", "to": "sequence length", "width": 0.5}, {"from": "constraints", "title": "contextual proximity", "to": "vector of topics or emotions", "width": 0.5}, {"from": "constraints", "title": "The context mentions finite-length Markov processes with constraints, indicating a relationship between the two concepts.", "to": "finite-length markov processes", "width": 1.0}, {"from": "content, style, external impact, or type of generative act", "title": "contextual proximity", "to": "generative system", "width": 0.75}, {"from": "content, style, external impact, or type of generative act", "title": "Intentions can relate to different facets of creativity mentioned in the context,contextual proximity", "to": "intentions", "width": 1.5}, {"from": "creative attributes", "title": "A system with many creative attributes may be seen as creative, particularly among non-specialists.,contextual proximity", "to": "system", "width": 2.25}, {"from": "creative characteristics", "title": "A system can possess one or more creative characteristics, which are necessary for creativity.,contextual proximity", "to": "system", "width": 2.25}, {"from": "creative computing", "title": "contextual proximity", "to": "creativity", "width": 0.75}, {"from": "creative computing", "title": "contextual proximity", "to": "deep neural networks", "width": 0.5}, {"from": "creative computing", "title": "contextual proximity", "to": "finite-length markov processes", "width": 0.5}, {"from": "creative computing", "title": "contextual proximity", "to": "game of go", "width": 0.5}, {"from": "creative computing", "title": "contextual proximity", "to": "generation", "width": 0.5}, {"from": "creative computing", "title": "contextual proximity", "to": "mathematical theory of communication", "width": 0.5}, {"from": "creative computing", "title": "contextual proximity", "to": "mobile computing and communications", "width": 0.5}, {"from": "creative computing", "title": "contextual proximity", "to": "skepticism", "width": 0.75}, {"from": "creative computing", "title": "contextual proximity", "to": "storytelling models", "width": 0.5}, {"from": "creative mind", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "criteria for a system to be autonomous", "width": 2.0}, {"from": "creativity", "title": "contextual proximity", "to": "dan ventura", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "domain knowledge", "width": 2.25}, {"from": "creativity", "title": "contextual proximity", "to": "evaluation", "width": 1.0}, {"from": "creativity", "title": "contextual proximity", "to": "generation", "width": 3.25}, {"from": "creativity", "title": "contextual proximity", "to": "groups", "width": 1.5}, {"from": "creativity", "title": "Greater autonomy leads to greater creativity,contextual proximity", "to": "injection of knowledge", "width": 2.0}, {"from": "creativity", "title": "contextual proximity", "to": "intention", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "intentionality", "width": 2.5}, {"from": "creativity", "title": "contextual proximity", "to": "interests", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "knowledge of music", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "knowledge representation", "width": 3.25}, {"from": "creativity", "title": "contextual proximity", "to": "lyrics", "width": 0.5}, {"from": "creativity", "title": "The context mentions that a machine can mimic some form of creativity, implying a relationship between the two concepts.", "to": "machine", "width": 1.0}, {"from": "creativity", "title": "Machine learning models are used to address aspects of creativity in the context of music composition, showing the intersection of technology and creativity.,contextual proximity", "to": "machine learning models", "width": 5.5}, {"from": "creativity", "title": "contextual proximity", "to": "music composition", "width": 4.5}, {"from": "creativity", "title": "contextual proximity", "to": "musicians", "width": 1.0}, {"from": "creativity", "title": "contextual proximity", "to": "non-randomness", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "novelty", "width": 2.0}, {"from": "creativity", "title": "contextual proximity", "to": "observers", "width": 2.25}, {"from": "creativity", "title": "contextual proximity", "to": "operationalizing essential characteristics of creativity", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "opinion, belief, or attitude about what makes music \u0027good\u0027", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "originality", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "output", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "participant", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "paul m. bodily", "width": 0.5}, {"from": "creativity", "title": "The paper discusses the comparison between Creativity and the Perception of Creativity in Computational Systems", "to": "perception of creativity", "width": 1.0}, {"from": "creativity", "title": "Pop* is related to creativity as it is rated on its creative abilities.,Like creativity, each characteristic attribute occurs on a spectrum,The context mentions the high ratings for the direct question of Pop*\u0027s \u0027creativity\u0027.,contextual proximity", "to": "pop*", "width": 12.0}, {"from": "creativity", "title": "Combining ideas and generating from them something completely new is the epitome of creativity, regardless of whether or not the process was automated.,contextual proximity", "to": "process", "width": 2.25}, {"from": "creativity", "title": "The context discusses the differentiation between the creativity of the system and its designers. It also mentions the responses to the question (Q12) in the survey and the high ratings for the direct question of Pop*\u0027s \u0027creativity\u0027.,contextual proximity", "to": "question", "width": 3.0}, {"from": "creativity", "title": "contextual proximity", "to": "respondent", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "respondents", "width": 1.0}, {"from": "creativity", "title": "contextual proximity", "to": "responses", "width": 2.0}, {"from": "creativity", "title": "Creativity is the ability to create new things. Pop* can clearly create new things.,contextual proximity", "to": "scores", "width": 4.25}, {"from": "creativity", "title": "contextual proximity", "to": "self-evaluation", "width": 1.25}, {"from": "creativity", "title": "contextual proximity", "to": "self-improve the system", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "sheet music", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "skepticism", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "creativity", "title": "contextual proximity", "to": "survey", "width": 0.75}, {"from": "creativity", "title": "The system possesses characteristics of creativity to varying extents and is perceived to be creative overall.,contextual proximity", "to": "system", "width": 3.25}, {"from": "creativity", "title": "contextual proximity", "to": "system designers", "width": 0.5}, {"from": "creativity", "title": "The context discusses the perception of creativity in computational systems and how it can exceed the perception of individual creative characteristics when these characteristics are found together.,contextual proximity", "to": "systems", "width": 3.25}, {"from": "creativity", "title": "contextual proximity", "to": "tweets", "width": 0.5}, {"from": "creativity", "title": "Jordanous\u0027 SPECS framework requires stating one\u0027s definition of what it means to be creative", "to": "jordanous\u0027 specs framework", "width": 1.0}, {"from": "criteria for a system to be autonomous", "title": "contextual proximity", "to": "injection of knowledge", "width": 2.0}, {"from": "criteria for a system to be autonomous", "title": "contextual proximity", "to": "non-randomness", "width": 1.0}, {"from": "criteria for a system to be autonomous", "title": "contextual proximity", "to": "pop*", "width": 4.0}, {"from": "criteria for a system to be autonomous", "title": "contextual proximity", "to": "self-evaluation", "width": 1.0}, {"from": "criteria for a system to be autonomous", "title": "contextual proximity", "to": "self-improve the system", "width": 1.0}, {"from": "dan ventura", "title": "Both authors are affiliated with the Department of Computer Science, with Paul M. Bodily being from Idaho State University and Dan Ventura from Brigham Young University.", "to": "paul m. bodily", "width": 1.0}, {"from": "deep neural networks", "title": "The context discusses mastering the game of Go with deep neural networks and tree search, indicating a relationship between the two concepts.", "to": "game of go", "width": 1.0}, {"from": "description", "title": "contextual proximity", "to": "evaluation", "width": 1.0}, {"from": "description", "title": "contextual proximity", "to": "intention", "width": 0.5}, {"from": "description", "title": "This introduction consists of a brief description accompanied by a simplified version of Figure 1,contextual proximity", "to": "introduction", "width": 1.5}, {"from": "description", "title": "contextual proximity", "to": "key", "width": 0.5}, {"from": "description", "title": "contextual proximity", "to": "labels", "width": 0.5}, {"from": "description", "title": "contextual proximity", "to": "length", "width": 0.5}, {"from": "description", "title": "contextual proximity", "to": "likert scale questions", "width": 0.5}, {"from": "description", "title": "contextual proximity", "to": "likert scales", "width": 0.5}, {"from": "description", "title": "contextual proximity", "to": "melody", "width": 0.5}, {"from": "description", "title": "contextual proximity", "to": "modality", "width": 0.5}, {"from": "description", "title": "After reading the description and listening to the audio, the participant is asked seven Likert scale questions,contextual proximity", "to": "participant", "width": 2.5}, {"from": "description", "title": "contextual proximity", "to": "question", "width": 1.5}, {"from": "description", "title": "contextual proximity", "to": "rating", "width": 0.5}, {"from": "description", "title": "contextual proximity", "to": "significant variation", "width": 0.5}, {"from": "description", "title": "contextual proximity", "to": "simplified version", "width": 0.5}, {"from": "description", "title": "contextual proximity", "to": "songs", "width": 4.5}, {"from": "description", "title": "contextual proximity", "to": "star ratings", "width": 0.5}, {"from": "description", "title": "contextual proximity", "to": "structure", "width": 0.5}, {"from": "description", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "description", "title": "contextual proximity", "to": "tempo", "width": 0.5}, {"from": "determine its creativity", "title": "contextual proximity", "to": "generative system", "width": 0.75}, {"from": "determine its creativity", "title": "contextual proximity", "to": "intentions", "width": 0.5}, {"from": "determine its creativity", "title": "There are questions about whether knowledge of the system\u2019s process is needed to determine its creativity", "to": "knowledge of the system\u2019s process", "width": 1.0}, {"from": "direct modification", "title": "contextual proximity", "to": "lyrics", "width": 0.5}, {"from": "direct modification", "title": "The generative model can be modified directly to add artifacts to the system\u0027s knowledge base.", "to": "generative model", "width": 1.0}, {"from": "distributed musical decision-making", "title": "The paper discusses the concept of distributed musical decision-making in an ensemble of musebots", "to": "ensemble of musebots", "width": 1.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "domain-representative artifacts", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "emotion score values", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "empath vector", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "euclidean distance", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "generative process", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "intention", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "lyric knowledge base", "width": 4.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "lyrics from 369,606 songs", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "machine learning", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "machine learning models", "width": 0.5}, {"from": "domain knowledge", "title": "contextual proximity", "to": "music composition", "width": 0.5}, {"from": "domain knowledge", "title": "contextual proximity", "to": "novelty and typicality", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "origi-fromsnating tweet", "width": 2.0}, {"from": "domain knowledge", "title": "One respondent remarked on the importance of leveraging domain knowledge, explaining that their attribution of creativity to Pop* was based on its perceived ability \u201cto create songs based off of lots of different information and still make it sound appealing and applicable.\u201d,contextual proximity", "to": "pop*", "width": 1.75}, {"from": "domain knowledge", "title": "contextual proximity", "to": "principles governing the evaluation of artifacts within the domain", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "requirements for inclusion within the domain", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "similarity to existing items", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "song", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "domain knowledge", "title": "contextual proximity", "to": "structure of artifacts within the domain", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "subset of the lkb", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "tweet", "width": 2.0}, {"from": "domain knowledge", "title": "contextual proximity", "to": "tweets", "width": 2.0}, {"from": "domain knowledge", "title": "The context mentions that questions Q2, Q3, and Q4 are related to domain knowledge.", "to": "questions q2, q3, and q4", "width": 1.0}, {"from": "domain-representative artifacts", "title": "contextual proximity", "to": "lyric knowledge base", "width": 0.5}, {"from": "dramatic changes and endings", "title": "musebots is associated with dramatic changes and endings as mentioned in the proceedings of the Eighth International Conference on Computational Creativity", "to": "musebots", "width": 1.0}, {"from": "elevated scores", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "emotion", "title": "contextual proximity", "to": "text input", "width": 0.75}, {"from": "emotion", "title": "contextual proximity", "to": "topic", "width": 0.5}, {"from": "emotion score", "title": "contextual proximity", "to": "pop*", "width": 0.75}, {"from": "emotion score", "title": "An emotion score(t) is computed using the Empath vector Em(t) as wi s.t. vi \u2208 E and emotion score(t) = Xi where E is the subset of Empath topics representing emotions.,contextual proximity", "to": "tweet", "width": 1.5}, {"from": "emotion score values", "title": "contextual proximity", "to": "lyric knowledge base", "width": 0.5}, {"from": "emotion score values", "title": "tweets have emotion score values", "to": "tweets", "width": 1.0}, {"from": "emotion vector", "title": "contextual proximity", "to": "pop*", "width": 0.75}, {"from": "emotion vector", "title": "For each remaining tweet t \u2208 T, the Empath vector Em(t) is computed.,contextual proximity", "to": "tweet", "width": 1.5}, {"from": "empath", "title": "Given a text input \u03b9, Empath creates Em(\u03b9) = ((v1, w1), . . . , (v200, w200)) where vi represents one of a set of 200 topics (defined by Empath) and wi \u2208 [0, 1] represents the strength of the semantic relationship between \u03b9 and vi.,contextual proximity", "to": "text input", "width": 1.75}, {"from": "empath", "title": "contextual proximity", "to": "topic", "width": 0.5}, {"from": "empath", "title": "Empath is related to understanding topic signals in large-scale text as discussed in the Proceedings of the CHI Conference on Human Factors in Computing Systems", "to": "topic signals in large-scale text", "width": 1.0}, {"from": "empath vector", "title": "Lyrics L for each song are annotated with an Empath vector Em(L),contextual proximity", "to": "lyric knowledge base", "width": 1.5}, {"from": "enhance the perception of creativity", "title": "contextual proximity", "to": "generative system", "width": 0.75}, {"from": "enhance the perception of creativity", "title": "Intentions are related to enhancing the perception of creativity,contextual proximity", "to": "intentions", "width": 1.5}, {"from": "entropy", "title": "contextual proximity", "to": "pop*", "width": 0.75}, {"from": "entropy", "title": "contextual proximity", "to": "tweet", "width": 0.5}, {"from": "euclidean distance", "title": "contextual proximity", "to": "lyric knowledge base", "width": 0.5}, {"from": "euclidean distance", "title": "contextual proximity", "to": "mkb", "width": 0.75}, {"from": "euclidean distance", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "euclidean distance", "title": "The closest k songs are selected based on computing the Euclidean distance \u2225\u03bd \u2212 Em(L)\u2225,contextual proximity", "to": "song", "width": 1.75}, {"from": "euclidean distance", "title": "contextual proximity", "to": "structural alignments", "width": 0.5}, {"from": "evaluate its own success", "title": "contextual proximity", "to": "generative system", "width": 0.75}, {"from": "evaluate its own success", "title": "contextual proximity", "to": "intentions", "width": 0.5}, {"from": "evaluate its own success", "title": "Both terms are related to the concept of goal accomplishment and success evaluation", "to": "objectives", "width": 1.0}, {"from": "evaluation", "title": "The results of the evaluation point out opportunities for improvement", "to": "improvement", "width": 1.0}, {"from": "evaluation", "title": "contextual proximity", "to": "intention", "width": 1.0}, {"from": "evaluation", "title": "contextual proximity", "to": "introduction", "width": 0.5}, {"from": "evaluation", "title": "contextual proximity", "to": "key", "width": 0.5}, {"from": "evaluation", "title": "contextual proximity", "to": "labels", "width": 0.5}, {"from": "evaluation", "title": "contextual proximity", "to": "length", "width": 0.5}, {"from": "evaluation", "title": "contextual proximity", "to": "likert scale questions", "width": 0.5}, {"from": "evaluation", "title": "contextual proximity", "to": "likert scales", "width": 0.5}, {"from": "evaluation", "title": "contextual proximity", "to": "melody", "width": 0.5}, {"from": "evaluation", "title": "contextual proximity", "to": "modality", "width": 0.5}, {"from": "evaluation", "title": "Evaluation and Output are related as Evaluation results in an Output that reflects the assessment.", "to": "output", "width": 1.0}, {"from": "evaluation", "title": "contextual proximity", "to": "participant", "width": 2.0}, {"from": "evaluation", "title": "contextual proximity", "to": "pop*", "width": 2.5}, {"from": "evaluation", "title": "contextual proximity", "to": "process", "width": 0.75}, {"from": "evaluation", "title": "contextual proximity", "to": "question", "width": 1.5}, {"from": "evaluation", "title": "contextual proximity", "to": "rating", "width": 0.5}, {"from": "evaluation", "title": "contextual proximity", "to": "respondents", "width": 0.5}, {"from": "evaluation", "title": "Self-evaluation includes the evaluation of how well the output achieves the system\u0027s goals, demonstrating the relationship between the two concepts.,contextual proximity", "to": "self-evaluation", "width": 3.25}, {"from": "evaluation", "title": "contextual proximity", "to": "significant variation", "width": 0.5}, {"from": "evaluation", "title": "contextual proximity", "to": "simplified version", "width": 0.5}, {"from": "evaluation", "title": "contextual proximity", "to": "songs", "width": 4.5}, {"from": "evaluation", "title": "contextual proximity", "to": "star ratings", "width": 0.5}, {"from": "evaluation", "title": "contextual proximity", "to": "structure", "width": 0.5}, {"from": "evaluation", "title": "contextual proximity", "to": "survey", "width": 0.5}, {"from": "evaluation", "title": "contextual proximity", "to": "system", "width": 1.5}, {"from": "evaluation", "title": "contextual proximity", "to": "tempo", "width": 0.5}, {"from": "explainability", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "external artifact", "title": "contextual proximity", "to": "lyrics", "width": 0.5}, {"from": "external artifact", "title": "contextual proximity", "to": "participant", "width": 0.5}, {"from": "external artifact", "title": "contextual proximity", "to": "survey", "width": 0.5}, {"from": "external artifact", "title": "The system\u0027s process is assessed through the external artifact,contextual proximity", "to": "system", "width": 1.75}, {"from": "external artifact", "title": "A system\u0027s creativity can be assessed through the external artifact.", "to": "system\u0027s creativity", "width": 1.0}, {"from": "familiarity", "title": "The characteristic of typicality is mentioned as being rated higher by the group unbiased by familiarity compared to the group biased by familiarity.", "to": "typicality", "width": 1.0}, {"from": "flow", "title": "The book \u0027Flow and the Psychology of Discovery and Invention\u0027 discusses the concept of Flow in relation to the psychology of discovery and invention", "to": "psychology of discovery and invention", "width": 1.0}, {"from": "generating lyrics", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "generating lyrics", "title": "Markov constraints are used for generating lyrics with style.", "to": "markov constraints", "width": 1.0}, {"from": "generation", "title": "contextual proximity", "to": "machine learning models", "width": 0.5}, {"from": "generation", "title": "contextual proximity", "to": "music composition", "width": 0.5}, {"from": "generation", "title": "contextual proximity", "to": "pop*", "width": 1.5}, {"from": "generation", "title": "contextual proximity", "to": "respondents", "width": 0.5}, {"from": "generation", "title": "Sheet Music and Generation are related as Generation can involve the creation of new Sheet Music.", "to": "sheet music", "width": 1.0}, {"from": "generative model", "title": "The internal representation is conflated with the choice of generative model in some cases.,contextual proximity", "to": "internal representations", "width": 1.5}, {"from": "generative model", "title": "contextual proximity", "to": "knowledge representation", "width": 1.25}, {"from": "generative model", "title": "contextual proximity", "to": "lyrics", "width": 0.5}, {"from": "generative model", "title": "contextual proximity", "to": "nc", "width": 0.5}, {"from": "generative model", "title": "contextual proximity", "to": "nhmm n", "width": 0.75}, {"from": "generative process", "title": "contextual proximity", "to": "intention", "width": 0.5}, {"from": "generative process", "title": "contextual proximity", "to": "lyric knowledge base", "width": 0.5}, {"from": "generative process", "title": "Over time, self-evaluation can fine-tune the generative process, demonstrating the relationship between the two concepts.,contextual proximity", "to": "self-evaluation", "width": 2.75}, {"from": "generative system", "title": "contextual proximity", "to": "intention", "width": 0.75}, {"from": "generative system", "title": "contextual proximity", "to": "intentions", "width": 1.5}, {"from": "generative system", "title": "contextual proximity", "to": "knowledge of the system\u2019s process", "width": 0.75}, {"from": "generative system", "title": "contextual proximity", "to": "objectives", "width": 0.75}, {"from": "generative system", "title": "contextual proximity", "to": "process of generation", "width": 0.75}, {"from": "generative system", "title": "contextual proximity", "to": "stochastic creation", "width": 0.75}, {"from": "generative system", "title": "contextual proximity", "to": "system", "width": 0.75}, {"from": "goals", "title": "Assessing the success of the system in meeting its goals is based on whether or not the system believes it has met its goals,contextual proximity", "to": "system", "width": 1.75}, {"from": "godel, escher, bach: an eternal golden braid", "title": "The book \u0027Godel, Escher, Bach: An Eternal Golden Braid\u0027 is published by New York: Vintage Books", "to": "new york: vintage books", "width": 1.0}, {"from": "groups", "title": "contextual proximity", "to": "knowledge representation", "width": 0.5}, {"from": "groups", "title": "contextual proximity", "to": "novelty", "width": 1.0}, {"from": "groups", "title": "contextual proximity", "to": "pop*", "width": 1.0}, {"from": "groups", "title": "contextual proximity", "to": "question", "width": 0.5}, {"from": "groups", "title": "contextual proximity", "to": "responses", "width": 0.5}, {"from": "groups", "title": "The scores across all groups were above average.,contextual proximity", "to": "scores", "width": 2.0}, {"from": "groups", "title": "contextual proximity", "to": "systems", "width": 0.5}, {"from": "holistic cc", "title": "Holistic CC represents a promising direction for future work in expanding artificial intelligence.", "to": "promising direction", "width": 1.0}, {"from": "holistic cc", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "holistic computational creativity", "title": "The goal is to achieve holistic computational creativity, where creativity emerges from the confluence of a set of creative attributes within a system.,contextual proximity", "to": "system", "width": 2.25}, {"from": "ideas", "title": "contextual proximity", "to": "system", "width": 0.75}, {"from": "ideas", "title": "The system is good at finding ideas and creating sounds to match those ideas and feelings", "to": "songs", "width": 1.0}, {"from": "improvement", "title": "contextual proximity", "to": "pop*", "width": 1.25}, {"from": "improvement", "title": "contextual proximity", "to": "process", "width": 0.5}, {"from": "injection of knowledge", "title": "contextual proximity", "to": "non-randomness", "width": 0.5}, {"from": "injection of knowledge", "title": "contextual proximity", "to": "pop*", "width": 2.0}, {"from": "injection of knowledge", "title": "contextual proximity", "to": "self-evaluation", "width": 0.5}, {"from": "injection of knowledge", "title": "contextual proximity", "to": "self-improve the system", "width": 0.5}, {"from": "intention", "title": "contextual proximity", "to": "intentions", "width": 0.5}, {"from": "intention", "title": "modeled asP (\u03b3|A) = P (\u03bd|A) \u00b7 P (\u03c4 ) P (\u03b7|\u03bd, \u03c4 ) \u00b7 P (\u03d5|\u03bd, \u03c4, \u03b7) \u00b7 P (\u03c1|\u03bd, \u03c4 ) \u00b7 P (\u03bb|\u03bd, \u03c4, \u03c1),where \u03bd, \u03c4, \u03b7, \u03d5, \u03c1, and \u03bb represent intentions, structure, chords, pitch, rhythm, and lyrics, respectively.,contextual proximity", "to": "lead sheet \u03b3", "width": 2.5}, {"from": "intention", "title": "contextual proximity", "to": "lyric knowledge base", "width": 0.5}, {"from": "intention", "title": "The lyrics are assessed for how well they reflect the system\u0027s intention.,contextual proximity", "to": "lyrics", "width": 1.75}, {"from": "intention", "title": "contextual proximity", "to": "markov model", "width": 0.5}, {"from": "intention", "title": "contextual proximity", "to": "markov models", "width": 1.0}, {"from": "intention", "title": "contextual proximity", "to": "nhmms", "width": 0.75}, {"from": "intention", "title": "contextual proximity", "to": "objectives", "width": 1.0}, {"from": "intention", "title": "contextual proximity", "to": "opinions", "width": 0.5}, {"from": "intention", "title": "contextual proximity", "to": "participant", "width": 0.75}, {"from": "intention", "title": "contextual proximity", "to": "pop*", "width": 1.25}, {"from": "intention", "title": "contextual proximity", "to": "question", "width": 0.75}, {"from": "intention", "title": "contextual proximity", "to": "respondents", "width": 0.5}, {"from": "intention", "title": "contextual proximity", "to": "self-evaluation", "width": 2.0}, {"from": "intention", "title": "significant variation in intention,contextual proximity", "to": "songs", "width": 3.25}, {"from": "intention", "title": "Given an intention \u03bd, Pop* selects a subset of the LKB for training determined by computing the Euclidean distance \u2225\u03bd \u2212 Em(L)\u2225 for each song L \u2208 LKB", "to": "subset of the lkb", "width": 1.0}, {"from": "intention", "title": "The system originates an intention from social media posts,contextual proximity", "to": "system", "width": 1.5}, {"from": "intention", "title": "contextual proximity", "to": "text input", "width": 0.75}, {"from": "intention", "title": "contextual proximity", "to": "topic", "width": 0.5}, {"from": "intention", "title": "contextual proximity", "to": "tweets", "width": 0.5}, {"from": "intention", "title": "Pop* explicitly models intention as a vector of topics or emotions V = ((v1, w1), . . . , (vn, wn)) as mentioned in the context", "to": "vector of topics or emotions", "width": 1.0}, {"from": "intention vector", "title": "contextual proximity", "to": "lyrics", "width": 0.5}, {"from": "intentionality", "title": "contextual proximity", "to": "machine learning models", "width": 0.5}, {"from": "intentionality", "title": "contextual proximity", "to": "music composition", "width": 0.5}, {"from": "intentionality", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "intentionality", "title": "contextual proximity", "to": "song", "width": 0.75}, {"from": "intentionality", "title": "Some observers felt that the system had some intentionality,contextual proximity", "to": "system", "width": 1.75}, {"from": "intentions", "title": "contextual proximity", "to": "knowledge of the system\u2019s process", "width": 0.5}, {"from": "intentions", "title": "contextual proximity", "to": "objectives", "width": 0.5}, {"from": "intentions", "title": "contextual proximity", "to": "process of generation", "width": 0.5}, {"from": "intentions", "title": "contextual proximity", "to": "stochastic creation", "width": 0.5}, {"from": "intentions", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "interest", "title": "In this formulation, Pop* has a favorable opinion of any interest listed in A and no opinion about anything else.,contextual proximity", "to": "pop*", "width": 1.75}, {"from": "interest", "title": "contextual proximity", "to": "tweet", "width": 0.5}, {"from": "interests", "title": "contextual proximity", "to": "pop*", "width": 1.25}, {"from": "interests", "title": "contextual proximity", "to": "respondents", "width": 0.5}, {"from": "interests", "title": "Tweets are related to Interests as they are used to express interests or opinions.", "to": "tweets", "width": 1.0}, {"from": "internal representations", "title": "There is often a distinction between internal and external representations, with internal representation in some cases being conflated with the choice of generative model.,contextual proximity", "to": "knowledge representation", "width": 3.5}, {"from": "internal representations", "title": "contextual proximity", "to": "knowledge representation in pop*", "width": 0.5}, {"from": "internal representations", "title": "contextual proximity", "to": "nc", "width": 1.0}, {"from": "internal representations", "title": "contextual proximity", "to": "nhmm n", "width": 1.5}, {"from": "internal representations", "title": "contextual proximity", "to": "np", "width": 0.5}, {"from": "internal representations", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "internal representations", "title": "contextual proximity", "to": "structured model of problems", "width": 0.5}, {"from": "introduction", "title": "contextual proximity", "to": "participant", "width": 0.75}, {"from": "introduction", "title": "contextual proximity", "to": "question", "width": 0.75}, {"from": "introduction", "title": "contextual proximity", "to": "songs", "width": 2.25}, {"from": "jordanous\u0027 specs framework", "title": "contextual proximity", "to": "participant", "width": 0.5}, {"from": "jordanous\u0027 specs framework", "title": "contextual proximity", "to": "survey", "width": 0.5}, {"from": "jordanous\u0027 specs framework", "title": "contextual proximity", "to": "system", "width": 0.75}, {"from": "key", "title": "contextual proximity", "to": "participant", "width": 0.75}, {"from": "key", "title": "contextual proximity", "to": "question", "width": 0.75}, {"from": "key", "title": "significant variation in key,contextual proximity", "to": "songs", "width": 3.25}, {"from": "knowledge", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "knowledge", "title": "contextual proximity", "to": "scoring function", "width": 0.5}, {"from": "knowledge", "title": "contextual proximity", "to": "self-alignment algorithm", "width": 0.5}, {"from": "knowledge", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "knowledge of music", "title": "Pop* is related to knowledge of music as it internally represents such knowledge.,contextual proximity", "to": "pop*", "width": 2.25}, {"from": "knowledge of music", "title": "contextual proximity", "to": "respondents", "width": 0.5}, {"from": "knowledge representation", "title": "contextual proximity", "to": "knowledge representation in pop*", "width": 1.25}, {"from": "knowledge representation", "title": "contextual proximity", "to": "machine learning models", "width": 0.5}, {"from": "knowledge representation", "title": "contextual proximity", "to": "music composition", "width": 0.5}, {"from": "knowledge representation", "title": "Even musicians\u2014who by definition likely possess such a representation themselves\u2014rated Pop* (slightly) above average.,contextual proximity", "to": "musicians", "width": 1.5}, {"from": "knowledge representation", "title": "contextual proximity", "to": "nc", "width": 2.5}, {"from": "knowledge representation", "title": "contextual proximity", "to": "nhmm n", "width": 3.75}, {"from": "knowledge representation", "title": "contextual proximity", "to": "novelty", "width": 2.0}, {"from": "knowledge representation", "title": "contextual proximity", "to": "np", "width": 1.25}, {"from": "knowledge representation", "title": "contextual proximity", "to": "originality", "width": 0.5}, {"from": "knowledge representation", "title": "contextual proximity", "to": "pop*", "width": 2.75}, {"from": "knowledge representation", "title": "contextual proximity", "to": "process", "width": 0.5}, {"from": "knowledge representation", "title": "Those unfamiliar with the system designers rated knowledge representation as slightly below average.,contextual proximity", "to": "respondent", "width": 1.5}, {"from": "knowledge representation", "title": "contextual proximity", "to": "scores", "width": 1.0}, {"from": "knowledge representation", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "knowledge representation", "title": "contextual proximity", "to": "structured model of problems", "width": 1.25}, {"from": "knowledge representation", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "knowledge representation in pop*", "title": "contextual proximity", "to": "nc", "width": 0.5}, {"from": "knowledge representation in pop*", "title": "contextual proximity", "to": "nhmm n", "width": 0.75}, {"from": "labels", "title": "contextual proximity", "to": "participant", "width": 0.75}, {"from": "labels", "title": "contextual proximity", "to": "question", "width": 0.75}, {"from": "labels", "title": "contextual proximity", "to": "songs", "width": 2.25}, {"from": "labels", "title": "The simplified version uses the labels \u201cTweets\u201d, \u201cInterests\u201d, \u201cIntention\u201d, \u201cLyrics\u201d, \u201cSheet Music\u201d, \u201cGeneration\u201d, \u201cEval-", "to": "simplified version", "width": 1.0}, {"from": "lead sheet \u03b3", "title": "contextual proximity", "to": "objectives", "width": 0.5}, {"from": "length", "title": "contextual proximity", "to": "participant", "width": 0.75}, {"from": "length", "title": "contextual proximity", "to": "question", "width": 0.75}, {"from": "length", "title": "significant variation in length,contextual proximity", "to": "songs", "width": 3.25}, {"from": "likert scale questions", "title": "After reading the description and listening to the audio, the participant is asked seven Likert scale questions,contextual proximity", "to": "participant", "width": 1.75}, {"from": "likert scale questions", "title": "contextual proximity", "to": "question", "width": 0.75}, {"from": "likert scale questions", "title": "contextual proximity", "to": "songs", "width": 2.25}, {"from": "likert scales", "title": "contextual proximity", "to": "participant", "width": 0.75}, {"from": "likert scales", "title": "the remaining three as Likert scales which label only the lowest and highest ratings in defining the spectrum (Likert 1932),contextual proximity", "to": "question", "width": 1.75}, {"from": "likert scales", "title": "contextual proximity", "to": "songs", "width": 2.25}, {"from": "lkb", "title": "contextual proximity", "to": "mkb", "width": 0.75}, {"from": "lkb", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "lkb", "title": "Each song L is selected from the LKB for further processing.,contextual proximity", "to": "song", "width": 1.5}, {"from": "lkb", "title": "contextual proximity", "to": "structural alignments", "width": 0.5}, {"from": "local alignments", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "local alignments", "title": "contextual proximity", "to": "scoring function", "width": 0.5}, {"from": "local alignments", "title": "The algorithm finds all unique local alignments with scores above some threshold,contextual proximity", "to": "self-alignment algorithm", "width": 1.5}, {"from": "local alignments", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "long-range dependency constraints", "title": "Steerable Music Generation satisfies the Long-Range Dependency Constraints", "to": "steerable music generation", "width": 1.0}, {"from": "lyric abilities", "title": "Both groups were least impressed by the system\u0027s lyric abilities.", "to": "system", "width": 1.0}, {"from": "lyric and sheet music databases", "title": "Pop* filters databases based on relevance to its chosen intention and uses them to train models for chords, rhythm, pitch, and lyrics,contextual proximity", "to": "pop*", "width": 2.75}, {"from": "lyric knowledge base", "title": "contextual proximity", "to": "lyrics from 369,606 songs", "width": 0.5}, {"from": "lyric knowledge base", "title": "contextual proximity", "to": "machine learning", "width": 0.5}, {"from": "lyric knowledge base", "title": "contextual proximity", "to": "novelty and typicality", "width": 0.5}, {"from": "lyric knowledge base", "title": "contextual proximity", "to": "origi-fromsnating tweet", "width": 0.5}, {"from": "lyric knowledge base", "title": "contextual proximity", "to": "principles governing the evaluation of artifacts within the domain", "width": 0.5}, {"from": "lyric knowledge base", "title": "contextual proximity", "to": "requirements for inclusion within the domain", "width": 0.5}, {"from": "lyric knowledge base", "title": "contextual proximity", "to": "similarity to existing items", "width": 0.5}, {"from": "lyric knowledge base", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "lyric knowledge base", "title": "contextual proximity", "to": "structure of artifacts within the domain", "width": 0.5}, {"from": "lyric knowledge base", "title": "contextual proximity", "to": "subset of the lkb", "width": 0.5}, {"from": "lyric knowledge base", "title": "contextual proximity", "to": "tweet", "width": 0.5}, {"from": "lyric knowledge base", "title": "contextual proximity", "to": "tweets", "width": 0.5}, {"from": "lyric model", "title": "The context states that questions Q2, Q3, and Q4 rated Pop*\u0027s lyric model, music model, and structure model respectively.", "to": "music model", "width": 1.0}, {"from": "lyric model", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "lyrics", "title": "contextual proximity", "to": "markov models", "width": 0.5}, {"from": "lyrics", "title": "contextual proximity", "to": "melodic pitch sequence", "width": 0.5}, {"from": "lyrics", "title": "The context mentions that Pop* has focused relatively little on semantic cohesiveness of lyrics, but a great deal on how lyrics should be effectively combined with music.", "to": "music", "width": 1.0}, {"from": "lyrics", "title": "contextual proximity", "to": "pitch values", "width": 0.5}, {"from": "lyrics", "title": "contextual proximity", "to": "pop*", "width": 1.25}, {"from": "lyrics", "title": "contextual proximity", "to": "respondents", "width": 0.5}, {"from": "lyrics", "title": "contextual proximity", "to": "scoring function", "width": 0.5}, {"from": "lyrics", "title": "contextual proximity", "to": "sing-ability", "width": 0.5}, {"from": "lyrics", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "lyrics", "title": "contextual proximity", "to": "system\u0027s creativity", "width": 0.5}, {"from": "lyrics", "title": "contextual proximity", "to": "training sets", "width": 0.5}, {"from": "lyrics", "title": "contextual proximity", "to": "unique word count", "width": 0.5}, {"from": "machine", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "machine", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "machine learning models", "title": "contextual proximity", "to": "music composition", "width": 1.0}, {"from": "machine learning models", "title": "contextual proximity", "to": "observers", "width": 0.5}, {"from": "markov constraints", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "markov model", "title": "contextual proximity", "to": "markov models", "width": 1.5}, {"from": "markov model", "title": "NHMM N = (n, M, C1) models the probability of a sequence of random variables X = X1, . . . , Xn, where M is a Markov model as mentioned in the context,contextual proximity", "to": "nhmms", "width": 2.5}, {"from": "markov model", "title": "contextual proximity", "to": "random variables", "width": 0.5}, {"from": "markov model", "title": "contextual proximity", "to": "sequence length", "width": 0.5}, {"from": "markov model", "title": "contextual proximity", "to": "vector of topics or emotions", "width": 0.5}, {"from": "markov models", "title": "contextual proximity", "to": "nhmms", "width": 2.25}, {"from": "markov models", "title": "Pop* uses filtered training sets to train Markov models for chords, rhythm, pitch, and lyrics,contextual proximity", "to": "pop*", "width": 2.75}, {"from": "markov models", "title": "contextual proximity", "to": "random variables", "width": 0.75}, {"from": "markov models", "title": "contextual proximity", "to": "sequence length", "width": 0.75}, {"from": "markov models", "title": "Markov models are used with training sets to compose candidate compositions.", "to": "training sets", "width": 1.0}, {"from": "markov models", "title": "contextual proximity", "to": "vector of topics or emotions", "width": 0.75}, {"from": "mathematical theory of communication", "title": "The context discusses a mathematical theory of communication in the context of mobile computing and communications, indicating a relationship between the two concepts.", "to": "mobile computing and communications", "width": 1.0}, {"from": "max", "title": "contextual proximity", "to": "system", "width": 0.75}, {"from": "max", "title": "Max is the highest-rated song in the context", "to": "song", "width": 1.0}, {"from": "melodic pitch sequence", "title": "The sing-ability of the melodic pitch sequence is represented by the fraction of pitch values in the range [60, 76].", "to": "sing-ability", "width": 1.0}, {"from": "melody", "title": "contextual proximity", "to": "participant", "width": 0.75}, {"from": "melody", "title": "contextual proximity", "to": "question", "width": 0.75}, {"from": "melody", "title": "significant variation in melody,contextual proximity", "to": "songs", "width": 3.25}, {"from": "metacreative systems", "title": "Both are mentioned in the same sentence as key concepts in the context", "to": "self-awareness", "width": 1.0}, {"from": "mkb", "title": "contextual proximity", "to": "motifs", "width": 0.75}, {"from": "mkb", "title": "contextual proximity", "to": "msw", "width": 0.75}, {"from": "mkb", "title": "contextual proximity", "to": "perceptual faculties", "width": 0.75}, {"from": "mkb", "title": "contextual proximity", "to": "pop music lead sheets", "width": 0.75}, {"from": "mkb", "title": "Pop* selects a subset of the MKB for training using the same Euclidean distance method as LKB subselection.,For each new composition, Pop* selects at random a song in the MKB after which to structurally model the new composition,contextual proximity", "to": "pop*", "width": 4.0}, {"from": "mkb", "title": "contextual proximity", "to": "scoring function", "width": 0.5}, {"from": "mkb", "title": "contextual proximity", "to": "sectional form", "width": 0.75}, {"from": "mkb", "title": "contextual proximity", "to": "self-alignment algorithm", "width": 0.5}, {"from": "mkb", "title": "contextual proximity", "to": "song", "width": 2.0}, {"from": "mkb", "title": "contextual proximity", "to": "structural alignments", "width": 1.5}, {"from": "mkb", "title": "contextual proximity", "to": "training", "width": 0.75}, {"from": "modality", "title": "contextual proximity", "to": "participant", "width": 0.75}, {"from": "modality", "title": "contextual proximity", "to": "question", "width": 0.75}, {"from": "modality", "title": "significant variation in modality,contextual proximity", "to": "songs", "width": 3.25}, {"from": "motifs", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "motifs", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "motifs", "title": "Structural alignments in a single viewpoint are called motifs.,contextual proximity", "to": "structural alignments", "width": 1.5}, {"from": "msw", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "msw", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "msw", "title": "contextual proximity", "to": "structural alignments", "width": 0.5}, {"from": "msw-alignment", "title": "Pop* performs an mSW-alignment on the training song for each viewpoint,contextual proximity", "to": "pop*", "width": 1.5}, {"from": "msw-alignment", "title": "contextual proximity", "to": "scoring function", "width": 0.5}, {"from": "msw-alignment", "title": "contextual proximity", "to": "self-alignment algorithm", "width": 0.5}, {"from": "msw-alignment", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "mumford and ventura", "title": "contextual proximity", "to": "perception", "width": 1.25}, {"from": "mumford and ventura", "title": "contextual proximity", "to": "preconceived notion", "width": 1.25}, {"from": "mumford and ventura", "title": "contextual proximity", "to": "responses", "width": 1.25}, {"from": "music", "title": "Pop* consistently composes below-average music,contextual proximity", "to": "pop*", "width": 2.25}, {"from": "music", "title": "contextual proximity", "to": "process", "width": 0.5}, {"from": "music", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "music", "title": "contextual proximity", "to": "text input", "width": 0.75}, {"from": "music", "title": "contextual proximity", "to": "topic", "width": 0.5}, {"from": "music composition", "title": "contextual proximity", "to": "observers", "width": 0.5}, {"from": "music composition", "title": "Pop* formulates its own intention from the tweet and communicates it in the form of a novel music composition,contextual proximity", "to": "pop*", "width": 2.75}, {"from": "music composition system", "title": "The joint application of fundamental characteristics of creativity is demonstrated in an applied example of a music composition system.,contextual proximity", "to": "system", "width": 2.25}, {"from": "music model", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "music scores (q3)", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "musical sequences", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "musical sequences", "title": "Structural constraints in musical sequences are inferred via multiple self-alignment.", "to": "structural constraints", "width": 1.0}, {"from": "musician", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "musician", "title": "Table 2 shows average ratings for each song, including average musicians\u0027 rating, indicating a relationship between song and musician.,contextual proximity", "to": "song", "width": 1.5}, {"from": "musicians", "title": "contextual proximity", "to": "novelty", "width": 1.0}, {"from": "musicians", "title": "contextual proximity", "to": "pop*", "width": 2.0}, {"from": "musicians", "title": "Respondents who considered themselves musicians are related to the category of musicians.,contextual proximity", "to": "respondents", "width": 1.5}, {"from": "musicians", "title": "contextual proximity", "to": "scores", "width": 0.5}, {"from": "musicianship", "title": "contextual proximity", "to": "pop*", "width": 0.75}, {"from": "nc", "title": "Such a model is trained for each of the chord, pitch, rhythm, and lyric viewpoints, resulting in the four models: Nc, Np, Nr, Nl.,contextual proximity", "to": "nhmm n", "width": 2.5}, {"from": "nc", "title": "contextual proximity", "to": "np", "width": 0.5}, {"from": "nc", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "nc", "title": "contextual proximity", "to": "structured model of problems", "width": 0.5}, {"from": "nhmm n", "title": "contextual proximity", "to": "np", "width": 0.75}, {"from": "nhmm n", "title": "Pop* builds a modified NHMM N = (n, M, C1, C2),Pop* builds a modified NHMM N = (n, M, C1, C2) that allows the definition of a set C2 of binary constraints.,contextual proximity", "to": "pop*", "width": 4.5}, {"from": "nhmm n", "title": "contextual proximity", "to": "structured model of problems", "width": 0.75}, {"from": "nhmms", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "nhmms", "title": "contextual proximity", "to": "random variables", "width": 0.75}, {"from": "nhmms", "title": "contextual proximity", "to": "scoring function", "width": 0.5}, {"from": "nhmms", "title": "contextual proximity", "to": "self-alignment algorithm", "width": 0.5}, {"from": "nhmms", "title": "contextual proximity", "to": "sequence length", "width": 0.75}, {"from": "nhmms", "title": "The song\u2019s length determines the length of the new composition needed to instantiate NHMMs Nc, Np, and Nr,contextual proximity", "to": "song", "width": 1.5}, {"from": "nhmms", "title": "contextual proximity", "to": "vector of topics or emotions", "width": 0.75}, {"from": "non-randomness", "title": "contextual proximity", "to": "pop*", "width": 1.0}, {"from": "novelty", "title": "contextual proximity", "to": "originality", "width": 1.0}, {"from": "novelty", "title": "There were also some participants that did not feel Pop* expressed novelty.,Pop*\u2019s perceived novelty might be improved by constraining a distance measure between output songs.,contextual proximity", "to": "pop*", "width": 5.0}, {"from": "novelty", "title": "contextual proximity", "to": "process", "width": 1.0}, {"from": "novelty", "title": "contextual proximity", "to": "respondent", "width": 1.0}, {"from": "novelty", "title": "contextual proximity", "to": "scores", "width": 2.0}, {"from": "novelty", "title": "contextual proximity", "to": "songs", "width": 1.0}, {"from": "novelty", "title": "contextual proximity", "to": "system", "width": 1.0}, {"from": "novelty scores", "title": "Participants are most willing to ascribe novelty scores to Pop* compositions.", "to": "pop*", "width": 1.0}, {"from": "opinion, belief, or attitude about what makes music \u0027good\u0027", "title": "Pop* is related to opinions about music\u0027s quality as it has its own beliefs and attitudes.,contextual proximity", "to": "pop*", "width": 2.25}, {"from": "opinion, belief, or attitude about what makes music \u0027good\u0027", "title": "contextual proximity", "to": "respondents", "width": 0.5}, {"from": "opinions", "title": "Self-evaluation occurs without consulting outside opinions, indicating the relationship between the two concepts.,contextual proximity", "to": "self-evaluation", "width": 2.75}, {"from": "opinions", "title": "contextual proximity", "to": "text input", "width": 0.75}, {"from": "opinions", "title": "contextual proximity", "to": "topic", "width": 0.5}, {"from": "order", "title": "contextual proximity", "to": "pop*", "width": 0.75}, {"from": "order", "title": "contextual proximity", "to": "tweet", "width": 0.5}, {"from": "origi-fromsnating tweet", "title": "one tweet is selected at random as an origi-FromSnating tweet for the system\u2019s generative process", "to": "tweet", "width": 1.0}, {"from": "originality", "title": "contextual proximity", "to": "pop*", "width": 0.75}, {"from": "originality", "title": "contextual proximity", "to": "scores", "width": 0.5}, {"from": "originality", "title": "The songs (s)he heard \u201cdid not strike me as very original and creative. Sorry.\u201d", "to": "songs", "width": 1.0}, {"from": "output", "title": "contextual proximity", "to": "pop*", "width": 1.25}, {"from": "output", "title": "contextual proximity", "to": "respondents", "width": 0.5}, {"from": "participant", "title": "contextual proximity", "to": "process", "width": 0.5}, {"from": "participant", "title": "contextual proximity", "to": "question", "width": 2.25}, {"from": "participant", "title": "contextual proximity", "to": "rating", "width": 0.75}, {"from": "participant", "title": "contextual proximity", "to": "significant variation", "width": 0.75}, {"from": "participant", "title": "contextual proximity", "to": "simplified version", "width": 0.75}, {"from": "participant", "title": "contextual proximity", "to": "songs", "width": 6.75}, {"from": "participant", "title": "contextual proximity", "to": "star ratings", "width": 0.75}, {"from": "participant", "title": "contextual proximity", "to": "structure", "width": 0.75}, {"from": "participant", "title": "The survey invites the participant to listen to and evaluate compositions,contextual proximity", "to": "survey", "width": 2.0}, {"from": "participant", "title": "contextual proximity", "to": "system", "width": 2.25}, {"from": "participant", "title": "contextual proximity", "to": "tempo", "width": 0.75}, {"from": "perceptual faculties", "title": "Pop* also possesses perceptual faculties for detecting musical structure in symbolic music.,contextual proximity", "to": "pop*", "width": 1.5}, {"from": "perceptual faculties", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "perceptual faculties", "title": "contextual proximity", "to": "structural alignments", "width": 0.5}, {"from": "pm", "title": "contextual proximity", "to": "pop*", "width": 1.75}, {"from": "pm", "title": "PN (x) \u221d PM (x) if x satisfies C1 and is 0 otherwise", "to": "pn", "width": 1.0}, {"from": "pn", "title": "contextual proximity", "to": "pop*", "width": 1.75}, {"from": "pop music lead sheets", "title": "contextual proximity", "to": "pop*", "width": 0.5}, {"from": "pop music lead sheets", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "pop music lead sheets", "title": "contextual proximity", "to": "structural alignments", "width": 0.5}, {"from": "pop*", "title": "contextual proximity", "to": "process", "width": 3.25}, {"from": "pop*", "title": "contextual proximity", "to": "question", "width": 0.5}, {"from": "pop*", "title": "contextual proximity", "to": "respondent", "width": 0.75}, {"from": "pop*", "title": "contextual proximity", "to": "respondents", "width": 2.5}, {"from": "pop*", "title": "contextual proximity", "to": "responses", "width": 0.5}, {"from": "pop*", "title": "contextual proximity", "to": "scores", "width": 2.25}, {"from": "pop*", "title": "contextual proximity", "to": "scoring function", "width": 1.0}, {"from": "pop*", "title": "contextual proximity", "to": "sectional form", "width": 0.5}, {"from": "pop*", "title": "contextual proximity", "to": "self-alignment algorithm", "width": 1.0}, {"from": "pop*", "title": "contextual proximity", "to": "self-evaluation", "width": 3.5}, {"from": "pop*", "title": "contextual proximity", "to": "self-improve the system", "width": 1.0}, {"from": "pop*", "title": "contextual proximity", "to": "sheet music", "width": 3.0}, {"from": "pop*", "title": "contextual proximity", "to": "song", "width": 3.0}, {"from": "pop*", "title": "contextual proximity", "to": "songs", "width": 0.75}, {"from": "pop*", "title": "contextual proximity", "to": "spectrum", "width": 0.5}, {"from": "pop*", "title": "contextual proximity", "to": "structural alignments", "width": 1.0}, {"from": "pop*", "title": "contextual proximity", "to": "surprise", "width": 0.75}, {"from": "pop*", "title": "contextual proximity", "to": "survey", "width": 0.5}, {"from": "pop*", "title": "contextual proximity", "to": "system", "width": 3.0}, {"from": "pop*", "title": "contextual proximity", "to": "system designers", "width": 1.25}, {"from": "pop*", "title": "contextual proximity", "to": "systems", "width": 0.5}, {"from": "pop*", "title": "contextual proximity", "to": "topics", "width": 0.5}, {"from": "pop*", "title": "contextual proximity", "to": "training", "width": 0.5}, {"from": "pop*", "title": "contextual proximity", "to": "tweet", "width": 1.5}, {"from": "pop*", "title": "contextual proximity", "to": "tweets", "width": 1.25}, {"from": "pop*", "title": "contextual proximity", "to": "twitter", "width": 2.5}, {"from": "pop*", "title": "contextual proximity", "to": "value", "width": 0.75}, {"from": "pop*", "title": "contextual proximity", "to": "weights", "width": 0.5}, {"from": "pop* compositions", "title": "Both groups have elevated ratings for the structure in Pop* compositions.", "to": "structure", "width": 1.0}, {"from": "process", "title": "contextual proximity", "to": "scores", "width": 0.5}, {"from": "process", "title": "contextual proximity", "to": "self-evaluation", "width": 0.5}, {"from": "process", "title": "contextual proximity", "to": "survey", "width": 0.5}, {"from": "process", "title": "Consideration of the system\u0027s process is suggested to be essential,contextual proximity", "to": "system", "width": 2.5}, {"from": "promising direction", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "question", "title": "contextual proximity", "to": "rating", "width": 0.75}, {"from": "question", "title": "The responses to question (Q12) in the survey reported the highest scores across all groups.,contextual proximity", "to": "responses", "width": 2.0}, {"from": "question", "title": "contextual proximity", "to": "scores", "width": 1.0}, {"from": "question", "title": "contextual proximity", "to": "significant variation", "width": 0.75}, {"from": "question", "title": "contextual proximity", "to": "simplified version", "width": 0.75}, {"from": "question", "title": "contextual proximity", "to": "songs", "width": 7.25}, {"from": "question", "title": "contextual proximity", "to": "star ratings", "width": 0.75}, {"from": "question", "title": "contextual proximity", "to": "structure", "width": 0.75}, {"from": "question", "title": "contextual proximity", "to": "system", "width": 0.75}, {"from": "question", "title": "contextual proximity", "to": "systems", "width": 1.0}, {"from": "question", "title": "contextual proximity", "to": "tempo", "width": 0.75}, {"from": "questions q2, q3, and q4", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "rating", "title": "contextual proximity", "to": "songs", "width": 2.25}, {"from": "reflection", "title": "Self-evaluation involves the ability to reflect on the output\u0027s novelty, typicality, and aesthetic value, indicating a relationship between the two concepts.,contextual proximity", "to": "self-evaluation", "width": 2.75}, {"from": "respondent", "title": "contextual proximity", "to": "scores", "width": 0.5}, {"from": "respondents", "title": "contextual proximity", "to": "self-evaluation", "width": 0.5}, {"from": "respondents", "title": "contextual proximity", "to": "sheet music", "width": 0.5}, {"from": "respondents", "title": "contextual proximity", "to": "system designers", "width": 0.5}, {"from": "respondents", "title": "contextual proximity", "to": "tweets", "width": 0.5}, {"from": "responses", "title": "contextual proximity", "to": "scores", "width": 1.0}, {"from": "responses", "title": "contextual proximity", "to": "systems", "width": 1.0}, {"from": "scores", "title": "contextual proximity", "to": "songs", "width": 0.5}, {"from": "scores", "title": "There is a noticeable drop in scores based on whether participants know the system designers personally.", "to": "survey participants", "width": 1.0}, {"from": "scores", "title": "contextual proximity", "to": "system", "width": 0.75}, {"from": "scores", "title": "contextual proximity", "to": "systems", "width": 1.0}, {"from": "scoring function", "title": "contextual proximity", "to": "self-alignment algorithm", "width": 1.0}, {"from": "scoring function", "title": "contextual proximity", "to": "song", "width": 1.0}, {"from": "scoring function", "title": "contextual proximity", "to": "spectrum", "width": 0.5}, {"from": "scoring function", "title": "Weights for the scoring function are learned using a genetic algorithm trained on a small, structurally annotated subset of the MKB,contextual proximity", "to": "weights", "width": 1.5}, {"from": "sectional form", "title": "contextual proximity", "to": "song", "width": 0.5}, {"from": "sectional form", "title": "Structural alignments across multiple viewpoints create sectional form.,contextual proximity", "to": "structural alignments", "width": 1.5}, {"from": "self-alignment algorithm", "title": "contextual proximity", "to": "song", "width": 1.0}, {"from": "self-alignment algorithm", "title": "contextual proximity", "to": "spectrum", "width": 0.5}, {"from": "self-alignment algorithm", "title": "contextual proximity", "to": "weights", "width": 0.5}, {"from": "self-evaluation", "title": "contextual proximity", "to": "standards", "width": 1.75}, {"from": "self-evaluation", "title": "contextual proximity", "to": "subprocesses", "width": 1.75}, {"from": "significant variation", "title": "songs include significant variation in chords, melody, length, structure, tempo, modality, key, and intention,contextual proximity", "to": "songs", "width": 3.25}, {"from": "simplified version", "title": "contextual proximity", "to": "songs", "width": 2.25}, {"from": "song", "title": "contextual proximity", "to": "spectrum", "width": 0.5}, {"from": "song", "title": "contextual proximity", "to": "structural alignments", "width": 1.0}, {"from": "song", "title": "The table also displays survey average song ratings, suggesting a relationship between survey and song.,contextual proximity", "to": "survey", "width": 1.5}, {"from": "song", "title": "contextual proximity", "to": "system", "width": 0.75}, {"from": "song", "title": "contextual proximity", "to": "topics", "width": 0.5}, {"from": "song", "title": "contextual proximity", "to": "training", "width": 0.5}, {"from": "song", "title": "contextual proximity", "to": "weights", "width": 0.5}, {"from": "songs", "title": "contextual proximity", "to": "star ratings", "width": 2.25}, {"from": "songs", "title": "contextual proximity", "to": "structure", "width": 2.25}, {"from": "songs", "title": "The context mentions that structure scores (Q4) were generally below average, although there were a few songs that earned average ratings above 3.0.,contextual proximity", "to": "structure scores (q4)", "width": 1.5}, {"from": "songs", "title": "contextual proximity", "to": "system", "width": 3.25}, {"from": "songs", "title": "contextual proximity", "to": "tempo", "width": 2.25}, {"from": "structural alignments", "title": "contextual proximity", "to": "training", "width": 0.5}, {"from": "structural constraints", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "structure", "title": "contextual proximity", "to": "system", "width": 0.5}, {"from": "style", "title": "contextual proximity", "to": "text input", "width": 0.75}, {"from": "style", "title": "contextual proximity", "to": "topic", "width": 0.5}, {"from": "surprise", "title": "contextual proximity", "to": "tweet", "width": 0.5}, {"from": "survey", "title": "contextual proximity", "to": "system", "width": 1.5}, {"from": "system", "title": "contextual proximity", "to": "system designers", "width": 0.75}, {"from": "system", "title": "contextual proximity", "to": "tweet", "width": 0.5}, {"from": "text input", "title": "contextual proximity", "to": "topic", "width": 1.5}, {"from": "text input", "title": "contextual proximity", "to": "weight", "width": 0.75}, {"from": "topic", "title": "contextual proximity", "to": "weight", "width": 0.5}, {"from": "tweet", "title": "contextual proximity", "to": "twitter", "width": 0.5}, {"from": "tweet", "title": "contextual proximity", "to": "value", "width": 0.5}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.015,
+            "damping": 0.4,
+            "gravitationalConstant": -31,
+            "springConstant": 0.08,
+            "springLength": 100
+        },
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
