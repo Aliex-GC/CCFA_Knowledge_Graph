@@ -2,7 +2,7 @@
 
 
 
-![Knowledge Graph Banner](./assets/KG_banner.png)
+![Knowledge Graph Banner](./assets1/KG_banner.png)
 *A knowledge graph generated using this code* 
 ghpages link of this graph:https://github.com/Aliex-GC/Knowledge_Graph/blob/main/docs/graph.html
 
@@ -35,7 +35,7 @@ All the components I used here are set up locally, so this project can be run ve
 
 To generate a graph this the notebook you have to tweak. 
 
-**[extract_graph.ipynb](https://github.com/rahulnyk/knowledge_graph/blob/main/extract_graph.ipynb)**
+**[extract_graph.ipynb](https://github.com/Aliex-GC/Knowledge_Graph/blob/main/extract_graph.ipynb)**
 
 The notebook implements the method outlined in the following flowchart. 
 
@@ -110,11 +110,11 @@ This is a python library that makes dealing with graphs super easy
 
 使用gpt-api生成的文本图谱关系复杂，节点众多，但子图较少
 
-![image-20240619155024239](./assets/image-20240619155024239.png)
+![image-20240619155024239](./assets1/image-20240619155024239.png)
 
 
 
 使用qwen-api生成图谱节点简洁明了，关系错落有致，子图数量合理，美观大方
 
-![image-20240619154431685](./assets/image-20240619154431685.png)
+![image-20240619154431685](./assets1/image-20240619154431685.png)
 
