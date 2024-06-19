@@ -103,9 +103,13 @@ This is a python library that makes dealing with graphs super easy
 
 ## LLM
 
-* 原作者使用了 [Mistral 7B Openorca](https://huggingface.co/Open-Orca/Mistral-7B-OpenOrca) ，但Model is too large to load in Inference API (serverless).
+* 原作者使用了 [Mistral 7B Openorca](https://huggingface.co/Open-Orca/Mistral-7B-OpenOrca) ，我也在本地使用ollama部署了该模型，十分牛逼，感谢印度老哥指点。
 
-* chatgpt:在开始时使用了gpt-3.5的各种版本，包括gpt-3.5-turbo,gpt-3.5-turbo-0301,gpt-3.5-turbo-0613，也用了少量的gpt4和gpt4o的api，但国内平台均为第三方售卖，如[closeai](https://www.closeai-asia.com/)，但价格昂贵，1美金额度大约只能供两篇会议文章使用。
+* <img src="./assets1/image-20240619221024497.png" alt="image-20240619221024497" style="zoom: 67%;" />
+
+  <img src="./assets1/d1da0b5731c69570d55aba37de6dacc3.png" alt="img" style="zoom:50%;" />
+
+* chatgpt:在开始时使用了gpt-3.5的各种版本的api，包括gpt-3.5-turbo,gpt-3.5-turbo-0301,gpt-3.5-turbo-0613，也用了少量的gpt4和gpt4o的api，但国内平台均为第三方售卖，如[closeai](https://www.closeai-asia.com/)，但价格昂贵，1美金额度大约只能供两篇会议文章使用。
 
   且饱受接口限流影响，在高峰期相应时间相当慢，生成一次回答要四五十秒，甚至由于OpenAI侧负载过高遇到429错误，连续长时间无法使用，一个下午仅处理了一份文本！
 
@@ -113,7 +117,17 @@ This is a python library that makes dealing with graphs super easy
 
 
 
-使用gpt-api生成的文本图谱关系复杂，节点众多，但子图较少
+使用在本地部署的[Mistral 7B Openorca](https://huggingface.co/Open-Orca/Mistral-7B-OpenOrca)生成的图谱唯一的缺点是速度较慢，处理一个文本约40分钟。
+
+
+
+与chatgpt对比，
+
+<img src="./assets1/image-20240619221600144.png" alt="image-20240619221600144" style="zoom:25%;" />
+
+![./assets1/image-20240619221811116](image-20240619221811116.png)
+
+使用openai-api生成的文本图谱关系复杂，节点众多，但子图较少
 
 ![image-20240619155024239](./assets1/image-20240619155024239.png)
 
