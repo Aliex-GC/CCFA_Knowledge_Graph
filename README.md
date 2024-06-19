@@ -124,7 +124,7 @@ This is a python library that makes dealing with graphs super easy
 与chatgpt对比，
 
 <img src="./assets1/image-20240619221600144.png" alt="image-20240619221600144" style="zoom:25%;" />
-<img src="./assets1/image-20240619221811116.png" alt="image-20240619221600144" style="zoom:25%;" />
+<img src="./assets1/image-20240619221811116.png" alt="image-20240619221811116" style="zoom:25%;" />
 
 
 使用openai-api生成的文本图谱关系复杂，节点众多，但子图较少
