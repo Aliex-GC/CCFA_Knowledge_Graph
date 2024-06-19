@@ -121,7 +121,7 @@ This is a python library that makes dealing with graphs super easy
 
 
 
-与chatgpt对比，
+与chatgpt对比，上图为Mistral 7B Openorca，下图为chat-gpt-3.5-turbo的结果。
 
 <img src="./assets1/image-20240619221600144.png" alt="image-20240619221600144" style="zoom:25%;" />
 <img src="./assets1/image-20240619221811116.png" alt="image-20240619221811116" style="zoom:25%;" />
