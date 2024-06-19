@@ -87,6 +87,11 @@ This is a python library that makes dealing with graphs super easy
 # MY WORK OF THIS PROJECT
 ## 爬虫
 
+* 主要使用的技术：selenium，xpath，beautifulsoup
+* AAAI   [dblp: AAAI 2024 (uni-trier.de)](https://dblp.uni-trier.de/db/conf/aaai/aaai2024.html)
+* CVPR   [CVPR 2024 Open Access Repository (thecvf.com)](https://openaccess.thecvf.com/CVPR2024?day=all)
+* ICML,KDD    (https://proceedings.mlr.press/)
+* neurlPS     [NeurIPS 2023 Conference | OpenReview](https://openreview.net/group?id=NeurIPS.cc/2023/Conference#tab-accept-oral)
 * 爬取了从 AAAI, ICML, NeuIPS, CVPR，KDD 平台各爬取有代表性的外文文本共计约800份（近两年），对应 5 种不同的文本风格，总计约 1000-1500 份外文资料，覆盖计算机视觉、机器学习、数据挖掘等多个主题.
 
 ## 数据处理
