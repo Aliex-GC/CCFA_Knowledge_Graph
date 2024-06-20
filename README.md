@@ -54,9 +54,10 @@
 ![image-20240619154431685](./assets1/image-20240619154431685.png)
 
 
-![Knowledge Graph Banner](./assets1/KG_banner.png)
-*A knowledge graph generated using this code* 
-ghpages link of this graph:https://github.com/Aliex-GC/Knowledge_Graph/blob/main/docs/graph.html
+
+
+
+
 
 
 ## What is a knowledge graph?
