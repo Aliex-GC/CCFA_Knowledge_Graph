@@ -1,3 +1,5 @@
+# Convert any Corpus of Text into a *Graph of Knowledge*           --Using LangChain &&LLM
+
 # MY WORK OF THIS PROJECT
 ## 爬虫
 
@@ -17,7 +19,7 @@
 
 ## LLM
 
-* 原作者使用了 [Mistral 7B Openorca](https://huggingface.co/Open-Orca/Mistral-7B-OpenOrca) ，我也在本地使用ollama部署了该模型，十分牛逼，感谢印度老哥指点。
+* 原作者使用了 [Mistral 7B Openorca](https://huggingface.co/Open-Orca/Mistral-7B-OpenOrca) ，我也在本地使用ollama部署了[zephyr-7b-beta](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta)，十分牛逼，感谢印度老哥指点。
 
 * <img src="./assets1/image-20240619221024497.png" alt="image-20240619221024497" style="zoom: 67%;" />
 
@@ -31,11 +33,11 @@
 
 
 
-使用在本地部署的[Mistral 7B Openorca](https://huggingface.co/Open-Orca/Mistral-7B-OpenOrca)生成的图谱唯一的缺点是速度较慢，处理一个文本约40分钟。
+使用在本地部署的[zephyr-7b-beta](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta)生成的图谱唯一的缺点是速度较慢，处理一个文本约40分钟。
 
 
 
-与chatgpt对比，上图为Mistral 7B Openorca，下图为chat-gpt-3.5-turbo的结果。
+与chatgpt对比，上图为[zephyr-7b-beta](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta)，下图为chat-gpt-3.5-turbo的结果。
 
 <img src="./assets1/image-20240619221600144.png" alt="image-20240619221600144" style="zoom:25%;" />
 <img src="./assets1/image-20240619221811116.png" alt="image-20240619221811116" style="zoom:25%;" />
@@ -50,8 +52,6 @@
 使用qwen-api生成图谱节点简洁明了，关系错落有致，子图数量合理，美观大方
 
 ![image-20240619154431685](./assets1/image-20240619154431685.png)
-# Convert any Corpus of Text into a *Graph of Knowledge*           --Using LangChain &&LLM
-
 
 
 ![Knowledge Graph Banner](./assets1/KG_banner.png)
